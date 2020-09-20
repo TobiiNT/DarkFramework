@@ -18,12 +18,12 @@ namespace SampleUnityGameServer
             SocketListener Listener = new SocketListener();
             Listener.StartListening(3333);
 
-            //AESKeyGenerator KeyGenerator = new AESKeyGenerator();
-            //
             //byte[] RawData = new byte[] { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 };
 
+            //AESKeyGenerator KeyGenerator = new AESKeyGenerator();
+            //
             //AESKeyPair KeyPair = KeyGenerator.GenerateKey(AESKeySize.Key192);
-            //ICryptoService AESService = new AESService(KeyPair);
+            //AESService AESService = new AESService(KeyPair);
             //
             //byte[] AESEncryptedData = AESService.Encrypt(RawData);
             //Console.WriteLine($"{BitConverter.ToString(AESEncryptedData)}");
