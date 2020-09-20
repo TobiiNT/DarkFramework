@@ -128,6 +128,11 @@ namespace DarkPacket.Packets
             Buffer.BlockCopy(this.Data, CurrentIndex, OutputData, 0, StringLength);
             return Encoding.Unicode.GetString(OutputData);
         }
+        public DateTime ReadDateTime()
+        {
+            int Ticks = ReadInt();
+            return new DateTime(Ticks);
+        }
         public void Dispose()
         {
             this.Data = null;

@@ -48,6 +48,10 @@ namespace DarkPacket.Packets
             this.DataStream.Write(BitConverter.GetBytes(Math.Min(StringData.Length, Length)), 0, 2);
             this.DataStream.Write(StringData, 0, Math.Min(StringData.Length, Length));
         }
+        public void WriteDateTime(DateTime DateTime)
+        {
+            this.DataStream.Write(BitConverter.GetBytes(DateTime.Ticks), 0, 4);
+        }
         public byte[] GetPacketData()
         {
             using (MemoryStream OutputStream = new MemoryStream())
