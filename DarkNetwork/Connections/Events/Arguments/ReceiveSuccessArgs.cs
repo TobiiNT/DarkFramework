@@ -10,6 +10,6 @@ namespace DarkNetwork.Networks.Connections.Events.Arguments
             this.PacketData = PacketData;
         }
         public int DataSize { private set; get; }
-        public byte[] PacketData { private set; get; }
+        public byte[] PacketData;
     }
 }

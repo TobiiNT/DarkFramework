@@ -2,6 +2,8 @@
 using DarkNetwork.Networks.Connections.Events.Arguments;
 using DarkNetwork.Networks.Enums;
 using DarkNetwork.Networks.Structures;
+using DarkPacket.Packets;
+using DarkPacket.Readers;
 using System;
 using System.Net;
 using System.Net.Sockets;
@@ -33,7 +35,7 @@ namespace DarkNetwork.Networks.Connections
             this.ReceiveQueue = new ReceiveQueue();
             this.DataReceived = new byte[102400];
         }
-        public void Start(string ServerIPAddress, int Port)
+        protected void Start(string ServerIPAddress, int Port)
         {
             try
             {
@@ -50,7 +52,7 @@ namespace DarkNetwork.Networks.Connections
                 OnStartException(this, new StartExceptionArgs(Exception));
             }
         }
-        public void Start(Socket Socket)
+        protected void Start(Socket Socket)
         {
             try
             {
@@ -116,17 +118,28 @@ namespace DarkNetwork.Networks.Connections
             {
                 this.Dispose();
             }
-        }
-        public void Send(byte[] Data, int Length)
+        }     
+        protected void Send(byte[] Data)
         {
             try
             {
                 if (this.Socket != null && this.IsRunning && this.Socket.Connected)
                 {
+                    using (var Packet = new PacketWriter())
+                    {
+                        Packet.WriteByte(170);
+                        Packet.WriteByte(85);
+                        Packet.WriteBytes(Data);
+                        Packet.WriteByte(85);
+                        Packet.WriteByte(170);
+
+                        Data = Packet.GetPacketData();
+                    }
+
                     SendQueue.Gram DataSend;
                     lock (this.SendQueue)
                     {
-                        DataSend = this.SendQueue.Enqueue(Data, Length);
+                        DataSend = this.SendQueue.Enqueue(Data, Data.Length);
                     }
                     if (DataSend != null)
                     {
@@ -255,10 +268,16 @@ namespace DarkNetwork.Networks.Connections
                                         this.ReceiveQueue.Dequeue(CurrentPacketData, 0, CurrentPacketLength);
                                         BufferLength = this.ReceiveQueue.Length;
 
-                                        if (CurrentPacketData[0] == 170 && CurrentPacketData[1] == 85 &&
-                                            CurrentPacketData[CurrentPacketLength - 1] == 170 && CurrentPacketData[CurrentPacketLength - 2] == 85)
+                                        if (CurrentPacketData[0] == 170 && 
+                                            CurrentPacketData[1] == 85 &&
+                                            CurrentPacketData[CurrentPacketLength - 1] == 170 && 
+                                            CurrentPacketData[CurrentPacketLength - 2] == 85)
                                         {
-                                            OnReceiveSuccess(this, new ReceiveSuccessArgs(CurrentPacketLength, CurrentPacketData));
+                                            using (var Packet = new NetworkPacketReader(CurrentPacketData))
+                                            {
+                                                byte[] MainData = Packet.ReadBytes();
+                                                OnReceiveSuccess(this, new ReceiveSuccessArgs(CurrentPacketLength, MainData));
+                                            }
                                             continue;
                                         }
                                         this.ReceiveQueue.Clear();

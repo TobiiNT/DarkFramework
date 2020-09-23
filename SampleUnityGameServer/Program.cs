@@ -1,8 +1,4 @@
 ﻿using DarkPacket.Packets;
-using DarkSecurity;
-using DarkSecurity.Securities.AES;
-using DarkSecurity.Securities.RSA;
-using SampleUnityGameServer.Networks;
 using System;
 using System.Linq;
 using System.Text;
@@ -15,30 +11,9 @@ namespace SampleUnityGameServer
         {
             Console.OutputEncoding = Encoding.UTF8;
 
-            SocketListener Listener = new SocketListener();
-            Listener.StartListening(3333);
-
-            //byte[] RawData = new byte[] { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 };
-
-            //AESKeyGenerator KeyGenerator = new AESKeyGenerator();
-            //
-            //AESKeyPair KeyPair = KeyGenerator.GenerateKey(AESKeySize.Key192);
-            //AESService AESService = new AESService(KeyPair);
-            //
-            //byte[] AESEncryptedData = AESService.Encrypt(RawData);
-            //Console.WriteLine($"{BitConverter.ToString(AESEncryptedData)}");
-            //byte[] AESDecryptedData = AESService.Decrypt(AESEncryptedData);
-            //Console.WriteLine($"{BitConverter.ToString(AESDecryptedData)}");
-
-            //RSAKeyGenerator KeyGenrator = new RSAKeyGenerator();
-            //
-            //RSAKeyPair KeyPair = KeyGenrator.GenerateKey(RSAKeySize.Key1024);
-            //RSAService RSAService = new RSAService(KeyPair);
-            //
-            //byte[] RSAEncryptedData = RSAService.Encrypt(RawData);
-            //Console.WriteLine($"{BitConverter.ToString(RSAEncryptedData)}");
-            //byte[] RSADecryptedData = RSAService.Decrypt(RSAEncryptedData);
-            //Console.WriteLine($"{BitConverter.ToString(RSADecryptedData)}");
+            ChannelManager World = new ChannelManager();
+            World.StartNewChannel(3333);
+            World.StartNewChannel(3334);
 
             while (true)
             {
@@ -46,22 +21,34 @@ namespace SampleUnityGameServer
                 if (Content == "exit")
                     break;
 
-                Logging.WriteLine($"Total Connections : {World.Connections.Count}");
-                foreach (var Connection in World.Connections.ToList())
+                int TotalChannel = 0;
+                int TotalClient = 0;
+                int Success = 0;
+                int Failed = 0;
+
+                using (PacketWriter Packet = new PacketWriter())
                 {
-                    using (PacketWriter Packet = new PacketWriter())
+                    Packet.WriteString(Content);
+                    foreach (var Channel in World.Channels.Values.ToList())
                     {
-                        Packet.WriteString(Content);
-
-                        byte[] Data = Packet.GetPacketData();
-                        Connection.Send(Data, Data.Length);
-
-                        using (PacketReader Reader = new PacketReader(Data))
+                        TotalChannel++;
+                        foreach (var Client in Channel.Connections.Values.ToList())
                         {
-                            Console.WriteLine(Reader.ReadString());
+                            TotalClient++;
+                            try
+                            {
+                                Client.SendDataWithEncryption(Packet.GetPacketData());
+                                Success++;
+                            }
+                            catch
+                            {
+                                Failed++;
+                            }
                         }
                     }
                 }
+
+                Logging.WriteLine($"Send message to {TotalChannel} channels and {TotalClient} clients : {Success} Success, {Failed} Failed");
             }
 
             Console.ReadKey();

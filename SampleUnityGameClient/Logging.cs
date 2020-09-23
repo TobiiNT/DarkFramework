@@ -8,14 +8,16 @@ namespace SampleUnityGameClient
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine($"{DateTime.Now} [Client] {Message}");
-            Console.ForegroundColor = ConsoleColor.White;
         }
-
-        public static void WriteLine(string Message, Exception Exception)
+        public static void WriteError(string Message)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"{DateTime.Now} [Client] {Message}");
+        }
+        public static void WriteError(string Message, Exception Exception)
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"{DateTime.Now} [Client] {Message} ({Exception.Message})");
-            Console.ForegroundColor = ConsoleColor.White;
         }
     }
 }

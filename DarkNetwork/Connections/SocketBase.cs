@@ -33,7 +33,7 @@ namespace DarkNetwork.Networks.Connections
             }
             catch (Exception Exception)
             {
-                OnListenException(this, new ListenExceptionArgs(Exception));
+                OnListenException(this, new ListenExceptionArgs(Port, Exception));
 
                 this.SocketOn = false;
                 this.Socket?.Shutdown(SocketShutdown.Both);
@@ -69,10 +69,8 @@ namespace DarkNetwork.Networks.Connections
         {
             try
             {
-                if (e.AcceptSocket != null)
-                {
-                    OnAcceptSuccess(this, new AcceptSuccessArgs(e.AcceptSocket));
-                }
+                OnAcceptSuccess(this, new AcceptSuccessArgs(e.AcceptSocket));
+
                 this.ResetSocket();
             }
             catch (Exception Exception)

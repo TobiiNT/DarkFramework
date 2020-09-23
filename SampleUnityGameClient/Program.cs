@@ -1,6 +1,6 @@
 ﻿using DarkPacket.Packets;
-using SampleUnityGameClient.Networks;
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace SampleUnityGameClient
@@ -11,8 +11,22 @@ namespace SampleUnityGameClient
         {
             Console.OutputEncoding = Encoding.UTF8;
 
-            ConnectionClient Client = new ConnectionClient();
-            Client.Start("127.0.0.1", 3333);
+            List<ClientManager> AllClients = new List<ClientManager>();
+
+            for (int i = 0; i < 100; i++)
+            {
+                var Client = new ClientManager();
+                Client.ConnectWithIP("127.0.0.1", 3333);
+                AllClients.Add(Client);
+            }
+
+            for (int i = 0; i < 100; i++)
+            {
+                var Client = new ClientManager();
+                Client.ConnectWithIP("127.0.0.1", 3334);
+                AllClients.Add(Client);
+            }
+
 
             while (true)
             {
@@ -20,16 +34,31 @@ namespace SampleUnityGameClient
                 if (Content == "exit")
                     break;
 
+                int Success = 0;
+                int Failed = 0;
+
                 using (PacketWriter Packet = new PacketWriter())
                 {
                     Packet.WriteString(Content);
 
-                    byte[] Data = Packet.GetPacketData();
-                    Client.Send(Data, Data.Length);
+                    foreach (var Client in AllClients)
+                    {
+                        try
+                        {
+                            Client.SendDataWithEncryption(Packet.GetPacketData());
+                            Success++;
+                        }
+                        catch
+                        {
+                            Failed++;
+                        }
+                    }
                 }
+
+                Logging.WriteLine($"Send message to {AllClients.Count} connections : {Success} Success, {Failed} Failed");
             }
 
             Console.ReadKey();
-        }
+        }        
     }
 }

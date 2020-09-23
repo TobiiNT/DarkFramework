@@ -8,7 +8,13 @@
   <ItemGroup>
     <ProjectReference Include="..\DarkNetwork\DarkNetwork.csproj" />
     <ProjectReference Include="..\DarkPacket\DarkPacket.csproj" />
+    <ProjectReference Include="..\DarkSecurityNetwork\DarkSecurityNetwork.csproj" />
     <ProjectReference Include="..\DarkSecurity\DarkSecurity.csproj" />
+    <ProjectReference Include="..\DarkThread\DarkThread.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Packets\" />
   </ItemGroup>
 
 </Project>
