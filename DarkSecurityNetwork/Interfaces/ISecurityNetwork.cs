@@ -8,7 +8,7 @@
         void ImportAsymmetricKeyFromServer(string RawPublicKey);
         void ImportSymmetricKeyFromClient(int KeySize, byte[] Key, byte[] IV);
         void SendSymmetricKeyToServer();
-        void SendAsymmetricPublicKeyToClient();
+        void SendAsymmetricPublicKeyAndChannelInfoToClient(ushort ChannelID, uint ClientID);
         void CompleteAuthentication();
     }
 }

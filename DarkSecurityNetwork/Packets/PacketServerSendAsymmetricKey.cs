@@ -8,11 +8,13 @@ namespace DarkSecurityNetwork.Packets
     public class PacketServerSendAsymmetricKey
     {
         public byte[] Data { private set; get; }
-        public PacketServerSendAsymmetricKey(ICryptoKey CryptoKey)
+        public PacketServerSendAsymmetricKey(ICryptoKey CryptoKey, ushort ChannelID, uint ClientID)
         {
             using (var Packet = new PacketWriter())
             {
                 Packet.WriteShort((byte)ProtocolFunction.ServerSendAsymmetricKeyToClient);
+                Packet.WriteUShort(ChannelID);
+                Packet.WriteUInt(ClientID);
 
                 if (CryptoKey is RSAKey RSAKey)
                 {

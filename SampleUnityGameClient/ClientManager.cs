@@ -1,4 +1,5 @@
-﻿using DarkSecurityNetwork;
+﻿using DarkSecurity.Enums;
+using DarkSecurityNetwork;
 using DarkSecurityNetwork.Networks;
 using System;
 
@@ -6,7 +7,7 @@ namespace SampleUnityGameClient
 {
     public class ClientManager : SecurityConnection<ClientSecurityNetwork>
     {
-        public ClientManager()
+        public ClientManager(CryptoKeySize KeySize) : base(KeySize)
         {
             this.AuthenticationSuccess += this.OnConnectionAuthenticationSuccess;
             this.AuthenticationFailed += this.OnConnectionAuthenticationFailed;
@@ -45,7 +46,7 @@ namespace SampleUnityGameClient
         }
         private void OnConnectionConnectSuccess(ushort ChannelID, uint ClientID)
         {
-            Logging.WriteLine($"Channel {ChannelID}, Client {ClientID} : Connected to {IPEndPoint} exception");
+            Logging.WriteLine($"Channel {ChannelID}, Client {ClientID} : Connected to {IPEndPoint}");
         }
         private void OnConnectionConnectException(ushort ChannelID, uint ClientID, Exception Exception)
         {

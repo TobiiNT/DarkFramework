@@ -11,12 +11,10 @@ namespace DarkSecurityNetwork
     public class SecurityServer : SocketBase
     {
         public ushort ChannelID { set; get; }
-        public ThreadSafeDictionary<uint, SecurityConnection<ServerSecurityNetwork>> Connections { set; get; }
+       
 
         public SecurityServer()
         {
-            this.Connections = new ThreadSafeDictionary<uint, SecurityConnection<ServerSecurityNetwork>>();
-
             this.EventListenSuccess += this.OnListenSuccess;
             this.EventListenException += this.OnListenException;
             this.EventAcceptSuccess += this.OnAcceptSuccess;

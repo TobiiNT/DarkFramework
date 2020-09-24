@@ -202,7 +202,7 @@ namespace DarkNetwork.Networks.Connections
                 {
                     Socket AsyncState = (Socket)AsyncResult.AsyncState;
                     int DataLength = AsyncState.EndReceive(AsyncResult, out SocketError Result);
-                    if (Result == SocketError.Success && DataLength > 0 && this.DataReceived[0] != 99)
+                    if (Result == SocketError.Success && DataLength > 0)
                     {
                         byte[] recvBuffer = this.DataReceived;
                         lock (this.ReceiveQueue)
@@ -223,8 +223,9 @@ namespace DarkNetwork.Networks.Connections
                                     BitConverter.GetBytes((uint)20000).CopyTo(array, (int)(Marshal.SizeOf(0) * 2));
                                     this.InternalBeginReceive(array);
                                 }
-                                catch (Exception)
+                                catch (Exception Exception)
                                 {
+                                    OnReceiveException(this, new ReceiveExceptionArgs(Exception));
                                     this.Dispose();
                                 }
                             }
@@ -232,11 +233,13 @@ namespace DarkNetwork.Networks.Connections
                     }
                     else
                     {
+                        OnReceiveException(this, new ReceiveExceptionArgs(new Exception("Empty receive data")));
                         this.Dispose();
                     }
                 }
-                catch (Exception)
+                catch (Exception Exception)
                 {
+                    OnReceiveException(this, new ReceiveExceptionArgs(Exception));
                     this.Dispose();
                 }
             }

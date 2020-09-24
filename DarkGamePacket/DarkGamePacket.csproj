@@ -1,16 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DarkGamePacket\DarkGamePacket.csproj" />
     <ProjectReference Include="..\DarkNetwork\DarkNetwork.csproj" />
     <ProjectReference Include="..\DarkPacket\DarkPacket.csproj" />
     <ProjectReference Include="..\DarkSecurityNetwork\DarkSecurityNetwork.csproj" />
-    <ProjectReference Include="..\DarkSecurity\DarkSecurity.csproj" />
     <ProjectReference Include="..\DarkThread\DarkThread.csproj" />
   </ItemGroup>
 

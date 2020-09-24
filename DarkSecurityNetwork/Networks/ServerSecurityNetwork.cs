@@ -12,9 +12,9 @@ namespace DarkSecurityNetwork.Networks
 {
     public class ServerSecurityNetwork : ServerSecurityProtocol, ISecurityNetwork
     {
-        public ServerSecurityNetwork()
+        public ServerSecurityNetwork(CryptoKeySize KeySize)
         {
-            this.GenerateNewAsymmetricKey(CryptoKeySize.Key1024);
+            this.GenerateNewAsymmetricKey(KeySize);
         }
 
         public bool AuthenticationSuccess { private set; get; }
@@ -53,11 +53,11 @@ namespace DarkSecurityNetwork.Networks
             }
         }
 
-        public void SendAsymmetricPublicKeyToClient()
+        public void SendAsymmetricPublicKeyAndChannelInfoToClient(ushort ChannelID, uint ClientID)
         {
             try
             {
-                byte[] Packet = new PacketServerSendAsymmetricKey(this.AsymmetricService.CryptoKey).Data;
+                byte[] Packet = new PacketServerSendAsymmetricKey(this.AsymmetricService.CryptoKey, ChannelID, ClientID).Data;
 
                 if (Packet != null)
                 {

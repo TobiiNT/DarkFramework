@@ -12,9 +12,9 @@ namespace DarkSecurityNetwork.Networks
 {
     public class ClientSecurityNetwork : ClientSecurityProtocol, ISecurityNetwork
     {
-        public ClientSecurityNetwork()
+        public ClientSecurityNetwork(CryptoKeySize KeySize)
         {
-            this.GenerateNewSymmetricKey(CryptoKeySize.Key256);
+            this.GenerateNewSymmetricKey(KeySize);
         }
         
         public bool AuthenticationSuccess { private set; get; }
@@ -31,8 +31,11 @@ namespace DarkSecurityNetwork.Networks
                     {
                         case ProtocolFunction.ServerSendAsymmetricKeyToClient:
                             {
+                                ushort ChannelID = Packet.ReadUShort();
+                                uint ClientID = Packet.ReadUInt();
                                 string RawPublicKey = Packet.ReadString();
 
+                                this.ImportChannelAndClientData(ChannelID, ClientID);
                                 this.ImportAsymmetricKeyFromServer(RawPublicKey);
                                 this.SendSymmetricKeyToServer();
                             }
@@ -49,6 +52,18 @@ namespace DarkSecurityNetwork.Networks
                             break;
                     }
                 }
+            }
+            catch (Exception Exception)
+            {
+                OnAuthException(this, new AuthExceptionArgs(Exception));
+            }
+        }
+
+        public void ImportChannelAndClientData(ushort ChannelID, uint ClientID)
+        {
+            try
+            {
+                OnChannelData(this, new ChannelDataArgs(ChannelID, ClientID));
             }
             catch (Exception Exception)
             {
@@ -105,6 +120,6 @@ namespace DarkSecurityNetwork.Networks
         }
 
         public void ImportSymmetricKeyFromClient(int KeySize, byte[] Key, byte[] IV) => throw new ServiceNotSupportedException("ImportSymmetricKeyFromClient", this);
-        public void SendAsymmetricPublicKeyToClient() => throw new ServiceNotSupportedException("SendAsymmetricPublicKeyToClient", this);
+        public void SendAsymmetricPublicKeyAndChannelInfoToClient(ushort ChannelID, uint ClientID) => throw new ServiceNotSupportedException("SendAsymmetricPublicKeyAndChannelInfoToClient", this);
     }
 }

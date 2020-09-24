@@ -1,10 +1,11 @@
-﻿using System;
+﻿using DarkPacket.Interfaces;
+using System;
 using System.IO;
 using System.Text;
 
 namespace DarkPacket.Packets
 {
-    public class PacketWriter : IDisposable
+    public class PacketWriter : IPacketWriter
     {
         private MemoryStream DataStream { set; get; }
         public PacketWriter() => DataStream = new MemoryStream();
@@ -13,6 +14,7 @@ namespace DarkPacket.Packets
             this.DataStream = new MemoryStream();
             this.DataStream.Write(Data, 0, Data.Length);
         }
+        public void WriteBoolean(bool Value) => this.DataStream.WriteByte((byte)(Value ? 1 : 0));
         public void WriteByte(byte Value) => this.DataStream.WriteByte(Value);
         public void WriteBytes(byte[] Value)
         {
@@ -49,14 +51,14 @@ namespace DarkPacket.Packets
                 Value = string.Empty;
             }
             byte[] StringData = Encoding.Unicode.GetBytes(Value);
-            this.DataStream.Write(BitConverter.GetBytes(Math.Min(StringData.Length, Length)), 0, 2);
-            this.DataStream.Write(StringData, 0, Math.Min(StringData.Length, Length));
+            this.DataStream.Write(BitConverter.GetBytes(Math.Min(StringData.Length, Length * 2)), 0, 2);
+            this.DataStream.Write(StringData, 0, Math.Min(StringData.Length, Length * 2));
         }
         public void WriteDateTime(DateTime DateTime)
         {
             this.DataStream.Write(BitConverter.GetBytes(DateTime.Ticks), 0, 4);
         }
-        public byte[] GetPacketData()
+        public virtual byte[] GetPacketData()
         {
             using (MemoryStream OutputStream = new MemoryStream())
             {

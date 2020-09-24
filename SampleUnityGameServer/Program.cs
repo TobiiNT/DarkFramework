@@ -12,9 +12,27 @@ namespace SampleUnityGameServer
             Console.OutputEncoding = Encoding.UTF8;
 
             ChannelManager World = new ChannelManager();
-            World.StartNewChannel(3333);
-            World.StartNewChannel(3334);
 
+            int ChannelCount = 1;
+            int FromPort = 3300;
+
+            try
+            {
+                Console.Write("Channel Count: ");
+                ChannelCount = int.Parse(Console.ReadLine());
+                Console.Write("From Port: ");
+                FromPort = int.Parse(Console.ReadLine());
+            }
+            catch
+            {
+
+            }
+
+            for (int ChannelPort = FromPort; ChannelPort < FromPort + ChannelCount; ChannelPort++)
+            {
+                World.StartNewChannel(ChannelPort);
+            }
+            
             while (true)
             {
                 string Content = Console.ReadLine();
@@ -32,7 +50,7 @@ namespace SampleUnityGameServer
                     foreach (var Channel in World.Channels.Values.ToList())
                     {
                         TotalChannel++;
-                        foreach (var Client in Channel.Connections.Values.ToList())
+                        foreach (var Client in Channel.ClientConnections.Values.ToList())
                         {
                             TotalClient++;
                             try

@@ -1,5 +1,6 @@
 ﻿using DarkNetwork.Networks.Connections;
 using DarkNetwork.Networks.Connections.Events.Arguments;
+using DarkSecurity.Enums;
 using DarkSecurityNetwork.Delegates.Connections;
 using DarkSecurityNetwork.Events.Arguments;
 using DarkSecurityNetwork.Interfaces;
@@ -14,7 +15,7 @@ namespace DarkSecurityNetwork
         public ushort ChannelID { set; get; }
         public uint ClientID { set; get; }
         public ISecurityNetwork SecurityNetwork { private set; get; }
-        public SecurityConnection()
+        public SecurityConnection(CryptoKeySize KeySize)
         {
             this.EventStartSuccess += this.EventConnectionStartSuccess;
             this.EventStartException += this.EventConnectionStartException;
@@ -27,7 +28,8 @@ namespace DarkSecurityNetwork
             this.EventDisposeSuccess += this.EventConnectionDisposeSuccess;
             this.EventDisposeException += this.EventConnectionDisposeException;
 
-            this.SecurityNetwork = (ISecurityNetwork)Activator.CreateInstance(typeof(A));
+            this.SecurityNetwork = (ISecurityNetwork)Activator.CreateInstance(typeof(A), KeySize);
+            this.SecurityNetwork.EventChannelData += EventChannelData;
             this.SecurityNetwork.EventSendData += EventAuthenticationSend;
             this.SecurityNetwork.EventAuthSuccess += EventAuthenticationSuccess;
             this.SecurityNetwork.EventAuthFailed += EventAuthenticationFailed;
@@ -42,7 +44,7 @@ namespace DarkSecurityNetwork
             {
                 if (this.IsRunning)
                 {
-                    this.SecurityNetwork.SendAsymmetricPublicKeyToClient();
+                    this.SecurityNetwork.SendAsymmetricPublicKeyAndChannelInfoToClient(this.ChannelID, this.ClientID);
                     break;
                 }
             }
@@ -50,17 +52,25 @@ namespace DarkSecurityNetwork
 
         public void ConnectWithIP(string IPAddress, int Port) => this.Start(IPAddress, Port);
 
-        public void SendDataWithEncryption(byte[] Data)
+        public bool SendDataWithEncryption(byte[] Data)
         {
             if (this.SecurityNetwork != null && this.SecurityNetwork.AuthenticationSuccess)
             {
                 this.SecurityNetwork.EncryptDataWithSymmetricAlgorithm(ref Data);
 
                 this.Send(Data);
+                return true;
             }
             else throw new Exception("Security protocol is not initialized");
         }
-        
+        public void EventChannelData(object Sender, EventArgs Arguments)
+        {
+            if (Arguments is ChannelDataArgs Args)
+            {
+                this.ChannelID = Args.ChannelID;
+                this.ClientID = Args.ClientID;
+            }
+        }
         public void EventAuthenticationSend(object Sender, EventArgs Arguments)
         {
             if (Arguments is SendDataArgs SendDataArgs)

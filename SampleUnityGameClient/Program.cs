@@ -1,7 +1,9 @@
 ﻿using DarkPacket.Packets;
+using DarkSecurity.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace SampleUnityGameClient
 {
@@ -13,18 +15,38 @@ namespace SampleUnityGameClient
 
             List<ClientManager> AllClients = new List<ClientManager>();
 
-            for (int i = 0; i < 100; i++)
-            {
-                var Client = new ClientManager();
-                Client.ConnectWithIP("127.0.0.1", 3333);
-                AllClients.Add(Client);
-            }
+            string IPAddress = "127.0.0.1";
+            int FromPort = 3300;
+            int ToPort = 3300;
+            int ClientEachChannel = 1;
 
-            for (int i = 0; i < 100; i++)
+            try
             {
-                var Client = new ClientManager();
-                Client.ConnectWithIP("127.0.0.1", 3334);
-                AllClients.Add(Client);
+                Console.Write("IP Address: ");
+                IPAddress = Console.ReadLine();
+                if (IPAddress.Length == 0)
+                    IPAddress = "127.0.0.1";
+                Console.Write("From Port: ");
+                FromPort = int.Parse(Console.ReadLine());
+                Console.Write("To Port: ");
+                ToPort = int.Parse(Console.ReadLine());
+                Console.Write("Client Each Channel: ");
+                ClientEachChannel = int.Parse(Console.ReadLine());
+            }
+            catch 
+            {
+
+            }
+            
+
+            for (int Port = FromPort; Port <= ToPort; Port++)
+            {
+                for (int i = 0; i < ClientEachChannel; i++)
+                {
+                    var Client = new ClientManager(CryptoKeySize.Key256);
+                    Client.ConnectWithIP(IPAddress, Port);
+                    AllClients.Add(Client);
+                }
             }
 
 
@@ -59,6 +81,6 @@ namespace SampleUnityGameClient
             }
 
             Console.ReadKey();
-        }        
+        }
     }
 }
