@@ -4,6 +4,8 @@
     {
         ServerSendAsymmetricKeyToClient,
         ClientSendSymmetricKeyToServer,
+        ServerSendMessageTest,
+        ClientSendMessageTestVerify,
         ServerSendAuthenticationComplete,
     }
 }

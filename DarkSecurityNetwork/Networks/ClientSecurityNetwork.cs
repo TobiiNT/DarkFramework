@@ -38,6 +38,14 @@ namespace DarkSecurityNetwork.Networks
                             }
                             break;
 
+                        case ProtocolFunction.ServerSendMessageTest:
+                            {
+                                byte[] Message = Packet.ReadBytes();
+
+                                this.SendMessageTestVerifyToServer(Message);
+                            }
+                            break;
+
                         case ProtocolFunction.ServerSendAuthenticationComplete:
                             {
                                 this.CompleteAuthentication();
@@ -95,6 +103,31 @@ namespace DarkSecurityNetwork.Networks
                 else
                 {
                     OnAuthFailed(this, new AuthFailedArgs("Send symmetric key to server", "Invalid symmetric key"));
+                }
+            }
+            catch (Exception Exception)
+            {
+                OnAuthException(this, new AuthExceptionArgs(Exception));
+            }
+        }
+
+        public void SendMessageTestVerifyToServer(byte[] Data)
+        {
+            try
+            {
+                this.EncryptDataWithSymmetricAlgorithm(ref Data);
+
+                byte[] Packet = new PacketClientSendMessageTestVerify(Data).Data;
+
+                if (Packet != null)
+                {
+                    this.EncryptDataWithAsymmetricPublicKey(ref Packet);
+
+                    OnSendData(this, new SendDataArgs(Packet));
+                }
+                else
+                {
+                    OnAuthFailed(this, new AuthFailedArgs("Send message test verify to server", "Invalid symmetric key"));
                 }
             }
             catch (Exception Exception)

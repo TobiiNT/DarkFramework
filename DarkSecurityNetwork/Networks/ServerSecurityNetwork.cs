@@ -7,6 +7,8 @@ using DarkSecurityNetwork.Interfaces;
 using DarkSecurityNetwork.Packets;
 using DarkSecurityNetwork.Protocols;
 using System;
+using System.Linq;
+using System.Security.Cryptography;
 
 namespace DarkSecurityNetwork.Networks
 {
@@ -18,7 +20,7 @@ namespace DarkSecurityNetwork.Networks
             this.GenerateNewAsymmetricKey(AsymmetricKeySize);
             this.SymmetricKeySize = SymmetricKeySize;
         }
-
+        private byte[] MessageTest { set; get; }
         public bool AuthenticationSuccess { private set; get; }
 
         public void ManagePacket(byte[] Data)
@@ -40,6 +42,15 @@ namespace DarkSecurityNetwork.Networks
                                 byte[] IV = Packet.ReadBytes();
 
                                 this.ImportSymmetricKeyFromClient(KeySize, Key, IV);
+                                this.SendRandomMessageTest();
+                            }
+                            break;
+
+                        case ProtocolFunction.ClientSendMessageTestVerify:
+                            {
+                                byte[] MessageVerify = Packet.ReadBytes();
+
+                                this.VerifyMessageTest(MessageVerify);
                             }
                             break;
 
@@ -83,12 +94,64 @@ namespace DarkSecurityNetwork.Networks
                 if ((int)this.SymmetricKeySize == KeySize)
                 {
                     this.ImportSymmetricKey(KeySize, Key, IV);
-
-                    this.CompleteAuthentication();
                 }
                 else
                 {
                     OnAuthFailed(this, new AuthFailedArgs("Import symmetric key from client", "Invalid symmetric key size"));
+                }
+            }
+            catch (Exception Exception)
+            {
+                OnAuthException(this, new AuthExceptionArgs(Exception));
+            }
+        }
+
+        public void SendRandomMessageTest()
+        {
+            try
+            {
+                byte[] data = new byte[4];
+                new RNGCryptoServiceProvider().GetBytes(data);
+                Random Randomizer = new Random(BitConverter.ToInt32(data, 0));
+
+                this.MessageTest = new byte[16];
+                Randomizer.NextBytes(this.MessageTest);
+
+                byte[] MessageData = this.MessageTest;
+
+                this.EncryptDataWithSymmetricAlgorithm(ref MessageData);
+
+                byte[] Packet = new PacketServerSendMessageTest(MessageData).Data;
+
+                if (Packet != null)
+                {
+                    OnSendData(this, new SendDataArgs(Packet));
+                }
+                else
+                {
+                    OnAuthFailed(this, new AuthFailedArgs("Send message test to client", "Invalid symmetric key"));
+                }
+            }
+            catch (Exception Exception)
+            {
+                OnAuthException(this, new AuthExceptionArgs(Exception));
+            }
+        }
+
+        public void VerifyMessageTest(byte[] MessageTest)
+        {
+            try
+            {
+                this.DecryptDataWithSymmetricAlgorithm(ref MessageTest);
+                this.DecryptDataWithSymmetricAlgorithm(ref MessageTest);
+
+                if (this.MessageTest.SequenceEqual(MessageTest))
+                {
+                    this.CompleteAuthentication();
+                }
+                else
+                {
+                    OnAuthFailed(this, new AuthFailedArgs("Verify message test from client", "Invalid message test"));
                 }
             }
             catch (Exception Exception)
