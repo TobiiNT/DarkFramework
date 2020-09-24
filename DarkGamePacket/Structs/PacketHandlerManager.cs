@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace DarkGamePacket.Structs
 {
-    public class PacketHandlerManager<T> : IPacketHandlerManager where T : ISecurityNetwork
+    public class PacketHandlerManager<T> : IPacketHandlerManager<T> where T : ISecurityNetwork
     {
         private readonly ThreadSafeDictionary<uint, SecurityConnection<T>> ClientPlayers;
 
@@ -81,6 +81,15 @@ namespace DarkGamePacket.Structs
                     this.NetworkRequest.OnMessage(ClientID, Request);
                     return true;
                 }
+            }
+            return false;
+        }
+        public bool HandleHandshake(uint ClientID, SecurityConnection<T> Connection)
+        {
+            if (!this.ClientPlayers.ContainsKey(ClientID))
+            {
+                this.ClientPlayers.Add(ClientID, Connection);
+                return true;
             }
             return false;
         }

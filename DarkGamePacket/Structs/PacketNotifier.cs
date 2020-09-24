@@ -1,12 +1,13 @@
 ﻿using DarkGamePacket.Definitions.S2C;
+using DarkSecurityNetwork.Interfaces;
 
 namespace DarkGamePacket.Interfaces
 {
-    public class PacketNotifier : IPacketNotifier
+    public class PacketNotifier<T> : IPacketNotifier where T : ISecurityNetwork
     {
-        private readonly IPacketHandlerManager PacketHandlerManager;
+        private readonly IPacketHandlerManager<T> PacketHandlerManager;
 
-        public PacketNotifier(IPacketHandlerManager PacketHandlerManager)
+        public PacketNotifier(IPacketHandlerManager<T> PacketHandlerManager)
         {
             this.PacketHandlerManager = PacketHandlerManager;            
         }

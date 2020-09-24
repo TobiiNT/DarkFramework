@@ -38,18 +38,53 @@ namespace SampleUnityGameClient
 
             }
             
-
             for (int Port = FromPort; Port <= ToPort; Port++)
             {
                 for (int i = 0; i < ClientEachChannel; i++)
                 {
-                    var Client = new ClientManager(CryptoKeySize.Key256);
+                    var Client = new ClientManager();
                     Client.ConnectWithIP(IPAddress, Port);
                     AllClients.Add(Client);
                 }
             }
 
+            int TestTimes = 10000000;
+            int PacketSize = 1;
 
+            try
+            {
+                Console.Write("Test Times: ");
+                TestTimes = int.Parse(Console.ReadLine());
+                Console.Write("Packet Size: ");
+                PacketSize = int.Parse(Console.ReadLine());
+            }
+            catch
+            {
+
+            }
+
+            for (int i = 0; i < TestTimes; i++)
+            {
+                using (PacketWriter Packet = new PacketWriter())
+                {
+                    Packet.WriteBytes(new byte[PacketSize]);
+
+                    foreach (var Client in AllClients)
+                    {
+                        try
+                        {
+                            Client.SendDataWithEncryption(Packet.GetPacketData());
+                        }
+                        catch
+                        {
+
+                        }
+                    }
+                }
+            }
+
+            Console.ReadKey();
+            return;
             while (true)
             {
                 string Content = Console.ReadLine();

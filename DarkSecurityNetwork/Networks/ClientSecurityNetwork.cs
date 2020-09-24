@@ -12,11 +12,6 @@ namespace DarkSecurityNetwork.Networks
 {
     public class ClientSecurityNetwork : ClientSecurityProtocol, ISecurityNetwork
     {
-        public ClientSecurityNetwork(CryptoKeySize KeySize)
-        {
-            this.GenerateNewSymmetricKey(KeySize);
-        }
-        
         public bool AuthenticationSuccess { private set; get; }
 
         public void ManagePacket(byte[] Data)
@@ -34,7 +29,9 @@ namespace DarkSecurityNetwork.Networks
                                 ushort ChannelID = Packet.ReadUShort();
                                 uint ClientID = Packet.ReadUInt();
                                 string RawPublicKey = Packet.ReadString();
+                                CryptoKeySize SymmetricKeySize = (CryptoKeySize)Packet.ReadUInt();
 
+                                this.GenerateNewSymmetricKey(SymmetricKeySize);
                                 this.ImportChannelAndClientData(ChannelID, ClientID);
                                 this.ImportAsymmetricKeyFromServer(RawPublicKey);
                                 this.SendSymmetricKeyToServer();

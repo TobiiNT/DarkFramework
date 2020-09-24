@@ -220,7 +220,7 @@ namespace DarkNetwork.Networks.Connections
                                     byte[] array = new byte[Marshal.SizeOf(0) * 3];
                                     BitConverter.GetBytes((uint)1).CopyTo(array, 0);
                                     BitConverter.GetBytes((uint)20000).CopyTo(array, Marshal.SizeOf(0));
-                                    BitConverter.GetBytes((uint)20000).CopyTo(array, (int)(Marshal.SizeOf(0) * 2));
+                                    BitConverter.GetBytes((uint)20000).CopyTo(array, Marshal.SizeOf(0) * 2);
                                     this.InternalBeginReceive(array);
                                 }
                                 catch (Exception Exception)
@@ -233,7 +233,6 @@ namespace DarkNetwork.Networks.Connections
                     }
                     else
                     {
-                        OnReceiveException(this, new ReceiveExceptionArgs(new Exception("Empty receive data")));
                         this.Dispose();
                     }
                 }

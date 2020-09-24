@@ -7,7 +7,7 @@ namespace SampleUnityGameClient
 {
     public class ClientManager : SecurityConnection<ClientSecurityNetwork>
     {
-        public ClientManager(CryptoKeySize KeySize) : base(KeySize)
+        public ClientManager() 
         {
             this.AuthenticationSuccess += this.OnConnectionAuthenticationSuccess;
             this.AuthenticationFailed += this.OnConnectionAuthenticationFailed;

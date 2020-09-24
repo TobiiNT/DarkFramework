@@ -4,6 +4,7 @@ using DarkSecurity.Enums;
 using DarkSecurityNetwork.Delegates.Connections;
 using DarkSecurityNetwork.Events.Arguments;
 using DarkSecurityNetwork.Interfaces;
+using DarkSecurityNetwork.Networks;
 using System;
 using System.Net.Sockets;
 
@@ -15,7 +16,7 @@ namespace DarkSecurityNetwork
         public ushort ChannelID { set; get; }
         public uint ClientID { set; get; }
         public ISecurityNetwork SecurityNetwork { private set; get; }
-        public SecurityConnection(CryptoKeySize KeySize)
+        public SecurityConnection()
         {
             this.EventStartSuccess += this.EventConnectionStartSuccess;
             this.EventStartException += this.EventConnectionStartException;
@@ -28,12 +29,20 @@ namespace DarkSecurityNetwork
             this.EventDisposeSuccess += this.EventConnectionDisposeSuccess;
             this.EventDisposeException += this.EventConnectionDisposeException;
 
-            this.SecurityNetwork = (ISecurityNetwork)Activator.CreateInstance(typeof(A), KeySize);
+            this.SecurityNetwork = (ISecurityNetwork)Activator.CreateInstance(typeof(A));
             this.SecurityNetwork.EventChannelData += EventChannelData;
             this.SecurityNetwork.EventSendData += EventAuthenticationSend;
             this.SecurityNetwork.EventAuthSuccess += EventAuthenticationSuccess;
             this.SecurityNetwork.EventAuthFailed += EventAuthenticationFailed;
             this.SecurityNetwork.EventAuthException += EventAuthenticationException;
+        }
+
+        public void SetKeySize(CryptoKeySize AsymmetricKeySize, CryptoKeySize SymmetricKeySize)
+        {
+            if (this.SecurityNetwork is ServerSecurityNetwork Network)
+            {
+                Network.SetKeySize(AsymmetricKeySize, SymmetricKeySize);
+            }
         }
 
         public void ConnectWithSocket(Socket Socket)

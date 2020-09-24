@@ -13,7 +13,7 @@ namespace SampleUnityGameServer.Networks
     public class GameChannel : SecurityServer
     {
         public ThreadSafeDictionary<uint, SecurityConnection<ServerSecurityNetwork>> ClientConnections { set; get; }
-        public IPacketHandlerManager PacketHandlerManager { private set; get; }
+        public IPacketHandlerManager<ServerSecurityNetwork> PacketHandlerManager { private set; get; }
         public GameChannel(ushort ChannelID)
         {
             this.ChannelID = ChannelID;
@@ -27,7 +27,9 @@ namespace SampleUnityGameServer.Networks
 
         public bool CreateNewConnection(uint ClientID, Socket Socket)
         {
-            var NewConnection = new SecurityConnection<ServerSecurityNetwork>(CryptoKeySize.Key4096);
+            var NewConnection = new SecurityConnection<ServerSecurityNetwork>();
+
+            NewConnection.SetKeySize(Configuration.AsymmetricKeySize, Configuration.SymmetricKeySize);
 
             NewConnection.ChannelID = ChannelID;
             NewConnection.ClientID = ClientID;
@@ -49,6 +51,7 @@ namespace SampleUnityGameServer.Networks
 
             if (!this.ClientConnections.ContainsKey(NewConnection.ClientID))
             {
+                this.PacketHandlerManager?.HandleHandshake(ClientID, NewConnection);
                 this.ClientConnections.Add(NewConnection.ClientID, NewConnection);
 
                 return true;
@@ -123,6 +126,8 @@ namespace SampleUnityGameServer.Networks
                 if (this.ClientConnections.TryGetValue(ClientID, out SecurityConnection<ServerSecurityNetwork> Client))
                 {
                     Logging.WriteError($"Channel {Client.ChannelID}, Client {Client.ClientID} : Connected to {Client.IPEndPoint} exception", Exception);
+
+
                 }
             }
         }

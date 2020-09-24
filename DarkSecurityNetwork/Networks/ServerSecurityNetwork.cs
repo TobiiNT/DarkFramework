@@ -12,9 +12,11 @@ namespace DarkSecurityNetwork.Networks
 {
     public class ServerSecurityNetwork : ServerSecurityProtocol, ISecurityNetwork
     {
-        public ServerSecurityNetwork(CryptoKeySize KeySize)
+        private CryptoKeySize SymmetricKeySize { set; get; }
+        public void SetKeySize(CryptoKeySize AsymmetricKeySize, CryptoKeySize SymmetricKeySize)
         {
-            this.GenerateNewAsymmetricKey(KeySize);
+            this.GenerateNewAsymmetricKey(AsymmetricKeySize);
+            this.SymmetricKeySize = SymmetricKeySize;
         }
 
         public bool AuthenticationSuccess { private set; get; }
@@ -57,7 +59,7 @@ namespace DarkSecurityNetwork.Networks
         {
             try
             {
-                byte[] Packet = new PacketServerSendAsymmetricKey(this.AsymmetricService.CryptoKey, ChannelID, ClientID).Data;
+                byte[] Packet = new PacketServerSendAsymmetricKey(this.AsymmetricService.CryptoKey, ChannelID, ClientID, this.SymmetricKeySize).Data;
 
                 if (Packet != null)
                 {
@@ -65,7 +67,7 @@ namespace DarkSecurityNetwork.Networks
                 }
                 else
                 {
-                    OnAuthFailed(this, new AuthFailedArgs("Send symmetric key to server", "Invalid symmetric key"));
+                    OnAuthFailed(this, new AuthFailedArgs("Send asymmetric key to client", "Invalid asymmetric key"));
                 }
             }
             catch (Exception Exception)
@@ -78,9 +80,16 @@ namespace DarkSecurityNetwork.Networks
         {
             try
             {
-                this.ImportSymmetricKey(KeySize, Key, IV);
+                if ((int)this.SymmetricKeySize == KeySize)
+                {
+                    this.ImportSymmetricKey(KeySize, Key, IV);
 
-                this.CompleteAuthentication();
+                    this.CompleteAuthentication();
+                }
+                else
+                {
+                    OnAuthFailed(this, new AuthFailedArgs("Import symmetric key from client", "Invalid symmetric key size"));
+                }
             }
             catch (Exception Exception)
             {
