@@ -17,6 +17,7 @@ namespace DarkNetwork.Networks.Connections
         protected Socket Socket { set; get; }
         protected SendQueue SendQueue { set; get; }
         protected ReceiveQueue ReceiveQueue { get; set; }
+        protected AsyncCallback OnConnected{ set; get; }
         protected AsyncCallback OnReceived { set; get; }
         protected AsyncCallback OnSended { set; get; }
         protected byte[] DataReceived { set; get; }
@@ -26,6 +27,7 @@ namespace DarkNetwork.Networks.Connections
 
         public ConnectionBase()
         {
+            this.OnConnected = new AsyncCallback(this.OnConnectedSocket);
             this.OnReceived = new AsyncCallback(this.OnReceiveData);
             this.OnSended = new AsyncCallback(this.OnSendData);
 
@@ -42,8 +44,9 @@ namespace DarkNetwork.Networks.Connections
                 this.IPEndPoint = new IPEndPoint(IPAddress.Parse(ServerIPAddress), Port);
 
                 this.Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                
                 this.Socket.UseOnlyOverlappedIO = true;
-                this.Socket.BeginConnect(IPEndPoint, new AsyncCallback(this.ConnectCallback), this.Socket);
+                this.Socket.BeginConnect(IPEndPoint, OnConnected, this.Socket);
 
                 OnStartSuccess(this, new StartSuccessArgs());
             }
@@ -70,7 +73,7 @@ namespace DarkNetwork.Networks.Connections
             }
         }
 
-        protected void ConnectCallback(IAsyncResult AsyncResult)
+        protected void OnConnectedSocket(IAsyncResult AsyncResult)
         {
             try
             {
@@ -91,69 +94,6 @@ namespace DarkNetwork.Networks.Connections
                 this.Dispose();
             }
         }
-
-        protected void StartReceiving()
-        {
-            if ((this.AsyncState & (AsyncStates.Paused | AsyncStates.Pending)) == 0)
-            {
-                this.IsRunning = true;
-
-                byte[] Array = new byte[Marshal.SizeOf(0) * 3];
-                BitConverter.GetBytes((uint)1).CopyTo(Array, 0);
-                BitConverter.GetBytes((uint)20000).CopyTo(Array, Marshal.SizeOf(0));
-                BitConverter.GetBytes((uint)20000).CopyTo(Array, Marshal.SizeOf(0) * 2);
-                this.InternalBeginReceive(Array);
-            }
-        }
-
-        protected void InternalBeginReceive(byte[] InOptionValues)
-        {
-            try
-            {
-                this.AsyncState |= AsyncStates.Pending;
-                this.Socket.IOControl(IOControlCode.KeepAliveValues, InOptionValues, null);
-                this.Socket.BeginReceive(this.DataReceived, 0, this.DataReceived.Length, SocketFlags.None, out SocketError Result, this.OnReceived, this.Socket);
-            }
-            catch (Exception)
-            {
-                this.Dispose();
-            }
-        }     
-        protected void Send(byte[] Data)
-        {
-            try
-            {
-                if (this.Socket != null && this.IsRunning && this.Socket.Connected)
-                {
-                    using (var Packet = new PacketWriter())
-                    {
-                        Packet.WriteByte(170);
-                        Packet.WriteByte(85);
-                        Packet.WriteBytes(Data);
-                        Packet.WriteByte(85);
-                        Packet.WriteByte(170);
-
-                        Data = Packet.GetPacketData();
-                    }
-
-                    SendQueue.Gram DataSend;
-                    lock (this.SendQueue)
-                    {
-                        DataSend = this.SendQueue.Enqueue(Data, Data.Length);
-                    }
-                    if (DataSend != null)
-                    {
-                        this.Socket.BeginSend(DataSend.Buffer, 0, DataSend.Length, SocketFlags.None, this.OnSended, this.Socket); 
-                        OnSendSuccess(this, new SendSuccessArgs(DataSend.Length));
-                    }
-                }
-            }
-            catch (Exception Exception)
-            {
-                OnSendException(this, new SendExceptionArgs(Exception));
-            }
-        }
-
         protected void OnSendData(IAsyncResult AsyncResult)
         {
             if (this.Socket == null)
@@ -217,11 +157,7 @@ namespace DarkNetwork.Networks.Connections
                             {
                                 try
                                 {
-                                    byte[] array = new byte[Marshal.SizeOf(0) * 3];
-                                    BitConverter.GetBytes((uint)1).CopyTo(array, 0);
-                                    BitConverter.GetBytes((uint)20000).CopyTo(array, Marshal.SizeOf(0));
-                                    BitConverter.GetBytes((uint)20000).CopyTo(array, Marshal.SizeOf(0) * 2);
-                                    this.InternalBeginReceive(array);
+                                    this.InternalBeginReceive();
                                 }
                                 catch (Exception Exception)
                                 {
@@ -241,6 +177,68 @@ namespace DarkNetwork.Networks.Connections
                     OnReceiveException(this, new ReceiveExceptionArgs(Exception));
                     this.Dispose();
                 }
+            }
+        }
+
+        protected void StartReceiving()
+        {
+            if ((this.AsyncState & (AsyncStates.Paused | AsyncStates.Pending)) == 0)
+            {
+                this.IsRunning = true;
+
+                this.InternalBeginReceive();
+            }
+        }
+        protected void InternalBeginReceive()
+        {
+            try
+            {
+                byte[] InOptionValues = new byte[Marshal.SizeOf(0) * 3];
+                BitConverter.GetBytes((uint)1).CopyTo(InOptionValues, 0);
+                BitConverter.GetBytes((uint)20000).CopyTo(InOptionValues, Marshal.SizeOf(0));
+                BitConverter.GetBytes((uint)20000).CopyTo(InOptionValues, Marshal.SizeOf(0) * 2);
+
+                this.AsyncState |= AsyncStates.Pending;
+                this.Socket.IOControl(IOControlCode.KeepAliveValues, InOptionValues, null);
+                this.Socket.BeginReceive(this.DataReceived, 0, this.DataReceived.Length, SocketFlags.None, out SocketError Result, this.OnReceived, this.Socket);
+            }
+            catch (Exception)
+            {
+                this.Dispose();
+            }
+        }
+        protected void Send(byte[] Data)
+        {
+            try
+            {
+                if (this.Socket != null && this.IsRunning && this.Socket.Connected)
+                {
+                    using (var Packet = new PacketWriter())
+                    {
+                        Packet.WriteByte(170);
+                        Packet.WriteByte(85);
+                        Packet.WriteBytes(Data);
+                        Packet.WriteByte(85);
+                        Packet.WriteByte(170);
+
+                        Data = Packet.GetPacketData();
+                    }
+
+                    SendQueue.Gram DataSend;
+                    lock (this.SendQueue)
+                    {
+                        DataSend = this.SendQueue.Enqueue(Data, Data.Length);
+                    }
+                    if (DataSend != null)
+                    {
+                        this.Socket.BeginSend(DataSend.Buffer, 0, DataSend.Length, SocketFlags.None, this.OnSended, this.Socket);
+                        OnSendSuccess(this, new SendSuccessArgs(DataSend.Length));
+                    }
+                }
+            }
+            catch (Exception Exception)
+            {
+                OnSendException(this, new SendExceptionArgs(Exception));
             }
         }
         protected void HandleReceive()

@@ -15,12 +15,14 @@ namespace DarkSecurityNetwork.Networks
     public class ServerSecurityNetwork : ServerSecurityProtocol, ISecurityNetwork
     {
         private CryptoKeySize SymmetricKeySize { set; get; }
-        public void SetKeySize(CryptoKeySize AsymmetricKeySize, CryptoKeySize SymmetricKeySize)
+        public void SetKeySize(CryptoKeySize AsymmetricKeySize, CryptoKeySize SymmetricKeySize, int MessageTestLength)
         {
             this.GenerateNewAsymmetricKey(AsymmetricKeySize);
             this.SymmetricKeySize = SymmetricKeySize;
+            this.MessageTestLength = MessageTestLength;
         }
         private byte[] MessageTest { set; get; }
+        private int MessageTestLength { set; get; }
         public bool AuthenticationSuccess { private set; get; }
 
         public void ManagePacket(byte[] Data)
@@ -114,7 +116,7 @@ namespace DarkSecurityNetwork.Networks
                 new RNGCryptoServiceProvider().GetBytes(data);
                 Random Randomizer = new Random(BitConverter.ToInt32(data, 0));
 
-                this.MessageTest = new byte[16];
+                this.MessageTest = new byte[MessageTestLength];
                 Randomizer.NextBytes(this.MessageTest);
 
                 byte[] MessageData = this.MessageTest;

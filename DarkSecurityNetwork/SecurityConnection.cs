@@ -6,6 +6,7 @@ using DarkSecurityNetwork.Events.Arguments;
 using DarkSecurityNetwork.Interfaces;
 using DarkSecurityNetwork.Networks;
 using System;
+using System.Net;
 using System.Net.Sockets;
 
 namespace DarkSecurityNetwork
@@ -37,11 +38,11 @@ namespace DarkSecurityNetwork
             this.SecurityNetwork.EventAuthException += EventAuthenticationException;
         }
 
-        public void SetKeySize(CryptoKeySize AsymmetricKeySize, CryptoKeySize SymmetricKeySize)
+        public void SetKeySize(CryptoKeySize AsymmetricKeySize, CryptoKeySize SymmetricKeySize, int MessageTestLength)
         {
             if (this.SecurityNetwork is ServerSecurityNetwork Network)
             {
-                Network.SetKeySize(AsymmetricKeySize, SymmetricKeySize);
+                Network.SetKeySize(AsymmetricKeySize, SymmetricKeySize, MessageTestLength);
             }
         }
 
@@ -59,7 +60,7 @@ namespace DarkSecurityNetwork
             }
         }
 
-        public void ConnectWithIP(string IPAddress, int Port) => this.Start(IPAddress, Port);
+        public void ConnectWithIP(string ServerIPAddress, int Port) => Start(ServerIPAddress, Port);
 
         public bool SendDataWithEncryption(byte[] Data)
         {

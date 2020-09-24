@@ -10,11 +10,11 @@ using System.Net.Sockets;
 
 namespace SampleUnityGameServer.Networks
 {
-    public class GameChannel : SecurityServer
+    public class ChannelGame : SecurityServer
     {
         public ThreadSafeDictionary<uint, SecurityConnection<ServerSecurityNetwork>> ClientConnections { set; get; }
         public IPacketHandlerManager<ServerSecurityNetwork> PacketHandlerManager { private set; get; }
-        public GameChannel(ushort ChannelID)
+        public ChannelGame(ushort ChannelID)
         {
             this.ChannelID = ChannelID;
             this.ClientConnections = new ThreadSafeDictionary<uint, SecurityConnection<ServerSecurityNetwork>>();
@@ -29,7 +29,7 @@ namespace SampleUnityGameServer.Networks
         {
             var NewConnection = new SecurityConnection<ServerSecurityNetwork>();
 
-            NewConnection.SetKeySize(Configuration.AsymmetricKeySize, Configuration.SymmetricKeySize);
+            NewConnection.SetKeySize(Configuration.AsymmetricKeySize, Configuration.SymmetricKeySize, Configuration.CryptoMessageTestLength);
 
             NewConnection.ChannelID = ChannelID;
             NewConnection.ClientID = ClientID;

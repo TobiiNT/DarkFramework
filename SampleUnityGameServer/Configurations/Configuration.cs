@@ -9,5 +9,6 @@ namespace SampleUnityGameServer
     {
         public static CryptoKeySize AsymmetricKeySize = CryptoKeySize.Key1024;
         public static CryptoKeySize SymmetricKeySize = CryptoKeySize.Key256;
+        public static int CryptoMessageTestLength = 32;
     }
 }
