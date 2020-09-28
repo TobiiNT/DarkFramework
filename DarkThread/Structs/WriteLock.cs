@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 
-namespace DarkThread.Structs
+namespace DarkThreading.Structs
 {
     public class WriteLock : BaseLock
     {

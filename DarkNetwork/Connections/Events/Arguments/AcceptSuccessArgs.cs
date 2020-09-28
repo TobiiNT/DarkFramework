@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Sockets;
 
-namespace DarkNetwork.Networks.Connections.Events.Arguments
+namespace DarkNetwork.Connections.Events.Arguments
 {
     public class AcceptSuccessArgs : EventArgs
     {

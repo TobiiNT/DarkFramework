@@ -1,17 +1,13 @@
-﻿using DarkGamePacket.Structs;
-using DarkSecurityNetwork;
-using DarkSecurityNetwork.Networks;
-using DarkThread;
-using SampleUnityGameServer.Networks;
-using System;
+﻿using System;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using DarkThreading;
 
-namespace SampleUnityGameServer
+namespace SampleUnityGameServer.Networks
 {
     public class ChannelManager
-    {
+    { 
         private UniqueIDFactory ChannelUniqueIDFactory { set; get; }
         private UniqueIDFactory ClientUniqueIDFactory { set; get; }
         public ThreadSafeDictionary<ushort, ChannelGame> Channels { set; get; }
@@ -21,16 +17,16 @@ namespace SampleUnityGameServer
             this.ClientUniqueIDFactory = new UniqueIDFactory(100000);
 
             this.Channels = new ThreadSafeDictionary<ushort, ChannelGame>();
-
         }
 
-        public void StartNewChannel(int Port)
+        public ChannelGame StartNewChannel(int Port, uint Capacity)
         {
             try
             {
-                var Channel = CreateNewChannel();
+                var Channel = CreateNewChannel(Capacity);
 
                 Channel.StartListening(Port);
+                //Channel.ImportGame(new Games.LogicGame());
 
                 if (!this.Channels.ContainsKey(Channel.ChannelID))
                 {
@@ -38,11 +34,14 @@ namespace SampleUnityGameServer
 
                     Logging.WriteLine($"Create new channel with port {Port}");
                 }
+
+                return Channel;
             }
             catch (Exception Exception)
             {
                 Logging.WriteError($"Failed to create new channel with port {Port}", Exception);
             }
+            return null;
         }
 
         public void RemoveChannel(ushort ChannelID)
@@ -55,9 +54,9 @@ namespace SampleUnityGameServer
             }
         }
 
-        public ChannelGame CreateNewChannel()
+        public ChannelGame CreateNewChannel(uint Capacity)
         {
-            var Channel = new ChannelGame((ushort)ChannelUniqueIDFactory.GetNext());
+            var Channel = new ChannelGame((ushort)ChannelUniqueIDFactory.GetNext(), Capacity);
 
             Channel.ServerAcceptSuccess += OnServerAcceptSuccess;
             Channel.ServerAcceptException += OnServerAcceptException;

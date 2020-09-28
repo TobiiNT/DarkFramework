@@ -1,16 +1,14 @@
-﻿using DarkGamePacket.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using DarkGamePacket.Interfaces;
 
-namespace DarkGamePacket.Structs
+namespace DarkGamePacket.Definitions
 {
     public class NetworkHandler<MessageType> where MessageType : ICoreMessage
     {
         public delegate bool MessageHandler<T>(uint ClientID, T msg) where T : MessageType;
         private readonly Dictionary<Type, List<Delegate>> _handlers = new Dictionary<Type, List<Delegate>>();
 
-        // server & scripts will register to events, this allows scripts more than the current state
         public void Register<T>(MessageHandler<T> handler) where T : MessageType
         {
             if (handler == null) return;
@@ -20,7 +18,7 @@ namespace DarkGamePacket.Structs
             }
             _handlers[typeof(T)].Add(handler);
         }
-        // every message (bridge->server or server->bridge) pass should pass here
+
         public bool OnMessage<T>(uint ClientID, T req) where T : MessageType
         {
             var handlerList = _handlers[req.GetType()];

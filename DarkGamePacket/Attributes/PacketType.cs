@@ -1,18 +1,17 @@
 ﻿using DarkGamePacket.Definitions;
+using DarkGamePacket.Enums;
 using System;
 
-namespace DarkGamePacket
+namespace DarkGamePacket.Attributes
 {
     [AttributeUsage(AttributeTargets.Method)]
     public class PacketType : Attribute
     {
-        public PacketType(Channel Channel, PacketID PacketID)
+        public PacketType(PacketID PacketID)
         {
             this.PacketID = PacketID;
-            this.Channel = Channel;
         }
 
         public PacketID PacketID { get; }
-        public Channel Channel { get; }
     }
 }

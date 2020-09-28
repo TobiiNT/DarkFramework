@@ -1,21 +1,18 @@
+using DarkGamePacket.Enums;
+using DarkGamePacket.Interfaces;
 using DarkPacket.Readers;
+using ProtoBuf;
 
 namespace DarkGamePacket.Definitions.C2S
 {
-    public class ChatMessageRequest 
+    [ProtoContract]
+    public class ChatMessageRequest : ICoreRequest
     {
-        public PacketID Packet;
-        public ushort MessageType;
+        [ProtoMember(1)]
+        public PacketID PacketID { get; set; }
+        [ProtoMember(2)]
+        public byte MessageType;
+        [ProtoMember(3)]
         public string Message;
-
-        public ChatMessageRequest(byte[] Data)
-        {
-            using (var Reader = new NormalPacketReader(Data))
-            {
-                Packet = (PacketID)Reader.ReadShort();
-                MessageType = Reader.ReadUShort();
-                Message = Reader.ReadString();
-            }
-        }
     }
 }

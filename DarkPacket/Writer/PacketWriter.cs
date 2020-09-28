@@ -1,9 +1,9 @@
-﻿using DarkPacket.Interfaces;
-using System;
+﻿using System;
 using System.IO;
 using System.Text;
+using DarkPacket.Interfaces;
 
-namespace DarkPacket.Packets
+namespace DarkPacket.Writer
 {
     public class PacketWriter : IPacketWriter
     {

@@ -5,13 +5,21 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="protobuf-net" Version="3.0.29" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\DarkGamePacket\DarkGamePacket.csproj" />
     <ProjectReference Include="..\DarkNetwork\DarkNetwork.csproj" />
     <ProjectReference Include="..\DarkPacket\DarkPacket.csproj" />
     <ProjectReference Include="..\DarkSecurityNetwork\DarkSecurityNetwork.csproj" />
     <ProjectReference Include="..\DarkSecurity\DarkSecurity.csproj" />
-    <ProjectReference Include="..\DarkThread\DarkThread.csproj" />
+    <ProjectReference Include="..\DarkThread\DarkThreading.csproj" />
   </ItemGroup>
 
 </Project>

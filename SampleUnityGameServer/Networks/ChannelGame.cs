@@ -1,35 +1,38 @@
 ﻿using DarkGamePacket.Interfaces;
-using DarkGamePacket.Structs;
+using DarkGamePacket.Servers;
+using DarkGamePacket.Servers.Interfaces;
 using DarkSecurity.Enums;
 using DarkSecurityNetwork;
 using DarkSecurityNetwork.Networks;
-using DarkThread;
 using SampleUnityGameServer.Games;
 using System;
 using System.Net.Sockets;
+using DarkThreading;
+using SampleUnityGameServer.Configurations;
 
 namespace SampleUnityGameServer.Networks
 {
     public class ChannelGame : SecurityServer
     {
         public ThreadSafeDictionary<uint, SecurityConnection<ServerSecurityNetwork>> ClientConnections { set; get; }
-        public IPacketHandlerManager<ServerSecurityNetwork> PacketHandlerManager { private set; get; }
-        public ChannelGame(ushort ChannelID)
+        public IServerPacketHandler PacketHandlerManager { private set; get; }
+        public ChannelGame(ushort ChannelID, uint Capacity)
         {
             this.ChannelID = ChannelID;
+            this.Capacity = Capacity;
             this.ClientConnections = new ThreadSafeDictionary<uint, SecurityConnection<ServerSecurityNetwork>>();
         }
 
-        public void ImportGame(Game Game)
+        public void ImportGame(LogicGame Game)
         {
-            this.PacketHandlerManager = new PacketHandlerManager<ServerSecurityNetwork>(Game.RequestHandler, Game.ResponseHandler);
+            this.PacketHandlerManager = new ServerPacketHandler(Game.PacketHandler);
         }
 
         public bool CreateNewConnection(uint ClientID, Socket Socket)
         {
             var NewConnection = new SecurityConnection<ServerSecurityNetwork>();
 
-            NewConnection.SetKeySize(Configuration.AsymmetricKeySize, Configuration.SymmetricKeySize, Configuration.CryptoMessageTestLength);
+            NewConnection.SetKeySize(Configuration.AsymmetricKeySize, Configuration.SymmetricKeySize, Configuration.MessageTestLength);
 
             NewConnection.ChannelID = ChannelID;
             NewConnection.ClientID = ClientID;

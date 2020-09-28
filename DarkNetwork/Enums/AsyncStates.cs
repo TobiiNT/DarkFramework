@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DarkNetwork.Networks.Enums
+namespace DarkNetwork.Enums
 {
     [Flags]
     public enum AsyncStates

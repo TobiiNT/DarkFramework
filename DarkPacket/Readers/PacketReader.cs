@@ -28,6 +28,14 @@ namespace DarkPacket.Readers
             Buffer.BlockCopy(this.Data, CurrentIndex, OutputData, 0, BytesLength);
             return OutputData;
         }
+        public byte[] ReadRemains()
+        {
+            byte[] OutputData = new byte[this.Length - this.Index];
+            int CurrentIndex = this.Index;
+            this.Index += OutputData.Length;
+            Buffer.BlockCopy(this.Data, CurrentIndex, OutputData, 0, OutputData.Length);
+            return OutputData;
+        }
         public short ReadShort()
         {
             if (this.Index + 1 >= this.Length)

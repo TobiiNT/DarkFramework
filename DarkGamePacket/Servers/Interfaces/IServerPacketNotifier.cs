@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DarkGamePacket.Interfaces
+namespace DarkGamePacket.Servers.Interfaces
 {
-    public interface IPacketNotifier
+    public interface IServerPacketNotifier
     {
         void NotifyChatMessage(uint ClientID, byte MessageType, string Message);
-
     }
 }

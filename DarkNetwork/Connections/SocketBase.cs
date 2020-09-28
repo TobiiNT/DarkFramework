@@ -1,10 +1,10 @@
-﻿using DarkNetwork.Networks.Connections.Events;
-using DarkNetwork.Networks.Connections.Events.Arguments;
-using System;
+﻿using System;
 using System.Net;
 using System.Net.Sockets;
+using DarkNetwork.Connections.Events;
+using DarkNetwork.Connections.Events.Arguments;
 
-namespace DarkNetwork.Networks.Connections
+namespace DarkNetwork.Connections
 {
     public class SocketBase : SocketEventHandler
     {

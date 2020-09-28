@@ -1,6 +1,4 @@
-﻿using DarkNetwork.Networks.Connections;
-using DarkNetwork.Networks.Connections.Events.Arguments;
-using DarkSecurity.Enums;
+﻿using DarkSecurity.Enums;
 using DarkSecurityNetwork.Delegates.Connections;
 using DarkSecurityNetwork.Events.Arguments;
 using DarkSecurityNetwork.Interfaces;
@@ -8,6 +6,8 @@ using DarkSecurityNetwork.Networks;
 using System;
 using System.Net;
 using System.Net.Sockets;
+using DarkNetwork.Connections;
+using DarkNetwork.Connections.Events.Arguments;
 
 namespace DarkSecurityNetwork
 {

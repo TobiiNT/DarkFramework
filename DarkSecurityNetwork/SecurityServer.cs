@@ -1,18 +1,16 @@
-﻿using DarkNetwork.Networks.Connections;
-using DarkNetwork.Networks.Connections.Events.Arguments;
-using DarkSecurityNetwork.Delegates.Servers;
+﻿using DarkSecurityNetwork.Delegates.Servers;
 using DarkSecurityNetwork.Networks;
-using DarkThread;
 using System;
 using System.Net.Sockets;
+using DarkNetwork.Connections;
+using DarkNetwork.Connections.Events.Arguments;
 
 namespace DarkSecurityNetwork
 {
     public class SecurityServer : SocketBase
     {
         public ushort ChannelID { set; get; }
-       
-
+        public uint Capacity { set; get; }
         public SecurityServer()
         {
             this.EventListenSuccess += this.OnListenSuccess;

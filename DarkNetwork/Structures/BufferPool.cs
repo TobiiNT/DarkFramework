@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DarkNetwork.Networks.Structures
+namespace DarkNetwork.Structures
 {
     public class BufferPool
     {

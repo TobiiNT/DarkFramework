@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 
-namespace DarkThread
+namespace DarkThreading
 {
     public class UniqueIDFactory
     {

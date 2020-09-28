@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DarkThread.Interfaces
+namespace DarkThreading.Interfaces
 {
     public interface IThreadSafeDictionary<TKey, TValue> : IDisposable, IDictionary<TKey, TValue>
     {

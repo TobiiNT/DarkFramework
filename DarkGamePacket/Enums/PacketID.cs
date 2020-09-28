@@ -1,8 +1,8 @@
-﻿namespace DarkGamePacket.Definitions
+﻿namespace DarkGamePacket.Enums
 {
     public enum PacketID : ushort
     {
         HAND_SHAKE,
-        CHAT_MESSAGE,        
+        CHAT_MESSAGE,
     }
 }

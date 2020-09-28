@@ -15,13 +15,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DarkPacket", "DarkPacket\Da
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DarkSecurity", "DarkSecurity\DarkSecurity.csproj", "{F4FF92FE-D691-4E9C-87B8-8A8B91D94D73}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DarkSecurityNetwork", "DarkSecurityNetwork\DarkSecurityNetwork.csproj", "{FE27A2B9-79F3-4E12-95E5-A9C5F82A516A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DarkSecurityNetwork", "DarkSecurityNetwork\DarkSecurityNetwork.csproj", "{FE27A2B9-79F3-4E12-95E5-A9C5F82A516A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DarkThread", "DarkThread\DarkThread.csproj", "{38B07960-90BF-4DF3-853F-6CCFD29B29CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DarkThreading", "DarkThread\DarkThreading.csproj", "{38B07960-90BF-4DF3-853F-6CCFD29B29CC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DarkWorld", "DarkWorld", "{B2AE5F7C-5801-456A-BACF-74DC904A54F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DarkGamePacket", "DarkGamePacket\DarkGamePacket.csproj", "{6ED29306-8101-4339-8B2E-BA740BF8CB9C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DarkGamePacket", "DarkGamePacket\DarkGamePacket.csproj", "{6ED29306-8101-4339-8B2E-BA740BF8CB9C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

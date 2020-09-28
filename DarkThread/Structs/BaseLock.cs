@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace DarkThread.Structs
+namespace DarkThreading.Structs
 {
     public abstract class BaseLock : IDisposable
     {

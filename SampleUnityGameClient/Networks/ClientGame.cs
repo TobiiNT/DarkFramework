@@ -1,13 +1,14 @@
-﻿using DarkSecurity.Enums;
+﻿using System;
 using DarkSecurityNetwork;
 using DarkSecurityNetwork.Networks;
-using System;
+using SampleUnityGameClient.Games;
 
-namespace SampleUnityGameClient
+namespace SampleUnityGameClient.Networks
 {
-    public class ClientManager : SecurityConnection<ClientSecurityNetwork>
+    public class ClientGame : SecurityConnection<ClientSecurityNetwork>
     {
-        public ClientManager() 
+        //public IPacketHandlerManager<ClientSecurityNetwork> PacketHandlerManager { private set; get; }
+        public ClientGame() 
         {
             this.AuthenticationSuccess += this.OnConnectionAuthenticationSuccess;
             this.AuthenticationFailed += this.OnConnectionAuthenticationFailed;
@@ -22,6 +23,10 @@ namespace SampleUnityGameClient
             this.ConnectionReceiveException += this.OnConnectionReceiveException;
             this.ConnectionDisposeSuccess += this.OnConnectionDisposeSuccess;
             this.ConnectionDisposeException += this.OnConnectionDisposeException;
+        }
+        public void ImportGame(LogicGame Game)
+        {
+            //this.PacketHandlerManager = new ServerPacketHandler<ClientSecurityNetwork>(Game.RequestHandler, Game.ResponseHandler);
         }
 
         private void OnConnectionAuthenticationSuccess(ushort ChannelID, uint ClientID)
@@ -39,6 +44,7 @@ namespace SampleUnityGameClient
         private void OnConnectionStartSuccess(ushort ChannelID, uint ClientID)
         {
             Logging.WriteLine($"Channel {ChannelID}, Client {ClientID} : Started to {IPEndPoint}");
+            //this.PacketHandlerManager?.HandleHandshake(ClientID, this);
         }
         private void OnConnectionStartException(ushort ChannelID, uint ClientID, Exception Exception)
         {
@@ -63,6 +69,7 @@ namespace SampleUnityGameClient
         private void OnConnectionReceiveSuccess(ushort ChannelID, uint ClientID, int DataSize, byte[] Data)
         {
             Logging.WriteLine($"Channel {ChannelID}, Client {ClientID} : Receive from {IPEndPoint} {DataSize} bytes");
+            //this.PacketHandlerManager?.HandlePacket(ClientID, Data);
         }
         private void OnConnectionReceiveException(ushort ChannelID, uint ClientID, Exception Exception)
         {
@@ -71,10 +78,12 @@ namespace SampleUnityGameClient
         private void OnConnectionDisposeSuccess(ushort ChannelID, uint ClientID, string Caller)
         {
             Logging.WriteLine($"Channel {ChannelID}, Client {ClientID} : Disposed by {Caller}");
+            //this.PacketHandlerManager?.HandleDisconnect(ClientID);
         }
         private void OnConnectionDisposeException(ushort ChannelID, uint ClientID, string Caller, Exception Exception)
         {
             Logging.WriteError($"Channel {ChannelID}, Client {ClientID} : Disposed by {Caller} exception", Exception);
+            //this.PacketHandlerManager?.HandleDisconnect(ClientID);
         }
     }
 }

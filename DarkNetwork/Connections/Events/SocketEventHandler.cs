@@ -1,7 +1,7 @@
-﻿using DarkNetwork.Networks.Connections.Events.Arguments;
-using System;
+﻿using System;
+using DarkNetwork.Connections.Events.Arguments;
 
-namespace DarkNetwork.Networks.Connections.Events
+namespace DarkNetwork.Connections.Events
 {
     public class SocketEventHandler
     {

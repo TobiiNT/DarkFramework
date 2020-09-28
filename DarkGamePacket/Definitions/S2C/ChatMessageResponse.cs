@@ -1,13 +1,18 @@
-using DarkGamePacket.Structs;
+using DarkGamePacket.Enums;
+using DarkGamePacket.Interfaces;
+using ProtoBuf;
 
 namespace DarkGamePacket.Definitions.S2C
 {
-    public class ChatMessageResponse : BasePacket
+    [ProtoContract]
+    public class ChatMessageResponse : ICoreResponse
     {
-        public ChatMessageResponse(byte MessageType, string Message) : base(Channel.S2C, PacketID.CHAT_MESSAGE)
-        {
-            WriteByte(MessageType);
-			WriteString(Message);
-        }
+        [ProtoMember(1)]
+        public PacketID PacketID { get; set; }
+
+        [ProtoMember(2)]
+        public byte MessageType;
+        [ProtoMember(3)]
+        public string Message;
     }
 }

@@ -1,4 +1,4 @@
-﻿using DarkPacket.Packets;
+﻿using DarkPacket.Writer;
 using DarkSecurity.Interfaces.Keys;
 using DarkSecurityNetwork.Enums;
 using DarkSecurity.Services.AES;

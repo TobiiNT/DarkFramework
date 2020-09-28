@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DarkNetwork.Networks.Connections.Events.Arguments
+namespace DarkNetwork.Connections.Events.Arguments
 {
     public class AcceptExceptionArgs : EventArgs
     {

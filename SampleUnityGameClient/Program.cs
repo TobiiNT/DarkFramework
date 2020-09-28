@@ -1,9 +1,12 @@
-﻿using DarkPacket.Packets;
+﻿using DarkGamePacket.Definitions.S2C;
+using DarkGamePacket.Enums;
 using DarkSecurity.Enums;
+using SampleUnityGameClient.Games;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using SampleUnityGameClient.Networks;
 
 namespace SampleUnityGameClient
 {
@@ -13,39 +16,20 @@ namespace SampleUnityGameClient
         {
             Console.OutputEncoding = Encoding.UTF8;
 
-            List<ClientManager> AllClients = new List<ClientManager>();
+            LogicGameManager Manager = new LogicGameManager();
+            List<ClientGame> AllClients = new List<ClientGame>();
 
             string IPAddress = "127.0.0.1";
-            int FromPort = 3300;
-            int ToPort = 3300;
-            int ClientEachChannel = 1;
+            int FromPort = 3000;
+            int ToPort = 3005;
 
-            try
-            {
-                Console.Write("IP Address: ");
-                IPAddress = Console.ReadLine();
-                if (IPAddress.Length == 0)
-                    IPAddress = "127.0.0.1";
-                Console.Write("From Port: ");
-                FromPort = int.Parse(Console.ReadLine());
-                Console.Write("To Port: ");
-                ToPort = int.Parse(Console.ReadLine());
-                Console.Write("Client Each Channel: ");
-                ClientEachChannel = int.Parse(Console.ReadLine());
-            }
-            catch 
-            {
-
-            }
-            
             for (int Port = FromPort; Port <= ToPort; Port++)
             {
-                for (int i = 0; i < ClientEachChannel; i++)
-                {
-                    var Client = new ClientManager();
-                    Client.ConnectWithIP(IPAddress, Port);
-                    AllClients.Add(Client);
-                }
+                var Client = new ClientGame();
+                Client.ConnectWithIP(IPAddress, Port);
+
+                Manager.StartGame(Client);
+                AllClients.Add(Client);
             }
 
             while (true)
@@ -56,24 +40,24 @@ namespace SampleUnityGameClient
 
                 int Success = 0;
                 int Failed = 0;
-
-                using (PacketWriter Packet = new PacketWriter())
-                {
-                    Packet.WriteString(Content);
-
-                    foreach (var Client in AllClients)
-                    {
-                        try
-                        {
-                            Client.SendDataWithEncryption(Packet.GetPacketData());
-                            Success++;
-                        }
-                        catch
-                        {
-                            Failed++;
-                        }
-                    }
-                }
+                
+               
+                //using (var Chat = new ChatMessageResponse(Channel.C2S, 2, Content))
+                //{
+                //    byte[] ChatData = Chat.GetPacketData();
+                //    foreach (var Client in AllClients)
+                //    {
+                //        try
+                //        {
+                //            Client.SendDataWithEncryption(ChatData);
+                //            Success++;
+                //        }
+                //        catch
+                //        {
+                //            Failed++;
+                //        }
+                //    }
+                //}
 
                 Logging.WriteLine($"Send message to {AllClients.Count} connections : {Success} Success, {Failed} Failed");
             }

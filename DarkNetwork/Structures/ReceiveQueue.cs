@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DarkNetwork.Networks.Structures
+namespace DarkNetwork.Structures
 {
     public class ReceiveQueue : IDisposable
     {

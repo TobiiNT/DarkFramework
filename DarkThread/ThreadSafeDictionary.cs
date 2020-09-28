@@ -1,11 +1,11 @@
-﻿using DarkThread.Interfaces;
-using DarkThread.Structs;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using DarkThreading.Interfaces;
+using DarkThreading.Structs;
 
-namespace DarkThread
+namespace DarkThreading
 {
     [Serializable]
     public class ThreadSafeDictionary<TKey, TValue> : IThreadSafeDictionary<TKey, TValue>

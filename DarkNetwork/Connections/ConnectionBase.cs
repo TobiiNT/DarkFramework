@@ -1,15 +1,15 @@
-﻿using DarkNetwork.Networks.Connections.Events;
-using DarkNetwork.Networks.Connections.Events.Arguments;
-using DarkNetwork.Networks.Enums;
-using DarkNetwork.Networks.Structures;
-using DarkPacket.Packets;
-using DarkPacket.Readers;
-using System;
+﻿using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
+using DarkNetwork.Connections.Events;
+using DarkNetwork.Connections.Events.Arguments;
+using DarkNetwork.Enums;
+using DarkNetwork.Structures;
+using DarkPacket.Readers;
+using DarkPacket.Writer;
 
-namespace DarkNetwork.Networks.Connections
+namespace DarkNetwork.Connections
 {
     public class ConnectionBase : ConnectionEventHandler
     {
