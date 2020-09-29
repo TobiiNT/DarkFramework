@@ -5,11 +5,11 @@ namespace DarkSecurityNetwork.Events
 {
     public class SecurityNetworkEvent
     {
-        public event EventHandler EventChannelData = null;
-        public event EventHandler EventSendData = null;
-        public event EventHandler EventAuthException = null;
-        public event EventHandler EventAuthSuccess = null;
-        public event EventHandler EventAuthFailed = null;
+        public event EventHandler EventChannelData;
+        public event EventHandler EventSendData;
+        public event EventHandler EventAuthException;
+        public event EventHandler EventAuthSuccess;
+        public event EventHandler EventAuthFailed;
 
         public void OnChannelData(object Sender, ChannelDataArgs Event) => EventChannelData?.Invoke(Sender, Event);
         public void OnSendData(object Sender, SendDataArgs Event) => EventSendData?.Invoke(Sender, Event);

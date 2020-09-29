@@ -68,8 +68,8 @@ namespace DarkSecurity.Services.RSA
             }
         }
 
-        public string PublicKeyRaw { private set; get; }
-        public string PrivateKeyRaw { private set; get; }
+        public string PublicKeyRaw { get; }
+        public string PrivateKeyRaw { get; }
         public string PublicKeyXml { private set; get; }
         public string PrivateKeyXml { private set; get; }
         public int PublicKeySize { private set; get; }

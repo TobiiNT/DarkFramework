@@ -5,6 +5,6 @@ namespace DarkNetwork.Connections.Events.Arguments
     public class ListenSuccessArgs : EventArgs
     {
         public ListenSuccessArgs(int Port) => this.Port = Port;
-        public int Port { private set; get; }
+        public int Port { get; }
     }
 }

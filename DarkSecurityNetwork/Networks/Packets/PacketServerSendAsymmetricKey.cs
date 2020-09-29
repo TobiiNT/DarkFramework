@@ -4,11 +4,11 @@ using DarkSecurityNetwork.Enums;
 using DarkSecurity.Services.RSA;
 using DarkSecurity.Enums;
 
-namespace DarkSecurityNetwork.Packets
+namespace DarkSecurityNetwork.Networks.Packets
 {
     public class PacketServerSendAsymmetricKey
     {
-        public byte[] Data { private set; get; }
+        public byte[] Data { get; }
         public PacketServerSendAsymmetricKey(ICryptoKey CryptoKey, ushort ChannelID, uint ClientID, CryptoKeySize SymmetricKeySize)
         {
             using (var Packet = new PacketWriter())

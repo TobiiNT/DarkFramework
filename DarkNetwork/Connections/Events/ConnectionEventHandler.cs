@@ -5,25 +5,25 @@ namespace DarkNetwork.Connections.Events
 {
     public class ConnectionEventHandler
     {
-        public event EventHandler EventStartSuccess = null;
+        public event EventHandler EventStartSuccess;
 
-        public event EventHandler EventStartException = null;
+        public event EventHandler EventStartException;
 
-        public event EventHandler EventConnectSuccess = null;
+        public event EventHandler EventConnectSuccess;
 
-        public event EventHandler EventConnectException = null;
+        public event EventHandler EventConnectException;
 
-        public event EventHandler EventSendSuccess = null;
+        public event EventHandler EventSendSuccess;
 
-        public event EventHandler EventSendException = null;
+        public event EventHandler EventSendException;
 
-        public event EventHandler EventReceiveSuccess = null;
+        public event EventHandler EventReceiveSuccess;
 
-        public event EventHandler EventReceiveException = null;
+        public event EventHandler EventReceiveException;
 
-        public event EventHandler EventDisposeSuccess = null;
+        public event EventHandler EventDisposeSuccess;
 
-        public event EventHandler EventDisposeException = null;
+        public event EventHandler EventDisposeException;
 
         protected void OnStartSuccess(object Sender, StartSuccessArgs Event) => EventStartSuccess?.Invoke(Sender, Event);
         protected void OnStartException(object Sender, StartExceptionArgs Event) => EventStartException?.Invoke(Sender, Event);

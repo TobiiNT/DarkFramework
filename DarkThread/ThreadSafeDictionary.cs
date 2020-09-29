@@ -76,7 +76,7 @@ namespace DarkThreading
                 }
                 else
                 {
-                    EqualityComparer<TValue> c = EqualityComparer<TValue>.Default;
+                    var c = EqualityComparer<TValue>.Default;
                     foreach (var item in this.dict.Values)
                     {
                         if (item.GetHashCode() >= 0 && c.Equals(item, value)) return true;

@@ -1,5 +1,4 @@
-﻿using DarkGamePacket.Definitions;
-using DarkGamePacket.Enums;
+﻿using DarkGamePacket.Enums;
 using System;
 
 namespace DarkGamePacket.Attributes

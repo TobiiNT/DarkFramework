@@ -4,7 +4,7 @@ using DarkSecurityNetwork.Enums;
 using DarkSecurityNetwork.Events.Arguments;
 using DarkSecurityNetwork.Exceptions;
 using DarkSecurityNetwork.Interfaces;
-using DarkSecurityNetwork.Packets;
+using DarkSecurityNetwork.Networks.Packets;
 using DarkSecurityNetwork.Protocols;
 using System;
 using System.Linq;
@@ -33,15 +33,15 @@ namespace DarkSecurityNetwork.Networks
 
                 using (var Packet = new NormalPacketReader(Data))
                 {
-                    ProtocolFunction Function = (ProtocolFunction)Packet.ReadShort();
+                    var Function = (ProtocolFunction)Packet.ReadShort();
 
                     switch (Function)
                     {
                         case ProtocolFunction.ClientSendSymmetricKeyToServer:
                             {
-                                int KeySize = Packet.ReadInt();
-                                byte[] Key = Packet.ReadBytes();
-                                byte[] IV = Packet.ReadBytes();
+                                var KeySize = Packet.ReadInt();
+                                var Key = Packet.ReadBytes();
+                                var IV = Packet.ReadBytes();
 
                                 this.ImportSymmetricKeyFromClient(KeySize, Key, IV);
                                 this.SendRandomMessageTest();
@@ -50,7 +50,7 @@ namespace DarkSecurityNetwork.Networks
 
                         case ProtocolFunction.ClientSendMessageTestVerify:
                             {
-                                byte[] MessageVerify = Packet.ReadBytes();
+                                var MessageVerify = Packet.ReadBytes();
 
                                 this.VerifyMessageTest(MessageVerify);
                             }
@@ -72,7 +72,7 @@ namespace DarkSecurityNetwork.Networks
         {
             try
             {
-                byte[] Packet = new PacketServerSendAsymmetricKey(this.AsymmetricService.CryptoKey, ChannelID, ClientID, this.SymmetricKeySize).Data;
+                var Packet = new PacketServerSendAsymmetricKey(this.AsymmetricService.CryptoKey, ChannelID, ClientID, this.SymmetricKeySize).Data;
 
                 if (Packet != null)
                 {
@@ -112,18 +112,18 @@ namespace DarkSecurityNetwork.Networks
         {
             try
             {
-                byte[] data = new byte[4];
+                var data = new byte[4];
                 new RNGCryptoServiceProvider().GetBytes(data);
-                Random Randomizer = new Random(BitConverter.ToInt32(data, 0));
+                var Randomizer = new Random(BitConverter.ToInt32(data, 0));
 
                 this.MessageTest = new byte[MessageTestLength];
                 Randomizer.NextBytes(this.MessageTest);
 
-                byte[] MessageData = this.MessageTest;
+                var MessageData = this.MessageTest;
 
                 this.EncryptDataWithSymmetricAlgorithm(ref MessageData);
 
-                byte[] Packet = new PacketServerSendMessageTest(MessageData).Data;
+                var Packet = new PacketServerSendMessageTest(MessageData).Data;
 
                 if (Packet != null)
                 {
@@ -168,7 +168,7 @@ namespace DarkSecurityNetwork.Networks
             {
                 this.AuthenticationSuccess = true;
 
-                byte[] Packet = new PacketServerSendAuthenticationComplete().Data;
+                var Packet = new PacketServerSendAuthenticationComplete().Data;
 
                 if (Packet != null)
                 {

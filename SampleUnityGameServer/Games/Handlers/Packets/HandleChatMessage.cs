@@ -1,9 +1,8 @@
 ﻿using DarkGamePacket.Definitions.C2S;
-using SampleUnityGameServer.Games.Handlers;
 
-namespace SampleUnityGameServer.Games.PacketDefinitions.Packets
+namespace SampleUnityGameServer.Games.Handlers.Packets
 {
-    public class HandleChatMessage : PacketHandlerBase<ChatMessageRequest>
+    public class HandleChatMessage : PacketHandlerBase<C2S_ChatMessage>
     {
         private readonly LogicGame Game;
 
@@ -12,7 +11,7 @@ namespace SampleUnityGameServer.Games.PacketDefinitions.Packets
             this.Game = Game;
         }
 
-        public override bool HandlePacket(uint ClientID, ChatMessageRequest Request)
+        public override bool HandlePacket(uint ClientID, C2S_ChatMessage Request)
         {
             this.Game.PacketNotifier.NotifyChatMessage(ClientID, Request.MessageType, Request.Message);
             return true;

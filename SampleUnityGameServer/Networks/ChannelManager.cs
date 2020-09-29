@@ -8,8 +8,8 @@ namespace SampleUnityGameServer.Networks
 {
     public class ChannelManager
     { 
-        private UniqueIDFactory ChannelUniqueIDFactory { set; get; }
-        private UniqueIDFactory ClientUniqueIDFactory { set; get; }
+        private UniqueIDFactory ChannelUniqueIDFactory { get; }
+        private UniqueIDFactory ClientUniqueIDFactory { get; }
         public ThreadSafeDictionary<ushort, ChannelGame> Channels { set; get; }
         public ChannelManager()
         {
@@ -46,7 +46,7 @@ namespace SampleUnityGameServer.Networks
 
         public void RemoveChannel(ushort ChannelID)
         {
-            if (this.Channels.TryGetValue(ChannelID, out ChannelGame Channel))
+            if (this.Channels.TryGetValue(ChannelID, out var Channel))
             {
                 Channel.Dispose();
                 this.Channels.RemoveSafe(ChannelID);
@@ -72,7 +72,7 @@ namespace SampleUnityGameServer.Networks
 
         private void OnServerAcceptSuccess(ushort ChannelID, Socket Socket)
         {
-            if (this.Channels.TryGetValue(ChannelID, out ChannelGame Channel))
+            if (this.Channels.TryGetValue(ChannelID, out var Channel))
             {
                 try
                 {
@@ -90,7 +90,7 @@ namespace SampleUnityGameServer.Networks
 
         private void OnServerAcceptException(ushort ChannelID, Exception Exception)
         {
-            if (this.Channels.TryGetValue(ChannelID, out ChannelGame Channel))
+            if (this.Channels.TryGetValue(ChannelID, out var Channel))
             {
                 Logging.WriteError($"Channel {Channel.ChannelID} : Accepting socket has an exception", Exception);
             }
@@ -98,14 +98,14 @@ namespace SampleUnityGameServer.Networks
 
         private void OnServerListenSuccess(ushort ChannelID, int Port)
         {
-            if (this.Channels.TryGetValue(ChannelID, out ChannelGame Channel))
+            if (this.Channels.TryGetValue(ChannelID, out var Channel))
             {
                 Logging.WriteError($"Channel {Channel.ChannelID} : Start listening to connection at port {Port}");
             }
         }
         private void OnServerListenException(ushort ChannelID, int Port, Exception Exception)
         {
-            if (this.Channels.TryGetValue(ChannelID, out ChannelGame Channel))
+            if (this.Channels.TryGetValue(ChannelID, out var Channel))
             {
                 Logging.WriteError($"Channel {Channel.ChannelID} : Listening to connection at port {Port} has an exception", Exception);
 
@@ -116,7 +116,7 @@ namespace SampleUnityGameServer.Networks
 
         private void OnServerDisposeSuccess(ushort ChannelID, string Caller)
         {
-            if (this.Channels.TryGetValue(ChannelID, out ChannelGame Channel))
+            if (this.Channels.TryGetValue(ChannelID, out var Channel))
             {
                 Logging.WriteError($"Channel {Channel.ChannelID} : Server socket has been disposed by function {Caller}");
 
@@ -132,7 +132,7 @@ namespace SampleUnityGameServer.Networks
         }
         private void OnServerDisposeException(ushort ChannelID, string Caller, Exception Exception)
         {
-            if (this.Channels.TryGetValue(ChannelID, out ChannelGame Channel))
+            if (this.Channels.TryGetValue(ChannelID, out var Channel))
             {
                 Logging.WriteError($"Channel {Channel.ChannelID} : Server socket disposing by function {Caller} has an exception", Exception);
 

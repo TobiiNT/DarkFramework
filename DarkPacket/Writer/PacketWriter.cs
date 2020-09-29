@@ -7,7 +7,7 @@ namespace DarkPacket.Writer
 {
     public class PacketWriter : IPacketWriter
     {
-        private MemoryStream DataStream { set; get; }
+        private MemoryStream DataStream { get; }
         public PacketWriter() => DataStream = new MemoryStream();
         public PacketWriter(byte[] Data)
         {
@@ -40,7 +40,7 @@ namespace DarkPacket.Writer
             {
                 Value = string.Empty;
             }
-            byte[] StringData = Encoding.Unicode.GetBytes(Value);
+            var StringData = Encoding.Unicode.GetBytes(Value);
             this.DataStream.Write(BitConverter.GetBytes(StringData.Length), 0, 2);
             this.DataStream.Write(StringData, 0, StringData.Length);
         }
@@ -50,7 +50,7 @@ namespace DarkPacket.Writer
             {
                 Value = string.Empty;
             }
-            byte[] StringData = Encoding.Unicode.GetBytes(Value);
+            var StringData = Encoding.Unicode.GetBytes(Value);
             this.DataStream.Write(BitConverter.GetBytes(Math.Min(StringData.Length, Length * 2)), 0, 2);
             this.DataStream.Write(StringData, 0, Math.Min(StringData.Length, Length * 2));
         }
@@ -60,7 +60,7 @@ namespace DarkPacket.Writer
         }
         public virtual byte[] GetPacketData()
         {
-            using (MemoryStream OutputStream = new MemoryStream())
+            using (var OutputStream = new MemoryStream())
             {
                 OutputStream.Write(this.DataStream.ToArray(), 0, (int)this.DataStream.Length);
                 return OutputStream.ToArray();

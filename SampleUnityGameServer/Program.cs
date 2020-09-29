@@ -1,7 +1,4 @@
-﻿using DarkGamePacket.Definitions.C2S;
-using DarkGamePacket.Definitions.S2C;
-using DarkGamePacket.Enums;
-using ProtoBuf;
+﻿using ProtoBuf;
 using SampleUnityGameServer.Games;
 using System;
 using System.IO;
@@ -18,8 +15,8 @@ namespace SampleUnityGameServer
         {
             Console.OutputEncoding = Encoding.UTF8;
 
-            ChannelManager ChannelManager = new ChannelManager();
-            LogicGameManager LogicGameManager = new LogicGameManager();
+            var ChannelManager = new ChannelManager();
+            var LogicGameManager = new LogicGameManager();
 
             foreach (var ChannelInfo in Configuration.Channels)
             {
@@ -30,47 +27,35 @@ namespace SampleUnityGameServer
                 }
             }
 
-            var Message = new ChatMessageRequest
-            {
-                MessageType = 253,
-                Message = "12345"
-            };
-            byte[] MessageData = ProtoSerialize(Message);
-            var MessageOut = ProtoDeserialize<ChatMessageRequest>(MessageData);
-            Console.WriteLine($"{MessageOut.Message}");
-
             while (true)
             {
-                string Content = Console.ReadLine();
+                var Content = Console.ReadLine();
                 if (Content == "exit")
                     break;
 
-                int TotalChannel = 0;
-                int TotalClient = 0;
-                int Success = 0;
-                int Failed = 0;
+                var TotalChannel = 0;
+                var TotalClient = 0;
+                var Success = 0;
+                var Failed = 0;
 
-                //using (var Chat = new ChatMessageResponse(Channel.S2C, 2, Content))
-                //{
-                //    byte[] ChatData = Chat.GetPacketData();
-                //    foreach (var Channel in ChannelManager.Channels.Values.ToList())
-                //    {
-                //        TotalChannel++;
-                //        foreach (var Client in Channel.ClientConnections.Values.ToList())
-                //        {
-                //            TotalClient++;
-                //            try
-                //            {
-                //                Client.SendDataWithEncryption(ChatData);
-                //                Success++;
-                //            }
-                //            catch
-                //            {
-                //                Failed++;
-                //            }
-                //        }
-                //    }
-                //}
+                foreach (var Channel in ChannelManager.Channels.Values.ToList())
+                {
+                    TotalChannel++;
+                    foreach (var Client in Channel.ClientConnections.Values.ToList())
+                    {
+                        TotalClient++;
+                        try
+                        {
+                            LogicGameManager.Games[Client.ChannelID].PacketNotifier.NotifyChatMessage(Client.ClientID, 1, Content);                                                      
+                            Success++;
+                        }
+                        catch
+                        {
+                            Failed++;
+                        }
+                    }
+                }
+                
 
                 Logging.WriteLine($"Send message to {TotalChannel} channels and {TotalClient} clients : {Success} Success, {Failed} Failed");
             }

@@ -77,7 +77,7 @@ namespace DarkNetwork.Connections
         {
             try
             {
-                Socket CurrentSocket = (Socket)AsyncResult.AsyncState;
+                var CurrentSocket = (Socket)AsyncResult.AsyncState;
 
                 if (CurrentSocket.Connected)
                 {
@@ -104,8 +104,8 @@ namespace DarkNetwork.Connections
             {
                 if (this.Socket.Connected && this.IsRunning)
                 {
-                    Socket AsyncState = (Socket)AsyncResult.AsyncState;
-                    int num = AsyncState.EndSend(AsyncResult);
+                    var AsyncState = (Socket)AsyncResult.AsyncState;
+                    var num = AsyncState.EndSend(AsyncResult);
                     if (num <= 0)
                     {
                         this.Dispose();
@@ -140,11 +140,11 @@ namespace DarkNetwork.Connections
             {
                 try
                 {
-                    Socket AsyncState = (Socket)AsyncResult.AsyncState;
-                    int DataLength = AsyncState.EndReceive(AsyncResult, out SocketError Result);
+                    var AsyncState = (Socket)AsyncResult.AsyncState;
+                    var DataLength = AsyncState.EndReceive(AsyncResult, out var Result);
                     if (Result == SocketError.Success && DataLength > 0)
                     {
-                        byte[] recvBuffer = this.DataReceived;
+                        var recvBuffer = this.DataReceived;
                         lock (this.ReceiveQueue)
                         {
                             this.ReceiveQueue.Enqueue(recvBuffer, 0, DataLength);
@@ -193,14 +193,14 @@ namespace DarkNetwork.Connections
         {
             try
             {
-                byte[] InOptionValues = new byte[Marshal.SizeOf(0) * 3];
+                var InOptionValues = new byte[Marshal.SizeOf(0) * 3];
                 BitConverter.GetBytes((uint)1).CopyTo(InOptionValues, 0);
                 BitConverter.GetBytes((uint)20000).CopyTo(InOptionValues, Marshal.SizeOf(0));
                 BitConverter.GetBytes((uint)20000).CopyTo(InOptionValues, Marshal.SizeOf(0) * 2);
 
                 this.AsyncState |= AsyncStates.Pending;
                 this.Socket.IOControl(IOControlCode.KeepAliveValues, InOptionValues, null);
-                this.Socket.BeginReceive(this.DataReceived, 0, this.DataReceived.Length, SocketFlags.None, out SocketError Result, this.OnReceived, this.Socket);
+                this.Socket.BeginReceive(this.DataReceived, 0, this.DataReceived.Length, SocketFlags.None, out var Result, this.OnReceived, this.Socket);
             }
             catch (Exception)
             {
@@ -249,7 +249,7 @@ namespace DarkNetwork.Connections
                 {
                     lock (this.ReceiveQueue)
                     {
-                        int BufferLength = this.ReceiveQueue.Length;
+                        var BufferLength = this.ReceiveQueue.Length;
                         while (BufferLength > 0 && this.IsRunning)
                         {
                             if (BufferLength > 4)
@@ -264,7 +264,7 @@ namespace DarkNetwork.Connections
                                     CurrentPacketLength += 8;
                                     if (BufferLength >= CurrentPacketLength)
                                     {
-                                        byte[] CurrentPacketData = new byte[CurrentPacketLength];
+                                        var CurrentPacketData = new byte[CurrentPacketLength];
                                         this.ReceiveQueue.Dequeue(CurrentPacketData, 0, CurrentPacketLength);
                                         BufferLength = this.ReceiveQueue.Length;
 
@@ -275,7 +275,7 @@ namespace DarkNetwork.Connections
                                         {
                                             using (var Packet = new NetworkPacketReader(CurrentPacketData))
                                             {
-                                                byte[] MainData = Packet.ReadBytes();
+                                                var MainData = Packet.ReadBytes();
                                                 OnReceiveSuccess(this, new ReceiveSuccessArgs(CurrentPacketLength, MainData));
                                             }
                                             continue;
@@ -302,7 +302,7 @@ namespace DarkNetwork.Connections
 
         public void Dispose()
         {
-            string Caller = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name;
+            var Caller = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name;
 
             try
             {

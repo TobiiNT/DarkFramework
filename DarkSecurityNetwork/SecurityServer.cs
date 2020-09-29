@@ -1,5 +1,4 @@
 ﻿using DarkSecurityNetwork.Delegates.Servers;
-using DarkSecurityNetwork.Networks;
 using System;
 using System.Net.Sockets;
 using DarkNetwork.Connections;

@@ -56,7 +56,7 @@ namespace DarkSecurity.Services.AES
 
         private Aes CreateCryptoraphyService(AESKey Key)
         {
-            Aes AES = Aes.Create();
+            var AES = Aes.Create();
 
             AES.KeySize = Key.KeySize;
             AES.Key = Key.Key;
@@ -66,9 +66,9 @@ namespace DarkSecurity.Services.AES
         }
         private byte[] PerformCryptography(byte[] Data, ICryptoTransform CryptoTransform)
         {
-            using (MemoryStream MemoryStream = new MemoryStream())
+            using (var MemoryStream = new MemoryStream())
             {
-                using (CryptoStream CryptoStream = new CryptoStream(MemoryStream, CryptoTransform, CryptoStreamMode.Write))
+                using (var CryptoStream = new CryptoStream(MemoryStream, CryptoTransform, CryptoStreamMode.Write))
                 {
                     CryptoStream.Write(Data, 0, Data.Length);
                     CryptoStream.FlushFinalBlock();

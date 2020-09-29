@@ -9,7 +9,7 @@ namespace DarkNetwork.Connections.Events.Arguments
             this.Port = Port;
             this.Exception = Exception;
         }
-        public int Port { private set; get; }
-        public Exception Exception { private set; get; }
+        public int Port { get; }
+        public Exception Exception { get; }
     }
 }

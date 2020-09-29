@@ -4,7 +4,7 @@ using DarkSecurityNetwork.Enums;
 using DarkSecurityNetwork.Events.Arguments;
 using DarkSecurityNetwork.Exceptions;
 using DarkSecurityNetwork.Interfaces;
-using DarkSecurityNetwork.Packets;
+using DarkSecurityNetwork.Networks.Packets;
 using DarkSecurityNetwork.Protocols;
 using System;
 
@@ -20,16 +20,16 @@ namespace DarkSecurityNetwork.Networks
             {
                 using (var Packet = new NormalPacketReader(Data))
                 {
-                    ProtocolFunction Function = (ProtocolFunction)Packet.ReadShort();
+                    var Function = (ProtocolFunction)Packet.ReadShort();
 
                     switch (Function)
                     {
                         case ProtocolFunction.ServerSendAsymmetricKeyToClient:
                             {
-                                ushort ChannelID = Packet.ReadUShort();
-                                uint ClientID = Packet.ReadUInt();
-                                string RawPublicKey = Packet.ReadString();
-                                CryptoKeySize SymmetricKeySize = (CryptoKeySize)Packet.ReadUInt();
+                                var ChannelID = Packet.ReadUShort();
+                                var ClientID = Packet.ReadUInt();
+                                var RawPublicKey = Packet.ReadString();
+                                var SymmetricKeySize = (CryptoKeySize)Packet.ReadUInt();
 
                                 this.GenerateNewSymmetricKey(SymmetricKeySize);
                                 this.ImportChannelAndClientData(ChannelID, ClientID);
@@ -40,7 +40,7 @@ namespace DarkSecurityNetwork.Networks
 
                         case ProtocolFunction.ServerSendMessageTest:
                             {
-                                byte[] Message = Packet.ReadBytes();
+                                var Message = Packet.ReadBytes();
 
                                 this.SendMessageTestVerifyToServer(Message);
                             }
@@ -92,7 +92,7 @@ namespace DarkSecurityNetwork.Networks
         {
             try
             {
-                byte[] Packet = new PacketClientSendSymmetricKey(this.SymmetricService.CryptoKey).Data;
+                var Packet = new PacketClientSendSymmetricKey(this.SymmetricService.CryptoKey).Data;
 
                 if (Packet != null)
                 {
@@ -117,7 +117,7 @@ namespace DarkSecurityNetwork.Networks
             {
                 this.EncryptDataWithSymmetricAlgorithm(ref Data);
 
-                byte[] Packet = new PacketClientSendMessageTestVerify(Data).Data;
+                var Packet = new PacketClientSendMessageTestVerify(Data).Data;
 
                 if (Packet != null)
                 {

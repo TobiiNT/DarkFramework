@@ -10,8 +10,8 @@ namespace DarkSecurity.Services.AES
             this.Key = Key;
             this.IV = IV;
         }
-        public byte[] Key { private set; get; }
-        public byte[] IV { private set; get; }
-        public int KeySize { private set; get; }
+        public byte[] Key { get; }
+        public byte[] IV { get; }
+        public int KeySize { get; }
     }
 }

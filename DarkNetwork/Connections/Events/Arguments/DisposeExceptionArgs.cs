@@ -9,7 +9,7 @@ namespace DarkNetwork.Connections.Events.Arguments
             this.Caller = Caller;
             this.Exception = Exception;
         }
-        public string Caller { private set; get; }
-        public Exception Exception { private set; get; }
+        public string Caller { get; }
+        public Exception Exception { get; }
     }
 }

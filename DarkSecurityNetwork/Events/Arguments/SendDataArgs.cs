@@ -5,6 +5,6 @@ namespace DarkSecurityNetwork.Events.Arguments
     public class SendDataArgs : EventArgs
     {
         public SendDataArgs(byte[] Data) => this.Data = Data;
-        public byte[] Data { private set; get; }
+        public byte[] Data { get; }
     }
 }

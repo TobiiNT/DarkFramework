@@ -4,12 +4,14 @@ using DarkGamePacket.Enums;
 using DarkGamePacket.Interfaces;
 using DarkGamePacket.Servers.Interfaces;
 using DarkSecurityNetwork;
-using DarkSecurityNetwork.Interfaces;
 using DarkSecurityNetwork.Networks;
 using System;
 using System.Collections.Generic;
 using DarkGamePacket.Servers.Packets;
 using DarkThreading;
+using DarkPacket.Readers;
+using DarkPacket.Writer;
+using System.Linq;
 
 namespace DarkGamePacket.Servers
 {
@@ -24,9 +26,9 @@ namespace DarkGamePacket.Servers
         private readonly Dictionary<PacketID, ResponseHandle> ResponseTable;
         private delegate byte[] ResponseHandle(ICoreResponse Response);
 
-        private readonly NetworkHandler<ICoreRequest> NetworkRequest;
+        private readonly ServerNetworkHandler<ICoreRequest> NetworkRequest;
 
-        public ServerPacketHandler(NetworkHandler<ICoreRequest> NetworkRequest)
+        public ServerPacketHandler(ServerNetworkHandler<ICoreRequest> NetworkRequest)
         {
             this.ClientPlayers = new ThreadSafeDictionary<uint, SecurityConnection<ServerSecurityNetwork>>();
             this.NetworkRequest = NetworkRequest;
@@ -37,7 +39,7 @@ namespace DarkGamePacket.Servers
         }
         private void InitializeRequestHandlers()
         {
-            foreach (var Method in typeof(ServerRequests).GetMethods())
+            foreach (var Method in typeof(C2S_ServerSide).GetMethods())
             {
                 foreach (Attribute Attribute in Method.GetCustomAttributes(true))
                 {
@@ -52,7 +54,7 @@ namespace DarkGamePacket.Servers
         }
         private void InitializeResponseHandlers()
         {
-            foreach (var Method in typeof(ServerResponses).GetMethods())
+            foreach (var Method in typeof(S2C_ServeriSide).GetMethods())
             {
                 foreach (Attribute Attribute in Method.GetCustomAttributes(true))
                 {
@@ -87,25 +89,52 @@ namespace DarkGamePacket.Servers
 
             if (ResponseHandle != null)
             {
-                if (this.ClientPlayers.TryGetValue(ClientID, out SecurityConnection<ServerSecurityNetwork> Connection))
+                if (this.ClientPlayers.TryGetValue(ClientID, out var Connection))
                 {
                     dynamic HandleResponse = ResponseHandle(Response);
+                    
+                    using var Packet = new PacketWriter();
+                    Packet.WriteUShort((ushort)PacketID);
+                    Packet.WriteBytes(HandleResponse);
 
-                    return Connection.SendDataWithEncryption(HandleResponse);
+                    return Connection != null && Connection.SendDataWithEncryption(Packet.GetPacketData());
                 }
+            }
+            return false;
+        }
+        public bool SendPacketBroadcast(PacketID PacketID, ICoreResponse Response)
+        {
+            var ResponseHandle = GetResponseHandle(PacketID);
+
+            if (ResponseHandle != null)
+            {
+                dynamic HandleResponse = ResponseHandle(Response);
+
+                using var Packet = new PacketWriter();
+                Packet.WriteUShort((ushort)PacketID);
+                Packet.WriteBytes(HandleResponse);
+
+                foreach (var Connection in this.ClientPlayers.Values.ToList())
+                {
+                    Connection.SendDataWithEncryption(Packet.GetPacketData());
+                }
+                return true;
             }
             return false;
         }
         public bool HandlePacket(uint ClientID, byte[] Data)
         {
-            PacketID PacketID = ServerRequests.ProtoDeserialize<ICoreMessage>(Data).PacketID;
+            using var Reader = new NormalPacketReader(Data);
+            var PacketID = (PacketID)Reader.ReadUShort();
+            var PacketData = Reader.ReadBytes();
+
             var Request = GetRequestHandle(PacketID);
 
             if (Request != null)
             {
                 if (this.ClientPlayers.ContainsKey(ClientID))
                 {
-                    dynamic HandleRequest = Request(Data);
+                    dynamic HandleRequest = Request(PacketData);
 
                     this.NetworkRequest.OnMessage(ClientID, HandleRequest);
                     return true;

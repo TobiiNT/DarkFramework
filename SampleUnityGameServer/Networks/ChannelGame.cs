@@ -1,8 +1,4 @@
-﻿using DarkGamePacket.Interfaces;
-using DarkGamePacket.Servers;
-using DarkGamePacket.Servers.Interfaces;
-using DarkSecurity.Enums;
-using DarkSecurityNetwork;
+﻿using DarkSecurityNetwork;
 using DarkSecurityNetwork.Networks;
 using SampleUnityGameServer.Games;
 using System;
@@ -15,7 +11,7 @@ namespace SampleUnityGameServer.Networks
     public class ChannelGame : SecurityServer
     {
         public ThreadSafeDictionary<uint, SecurityConnection<ServerSecurityNetwork>> ClientConnections { set; get; }
-        public IServerPacketHandler PacketHandlerManager { private set; get; }
+        public LogicGame LogicGame { private set; get; }
         public ChannelGame(ushort ChannelID, uint Capacity)
         {
             this.ChannelID = ChannelID;
@@ -25,7 +21,7 @@ namespace SampleUnityGameServer.Networks
 
         public void ImportGame(LogicGame Game)
         {
-            this.PacketHandlerManager = new ServerPacketHandler(Game.PacketHandler);
+            this.LogicGame = Game;
         }
 
         public bool CreateNewConnection(uint ClientID, Socket Socket)
@@ -54,7 +50,7 @@ namespace SampleUnityGameServer.Networks
 
             if (!this.ClientConnections.ContainsKey(NewConnection.ClientID))
             {
-                this.PacketHandlerManager?.HandleHandshake(ClientID, NewConnection);
+                this.LogicGame.PacketHandler?.HandleHandshake(ClientID, NewConnection);
                 this.ClientConnections.Add(NewConnection.ClientID, NewConnection);
 
                 return true;
@@ -66,7 +62,7 @@ namespace SampleUnityGameServer.Networks
         {
             if (this.ChannelID == ChannelID)
             {
-                if (this.ClientConnections.TryGetValue(ClientID, out SecurityConnection<ServerSecurityNetwork> Client))
+                if (this.ClientConnections.TryGetValue(ClientID, out var Client))
                 {
                     Logging.WriteLine($"Channel {Client.ChannelID}, Client {Client.ClientID} : Setup secure connection success");
                 }
@@ -76,7 +72,7 @@ namespace SampleUnityGameServer.Networks
         {
             if (this.ChannelID == ChannelID)
             {
-                if (this.ClientConnections.TryGetValue(ClientID, out SecurityConnection<ServerSecurityNetwork> Client))
+                if (this.ClientConnections.TryGetValue(ClientID, out var Client))
                 {
                     Logging.WriteError($"Channel {Client.ChannelID}, Client {Client.ClientID} : Fail to setup secure connection");
                 }
@@ -86,7 +82,7 @@ namespace SampleUnityGameServer.Networks
         {
             if (this.ChannelID == ChannelID)
             {
-                if (this.ClientConnections.TryGetValue(ClientID, out SecurityConnection<ServerSecurityNetwork> Client))
+                if (this.ClientConnections.TryGetValue(ClientID, out var Client))
                 {
                     Logging.WriteError($"Channel {Client.ChannelID}, Client {Client.ClientID} : Setup secure connection exception", Exception);
                 }
@@ -96,7 +92,7 @@ namespace SampleUnityGameServer.Networks
         {
             if (this.ChannelID == ChannelID)
             {
-                if (this.ClientConnections.TryGetValue(ClientID, out SecurityConnection<ServerSecurityNetwork> Client))
+                if (this.ClientConnections.TryGetValue(ClientID, out var Client))
                 {
                     Logging.WriteLine($"Channel {Client.ChannelID}, Client {Client.ClientID} : Started to {Client.IPEndPoint}");
                 }
@@ -106,7 +102,7 @@ namespace SampleUnityGameServer.Networks
         {
             if (this.ChannelID == ChannelID)
             {
-                if (this.ClientConnections.TryGetValue(ClientID, out SecurityConnection<ServerSecurityNetwork> Client))
+                if (this.ClientConnections.TryGetValue(ClientID, out var Client))
                 {
                     Logging.WriteError($"Channel {Client.ChannelID}, Client {Client.ClientID} : Started to {Client.IPEndPoint}", Exception);
                 }
@@ -116,7 +112,7 @@ namespace SampleUnityGameServer.Networks
         {
             if (this.ChannelID == ChannelID)
             {
-                if (this.ClientConnections.TryGetValue(ClientID, out SecurityConnection<ServerSecurityNetwork> Client))
+                if (this.ClientConnections.TryGetValue(ClientID, out var Client))
                 {
                     Logging.WriteLine($"Channel {Client.ChannelID}, Client {Client.ClientID} : Connected to {Client.IPEndPoint}");
                 }
@@ -126,7 +122,7 @@ namespace SampleUnityGameServer.Networks
         {
             if (this.ChannelID == ChannelID)
             {
-                if (this.ClientConnections.TryGetValue(ClientID, out SecurityConnection<ServerSecurityNetwork> Client))
+                if (this.ClientConnections.TryGetValue(ClientID, out var Client))
                 {
                     Logging.WriteError($"Channel {Client.ChannelID}, Client {Client.ClientID} : Connected to {Client.IPEndPoint} exception", Exception);
 
@@ -138,7 +134,7 @@ namespace SampleUnityGameServer.Networks
         {
             if (this.ChannelID == ChannelID)
             {
-                if (this.ClientConnections.TryGetValue(ClientID, out SecurityConnection<ServerSecurityNetwork> Client))
+                if (this.ClientConnections.TryGetValue(ClientID, out var Client))
                 {
                     Logging.WriteLine($"Channel {Client.ChannelID}, Client {Client.ClientID} : Send to {Client.IPEndPoint} {DataSize} bytes");
                 }
@@ -148,7 +144,7 @@ namespace SampleUnityGameServer.Networks
         {
             if (this.ChannelID == ChannelID)
             {
-                if (this.ClientConnections.TryGetValue(ClientID, out SecurityConnection<ServerSecurityNetwork> Client))
+                if (this.ClientConnections.TryGetValue(ClientID, out var Client))
                 {
                     Logging.WriteError($"Channel {Client.ChannelID}, Client {Client.ClientID} : Send to {Client.IPEndPoint} exception", Exception);
                 }
@@ -158,11 +154,11 @@ namespace SampleUnityGameServer.Networks
         {
             if (this.ChannelID == ChannelID)
             {
-                if (this.ClientConnections.TryGetValue(ClientID, out SecurityConnection<ServerSecurityNetwork> Client))
+                if (this.ClientConnections.TryGetValue(ClientID, out var Client))
                 {
                     Logging.WriteLine($"Channel {Client.ChannelID}, Client {Client.ClientID} : Receive from {Client.IPEndPoint} {DataSize} bytes");
 
-                    this.PacketHandlerManager?.HandlePacket(ClientID, Data);
+                    this.LogicGame.PacketHandler?.HandlePacket(ClientID, Data);
                 }
             }
         }
@@ -170,7 +166,7 @@ namespace SampleUnityGameServer.Networks
         {
             if (this.ChannelID == ChannelID)
             {
-                if (this.ClientConnections.TryGetValue(ClientID, out SecurityConnection<ServerSecurityNetwork> Client))
+                if (this.ClientConnections.TryGetValue(ClientID, out var Client))
                 {
                     Logging.WriteError($"Channel {Client.ChannelID}, Client {Client.ClientID} : Receive from {Client.IPEndPoint}", Exception);
                 }
@@ -180,13 +176,13 @@ namespace SampleUnityGameServer.Networks
         {
             if (this.ChannelID == ChannelID)
             {
-                if (this.ClientConnections.TryGetValue(ClientID, out SecurityConnection<ServerSecurityNetwork> Client))
+                if (this.ClientConnections.TryGetValue(ClientID, out var Client))
                 {
                     Logging.WriteLine($"Channel {Client.ChannelID}, Client {Client.ClientID} : Disposed by {Caller}");
 
                     this.ClientConnections.RemoveSafe(ClientID);
 
-                    this.PacketHandlerManager?.HandleDisconnect(ClientID);
+                    this.LogicGame.PacketHandler?.HandleDisconnect(ClientID);
                 }
             }
         }
@@ -194,13 +190,13 @@ namespace SampleUnityGameServer.Networks
         {
             if (this.ChannelID == ChannelID)
             {
-                if (this.ClientConnections.TryGetValue(ClientID, out SecurityConnection<ServerSecurityNetwork> Client))
+                if (this.ClientConnections.TryGetValue(ClientID, out var Client))
                 {
                     Logging.WriteError($"Channel {Client.ChannelID}, Client {Client.ClientID} : Disposed by {Caller} exception", Exception);
 
                     this.ClientConnections.RemoveSafe(ClientID);
 
-                    this.PacketHandlerManager?.HandleDisconnect(ClientID);
+                    this.LogicGame.PacketHandler?.HandleDisconnect(ClientID);
                 }
             }
         }

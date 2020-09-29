@@ -3,11 +3,11 @@ using DarkSecurity.Interfaces.Keys;
 using DarkSecurityNetwork.Enums;
 using DarkSecurity.Services.AES;
 
-namespace DarkSecurityNetwork.Packets
+namespace DarkSecurityNetwork.Networks.Packets
 {
     public class PacketClientSendSymmetricKey
     {
-        public byte[] Data { private set; get; }
+        public byte[] Data { get; }
         public PacketClientSendSymmetricKey(ICryptoKey CryptoKey)
         {
             if (CryptoKey == null)

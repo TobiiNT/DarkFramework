@@ -5,17 +5,17 @@ namespace DarkNetwork.Connections.Events
 {
     public class SocketEventHandler
     {
-        public event EventHandler EventListenSuccess = null;
+        public event EventHandler EventListenSuccess;
 
-        public event EventHandler EventListenException = null;
+        public event EventHandler EventListenException;
 
-        public event EventHandler EventAcceptSuccess = null;
+        public event EventHandler EventAcceptSuccess;
 
-        public event EventHandler EventAcceptException = null;
+        public event EventHandler EventAcceptException;
         
-        public event EventHandler EventDisposeSuccess = null;
+        public event EventHandler EventDisposeSuccess;
 
-        public event EventHandler EventDisposeException = null;
+        public event EventHandler EventDisposeException;
 
         protected void OnListenSuccess(object Sender, ListenSuccessArgs Event) => EventListenSuccess?.Invoke(Sender, Event);
         protected void OnListenException(object Sender, ListenExceptionArgs Event) => EventListenException?.Invoke(Sender, Event);

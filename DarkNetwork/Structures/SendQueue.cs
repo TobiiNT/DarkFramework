@@ -72,7 +72,7 @@ namespace DarkNetwork.Structures
             {
                 throw new ArgumentException("Offset and length do not point to a valid segment within the buffer.");
             }
-            int num = this.GetPendingCount() + ((this.Buffered == null) ? 0 : this.Buffered.Length);
+            var num = this.GetPendingCount() + ((this.Buffered == null) ? 0 : this.Buffered.Length);
             if ((num + length) > 0x177000)
             {
                 throw new Exception("Too much data pending!");
@@ -84,7 +84,7 @@ namespace DarkNetwork.Structures
                 {
                     this.Buffered = Gram.Acquire();
                 }
-                int num2 = this.Buffered.Write(buffer, offset, length);
+                var num2 = this.Buffered.Write(buffer, offset, length);
                 offset += num2;
                 length -= num2;
                 if (this.Buffered.IsFull)
@@ -102,8 +102,8 @@ namespace DarkNetwork.Structures
 
         public int GetPendingCount()
         {
-            int num = 0;
-            foreach (Gram gram in this.Pending)
+            var num = 0;
+            foreach (var gram in this.Pending)
             {
                 num += gram.Length;
             }
@@ -156,7 +156,7 @@ namespace DarkNetwork.Structures
 
             public int Write(byte[] buffer, int offset, int length)
             {
-                int count = Math.Min(length, this.Available);
+                var count = Math.Min(length, this.Available);
                 System.Buffer.BlockCopy(buffer, offset, this.Buffer, this.Length, count);
                 this.Length += count;
                 return count;

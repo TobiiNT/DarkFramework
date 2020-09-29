@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DarkSecurityNetwork.Events.Arguments
 {
@@ -11,7 +9,7 @@ namespace DarkSecurityNetwork.Events.Arguments
             this.ChannelID = ChannelID;
             this.ClientID = ClientID;
         }
-        public ushort ChannelID { private set; get; }
-        public uint ClientID { private set; get; }
+        public ushort ChannelID { get; }
+        public uint ClientID { get; }
     }
 }

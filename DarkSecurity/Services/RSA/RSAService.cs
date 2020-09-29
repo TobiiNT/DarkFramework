@@ -13,7 +13,7 @@ namespace DarkSecurity.Services.RSA
         {
             if (this.CryptoKey is RSAKey Key)
             {
-                byte[] EncryptedData = EncryptData(Key, Data);
+                var EncryptedData = EncryptData(Key, Data);
 
                 Data = Encoding.Unicode.GetBytes(Convert.ToBase64String(EncryptedData));
             }
@@ -23,7 +23,7 @@ namespace DarkSecurity.Services.RSA
         {
             if (CryptoKey is RSAKey Key)
             {
-                string RawEncryptedData = Encoding.Unicode.GetString(Data);
+                var RawEncryptedData = Encoding.Unicode.GetString(Data);
 
                 Data = DecryptData(Key, Convert.FromBase64String(RawEncryptedData));
             }

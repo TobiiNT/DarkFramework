@@ -4,7 +4,6 @@ using DarkSecurityNetwork.Events.Arguments;
 using DarkSecurityNetwork.Interfaces;
 using DarkSecurityNetwork.Networks;
 using System;
-using System.Net;
 using System.Net.Sockets;
 using DarkNetwork.Connections;
 using DarkNetwork.Connections.Events.Arguments;
@@ -16,7 +15,7 @@ namespace DarkSecurityNetwork
     {
         public ushort ChannelID { set; get; }
         public uint ClientID { set; get; }
-        public ISecurityNetwork SecurityNetwork { private set; get; }
+        public ISecurityNetwork SecurityNetwork { get; }
         public SecurityConnection()
         {
             this.EventStartSuccess += this.EventConnectionStartSuccess;

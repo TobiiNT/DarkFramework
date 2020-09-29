@@ -10,7 +10,7 @@ namespace DarkSecurity.Services.AES
     {
         public ICryptoKey GenerateKey(CryptoKeySize AESKeySize)
         {
-            int KeySize = (int)AESKeySize;
+            var KeySize = (int)AESKeySize;
             if (KeySize % 2 != 0 || KeySize > 256)
             {
                 throw new GenerateKeyException(this, null, AESKeySize, new Exception("Key should be multiple of two and smaller than 256."));

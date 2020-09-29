@@ -9,7 +9,7 @@ namespace DarkSecurityNetwork.Events.Arguments
             this.Function = Function;
             this.Reason = Reason;
         }
-        public string Function { private set; get; }
-        public string Reason { private set; get; }
+        public string Function { get; }
+        public string Reason { get; }
     }
 }

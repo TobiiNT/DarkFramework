@@ -9,7 +9,7 @@ namespace DarkNetwork.Connections.Events.Arguments
             this.DataSize = DataSize;
             this.PacketData = PacketData;
         }
-        public int DataSize { private set; get; }
+        public int DataSize { get; }
         public byte[] PacketData;
     }
 }

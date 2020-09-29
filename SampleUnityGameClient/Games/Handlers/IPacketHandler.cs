@@ -2,8 +2,8 @@
 
 namespace SampleUnityGameClient.Games.PacketDefinitions.Handlers
 {
-    public interface IPacketHandler<in T> where T : ICoreRequest
+    public interface IPacketHandler<in T> where T : ICoreResponse
     {
-        bool HandlePacket(uint ClientID, T Request);
+        bool HandlePacket(T Request);
     }
 }

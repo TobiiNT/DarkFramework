@@ -3,26 +3,26 @@ using DarkGamePacket.Definitions.C2S;
 using DarkGamePacket.Interfaces;
 using DarkGamePacket.Servers;
 using DarkGamePacket.Servers.Interfaces;
-using DarkSecurityNetwork.Networks;
-using SampleUnityGameServer.Games.PacketDefinitions;
-using SampleUnityGameServer.Games.PacketDefinitions.Packets;
+using SampleUnityGameServer.Games.Handlers.Packets;
 
 namespace SampleUnityGameServer.Games
 {
     public class LogicGame
     {
-        public NetworkHandler<ICoreRequest> PacketHandler { private set; get; }
-        public IServerPacketNotifier PacketNotifier { private set; get; }
-
-        public LogicGame(IServerPacketHandler PacketHandler)
+        public ServerNetworkHandler<ICoreRequest> FunctionHandler { get; }
+        public IServerPacketNotifier PacketNotifier { get; }
+        public IServerPacketHandler PacketHandler { get; }
+        public LogicGame()
         {
-            this.PacketHandler = new NetworkHandler<ICoreRequest>();
+            this.FunctionHandler = new ServerNetworkHandler<ICoreRequest>();
+            this.PacketHandler = new ServerPacketHandler(FunctionHandler);
             this.PacketNotifier = new ServerPacketNotifier(PacketHandler);
+
+            InitializeHandler();
         }
         public void InitializeHandler()
         {
-
-            this.PacketHandler.Register<ChatMessageRequest>(new HandleChatMessage(this).HandlePacket);
+            this.FunctionHandler.Register<C2S_ChatMessage>(new HandleChatMessage(this).HandlePacket);
         }
     }
 }

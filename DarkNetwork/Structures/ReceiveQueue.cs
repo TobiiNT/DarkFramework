@@ -31,7 +31,7 @@ namespace DarkNetwork.Structures
             }
             else
             {
-                int RemainSize = this.BufferData.Length - this.Head;
+                var RemainSize = this.BufferData.Length - this.Head;
                 if (RemainSize >= Size)
                 {
                     System.Buffer.BlockCopy(this.BufferData, this.Head, Buffer, Offset, Size);
@@ -65,7 +65,7 @@ namespace DarkNetwork.Structures
             }
             if (this.Head < this.Tail)
             {
-                int Count = this.BufferData.Length - this.Tail;
+                var Count = this.BufferData.Length - this.Tail;
                 if (Count >= Size)
                 {
                     System.Buffer.BlockCopy(Buffer, Offset, this.BufferData, this.Tail, Size);
@@ -86,7 +86,7 @@ namespace DarkNetwork.Structures
 
         private void Extend(int A0)
         {
-            byte[] dst = new byte[A0];
+            var dst = new byte[A0];
             if (this.Length > 0)
             {
                 if (this.Head < this.Tail)

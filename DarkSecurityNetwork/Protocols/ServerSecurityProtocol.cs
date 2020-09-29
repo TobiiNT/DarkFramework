@@ -11,8 +11,8 @@ namespace DarkSecurityNetwork.Protocols
 {
     public class ServerSecurityProtocol : SecurityNetworkEvent, ISecurityProtocol
     {
-        public AESService SymmetricService { private set; get; }
-        public RSAService AsymmetricService { private set; get; }
+        public AESService SymmetricService { get; }
+        public RSAService AsymmetricService { get; }
 
         public ServerSecurityProtocol()
         {

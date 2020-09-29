@@ -1,6 +1,4 @@
-﻿using DarkGamePacket.Enums;
-
-namespace DarkGamePacket.Interfaces
+﻿namespace DarkGamePacket.Interfaces
 {
     public interface ICoreRequest : ICoreMessage
     {

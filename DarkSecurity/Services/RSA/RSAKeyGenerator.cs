@@ -11,7 +11,7 @@ namespace DarkSecurity.Services.RSA
     {
         public ICryptoKey GenerateKey(CryptoKeySize RSAKeySize)
         {
-            int KeySize = (int)RSAKeySize;
+            var KeySize = (int)RSAKeySize;
             if (KeySize % 2 != 0 || KeySize < 512)
             {
                 throw new GenerateKeyException(this, null, RSAKeySize, new Exception("Key should be multiple of two and greater than 512."));
@@ -21,10 +21,10 @@ namespace DarkSecurity.Services.RSA
             {
                 using (var RSAprovider = new RSACryptoServiceProvider(KeySize))
                 {
-                    string PublicKeyRaw = RSAprovider.ToXmlString(false);
-                    string PrivateKeyRaw = RSAprovider.ToXmlString(true);
-                    string PublicKeyWithSize = IncludeKeyInEncryptionString(PublicKeyRaw, KeySize);
-                    string PrivateKeyWithSize = IncludeKeyInEncryptionString(PrivateKeyRaw, KeySize);
+                    var PublicKeyRaw = RSAprovider.ToXmlString(false);
+                    var PrivateKeyRaw = RSAprovider.ToXmlString(true);
+                    var PublicKeyWithSize = IncludeKeyInEncryptionString(PublicKeyRaw, KeySize);
+                    var PrivateKeyWithSize = IncludeKeyInEncryptionString(PrivateKeyRaw, KeySize);
 
                     return new RSAKey(PublicKeyWithSize, PrivateKeyWithSize);
                 }

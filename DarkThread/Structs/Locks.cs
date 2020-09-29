@@ -16,21 +16,21 @@ namespace DarkThreading.Structs
 
         public static void GetReadLock(ReaderWriterLockSlim locks)
         {
-            for (bool flag = false; !flag; flag = locks.TryEnterUpgradeableReadLock(1))
+            for (var flag = false; !flag; flag = locks.TryEnterUpgradeableReadLock(1))
             {
             }
         }
 
         public static void GetReadOnlyLock(ReaderWriterLockSlim LockSlim)
         {
-            for (bool flag = false; !flag; flag = LockSlim.TryEnterReadLock(1))
+            for (var flag = false; !flag; flag = LockSlim.TryEnterReadLock(1))
             {
             }
         }
 
         public static void GetWriteLock(ReaderWriterLockSlim LockSlim)
         {
-            for (bool flag = false; !flag; flag = LockSlim.TryEnterWriteLock(1))
+            for (var flag = false; !flag; flag = LockSlim.TryEnterWriteLock(1))
             {
             }
         }

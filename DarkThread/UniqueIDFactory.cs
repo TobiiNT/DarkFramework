@@ -25,7 +25,7 @@ namespace DarkThreading
                 {
                     if (ListID.Contains(LastID))
                     {
-                        long Temp = (long)this.LastID;
+                        var Temp = (long)this.LastID;
 
                         Interlocked.Increment(ref Temp);
 
@@ -46,7 +46,7 @@ namespace DarkThreading
         {
             lock (ListID)
             {
-                long Temp = (long)this.LastID;
+                var Temp = (long)this.LastID;
 
                 Interlocked.Increment(ref Temp);
 

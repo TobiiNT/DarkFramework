@@ -4,7 +4,7 @@ using DarkGamePacket.Interfaces;
 
 namespace DarkGamePacket.Definitions
 {
-    public class NetworkHandler<MessageType> where MessageType : ICoreMessage
+    public class ServerNetworkHandler<MessageType> where MessageType : ICoreMessage
     {
         public delegate bool MessageHandler<T>(uint ClientID, T msg) where T : MessageType;
         private readonly Dictionary<Type, List<Delegate>> _handlers = new Dictionary<Type, List<Delegate>>();
@@ -22,7 +22,7 @@ namespace DarkGamePacket.Definitions
         public bool OnMessage<T>(uint ClientID, T req) where T : MessageType
         {
             var handlerList = _handlers[req.GetType()];
-            bool success = true;
+            var success = true;
             foreach (MessageHandler<T> handler in handlerList)
             {
                 success = handler(ClientID, req) && success;

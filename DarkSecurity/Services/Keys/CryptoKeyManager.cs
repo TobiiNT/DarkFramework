@@ -12,7 +12,7 @@ namespace DarkSecurity.Services.Keys
 
         public void GenerateKey(CryptoKeySize KeySize, bool ReplaceOldKey)
         {
-            ICryptoKeyGenerator KeyGenerator = CryptoServices.GetGenerator<T>();
+            var KeyGenerator = CryptoServices.GetGenerator<T>();
             try
             {
                 if (KeyGenerator == null)

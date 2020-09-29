@@ -43,7 +43,7 @@ namespace DarkNetwork.Connections
 
         public void Dispose()
         {
-            string Caller = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name;
+            var Caller = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name;
 
             try
             {
@@ -81,7 +81,7 @@ namespace DarkNetwork.Connections
 
         private void ResetSocket()
         {
-            using (SocketAsyncEventArgs EventArgs = new SocketAsyncEventArgs())
+            using (var EventArgs = new SocketAsyncEventArgs())
             {
                 EventArgs.UserToken = this;
                 EventArgs.Completed += new EventHandler<SocketAsyncEventArgs>(AcceptSocket);
