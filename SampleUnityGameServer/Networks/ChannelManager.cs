@@ -25,7 +25,7 @@ namespace SampleUnityGameServer.Networks
             {
                 var Channel = CreateNewChannel(Capacity);
 
-                Channel.StartListening(Port);
+                Channel.StartListening(Port, 10000);
                 //Channel.ImportGame(new Games.LogicGame());
 
                 if (!this.Channels.ContainsKey(Channel.ChannelID))

@@ -9,12 +9,12 @@ namespace DarkSecurity.Structs
         public static ICryptoKeyGenerator GetGenerator<T>()
         {
             T Key = default;
-            switch (Key)
+            return Key switch
             {
-                case RSAKey: return new RSAKeyGenerator();
-                case AESKey: return new AESKeyGenerator();
-                default: return null;
-            }
+                RSAKey => new RSAKeyGenerator(),
+                AESKey => new AESKeyGenerator(),
+                _ => null,
+            };
         }
     }
 }

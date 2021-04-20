@@ -6,7 +6,7 @@ using DarkNetwork.Connections.Events.Arguments;
 
 namespace DarkSecurityNetwork
 {
-    public class SecurityServer : SocketBase
+    public class SecurityServer : HostBase
     {
         public ushort ChannelID { set; get; }
         public uint Capacity { set; get; }

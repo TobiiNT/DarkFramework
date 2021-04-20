@@ -6,6 +6,7 @@ namespace DarkNetwork.Enums
     public enum AsyncStates
     {
         Paused = 2,
-        Pending = 1
+        Pending = 1,
+        Empty = 0
     }
 }

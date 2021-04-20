@@ -42,37 +42,37 @@ namespace SampleUnityGameClient.Networks
         }
         private void OnConnectionStartSuccess(ushort ChannelID, uint ClientID)
         {
-            Logging.WriteLine($"Channel {ChannelID}, Client {ClientID} : Started to {IPEndPoint}");
+            Logging.WriteLine($"Channel {ChannelID}, Client {ClientID} : Started to {this.GetIPEndpoint()}");
             this.LogicGame.PacketHandler?.HandleHandshake(this);
         }
         private void OnConnectionStartException(ushort ChannelID, uint ClientID, Exception Exception)
         {
-            Logging.WriteError($"Channel {ChannelID}, Client {ClientID} : Started to {IPEndPoint}", Exception);
+            Logging.WriteError($"Channel {ChannelID}, Client {ClientID} : Started to {this.GetIPEndpoint()}", Exception);
         }
         private void OnConnectionConnectSuccess(ushort ChannelID, uint ClientID)
         {
-            Logging.WriteLine($"Channel {ChannelID}, Client {ClientID} : Connected to {IPEndPoint}");
+            Logging.WriteLine($"Channel {ChannelID}, Client {ClientID} : Connected to {this.GetIPEndpoint()}");
         }
         private void OnConnectionConnectException(ushort ChannelID, uint ClientID, Exception Exception)
         {
-            Logging.WriteError($"Channel {ChannelID}, Client {ClientID} : Connected to {IPEndPoint} exception", Exception);
+            Logging.WriteError($"Channel {ChannelID}, Client {ClientID} : Connected to {this.GetIPEndpoint()} exception", Exception);
         }
         private void OnConnectionSendSuccess(ushort ChannelID, uint ClientID, int DataSize)
         {
-            Logging.WriteLine($"Channel {ChannelID}, Client {ClientID} : Send to {IPEndPoint} {DataSize} bytes");
+            Logging.WriteLine($"Channel {ChannelID}, Client {ClientID} : Send to {this.GetIPEndpoint()} {DataSize} bytes");
         }
         private void OnConnectionSendException(ushort ChannelID, uint ClientID, Exception Exception)
         {
-            Logging.WriteError($"Channel {ChannelID}, Client {ClientID} : Send to {IPEndPoint} exception", Exception);
+            Logging.WriteError($"Channel {ChannelID}, Client {ClientID} : Send to {this.GetIPEndpoint()} exception", Exception);
         }
         private void OnConnectionReceiveSuccess(ushort ChannelID, uint ClientID, int DataSize, byte[] Data)
         {
-            Logging.WriteLine($"Channel {ChannelID}, Client {ClientID} : Receive from {IPEndPoint} {DataSize} bytes");
+            Logging.WriteLine($"Channel {ChannelID}, Client {ClientID} : Receive from {this.GetIPEndpoint()} {DataSize} bytes");
             this.LogicGame.PacketHandler?.HandlePacket(Data);
         }
         private void OnConnectionReceiveException(ushort ChannelID, uint ClientID, Exception Exception)
         {
-            Logging.WriteError($"Channel {ChannelID}, Client {ClientID} : Receive from {IPEndPoint}", Exception);
+            Logging.WriteError($"Channel {ChannelID}, Client {ClientID} : Receive from {this.GetIPEndpoint()}", Exception);
         }
         private void OnConnectionDisposeSuccess(ushort ChannelID, uint ClientID, string Caller)
         {

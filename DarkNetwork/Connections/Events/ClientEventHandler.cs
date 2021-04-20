@@ -3,7 +3,7 @@ using DarkNetwork.Connections.Events.Arguments;
 
 namespace DarkNetwork.Connections.Events
 {
-    public class ConnectionEventHandler
+    public class ClientEventHandler
     {
         public event EventHandler EventStartSuccess;
 
@@ -21,6 +21,10 @@ namespace DarkNetwork.Connections.Events
 
         public event EventHandler EventReceiveException;
 
+        public event EventHandler EventStopSuccess;
+
+        public event EventHandler EventStopException;
+
         public event EventHandler EventDisposeSuccess;
 
         public event EventHandler EventDisposeException;
@@ -33,6 +37,8 @@ namespace DarkNetwork.Connections.Events
         protected void OnSendException(object Sender, SendExceptionArgs Event) => EventSendException?.Invoke(Sender, Event);
         protected void OnReceiveSuccess(object Sender, ReceiveSuccessArgs Event) => EventReceiveSuccess?.Invoke(Sender, Event);
         protected void OnReceiveException(object Sender, ReceiveExceptionArgs Event) => EventReceiveException?.Invoke(Sender, Event);
+        protected void OnStopSuccess(object Sender, StopSuccessArgs Event) => EventStopSuccess?.Invoke(Sender, Event);
+        protected void OnStopException(object Sender, StopExceptionArgs Event) => EventStopException?.Invoke(Sender, Event);
         protected void OnDisposeSuccess(object Sender, DisposeSuccessArgs Event) => EventDisposeSuccess?.Invoke(Sender, Event);
         protected void OnDisposeException(object Sender, DisposeExceptionArgs Event) => EventDisposeException?.Invoke(Sender, Event);
     }

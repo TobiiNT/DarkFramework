@@ -6,26 +6,26 @@ using DarkNetwork.Connections.Events.Arguments;
 
 namespace DarkNetwork.Connections
 {
-    public class SocketBase : SocketEventHandler
+    public class HostBase : HostEventHandler
     {
         private Socket Socket { set; get; }
-        public bool SocketOn { private set; get; }
-        public bool Disposed { private set; get; }
+        private bool SocketIsRunning { set; get; }
+        private bool IsDisposed { set; get; }
 
-        public SocketBase()
+        public HostBase()
         {
             this.Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            this.SocketOn = false;
-            this.Disposed = false;
+            this.SocketIsRunning = false;
+            this.IsDisposed = false;
         }
 
-        public void StartListening(int Port)
+        public void StartListening(int Port, int MaximumQueueConnection)
         {
             try
             {
                 this.Socket.Bind(new IPEndPoint(IPAddress.Any, Port));
-                this.Socket.Listen(10000);
-                this.SocketOn = true;
+                this.Socket.Listen(MaximumQueueConnection);
+                this.SocketIsRunning = true;
 
                 this.ResetSocket();
 
@@ -35,33 +35,58 @@ namespace DarkNetwork.Connections
             {
                 OnListenException(this, new ListenExceptionArgs(Port, Exception));
 
-                this.SocketOn = false;
-                this.Socket?.Shutdown(SocketShutdown.Both);
-                this.Socket?.Close();
+                this.StopListening();
             }
         }
-
-        public void Dispose()
+        public void StopListening()
         {
             var Caller = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name;
 
             try
             {
-                if (!this.Disposed)
+                this.SocketIsRunning = false;
+
+                if (this.Socket != null)
                 {
-                    this.SocketOn = false;
-                    this.Disposed = true;
-
-                    this.Socket?.Shutdown(SocketShutdown.Both);
-                    this.Socket?.Close();
-                    this.Socket = null;
-
-                    OnDisposeSuccess(this, new DisposeSuccessArgs(Caller));
+                    this.Socket.Shutdown(SocketShutdown.Both);
                 }
+
+                if (this.Socket != null)
+                {
+                    this.Socket.Close();
+                }
+
+                OnStopSuccess(this, new StopSuccessArgs(Caller));
             }
             catch (Exception Exception)
             {
-                OnDisposeException(this, new DisposeExceptionArgs(Caller, Exception));
+                OnStopException(this, new StopExceptionArgs(Caller, Exception));
+            }
+            finally
+            {
+                this.Socket = null;
+            }
+        }
+        public void Dispose()
+        {
+            if (!this.IsDisposed)
+            {
+                var Caller = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name;
+
+                try
+                {
+                    this.StopListening();
+
+                    OnDisposeSuccess(this, new DisposeSuccessArgs(Caller));
+                }
+                catch (Exception Exception)
+                {
+                    OnDisposeException(this, new DisposeExceptionArgs(Caller, Exception));
+                }
+                finally
+                {
+                    this.IsDisposed = true;
+                }
             }
         }
 

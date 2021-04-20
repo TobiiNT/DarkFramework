@@ -33,8 +33,16 @@ namespace SampleUnityGameClient
                 {
                     try
                     {
-                        Client.LogicGame.PacketNotifier.NotifyChatMessage(1, Content);
-                        Success++;
+                        if (Client.IsRunning())
+                        {
+                            Client.LogicGame.PacketNotifier.NotifyChatMessage(1, Content);
+                            Success++;
+                        }
+                        else
+                        {
+                            Failed++;
+                        }
+                       
                     }
                     catch
                     {

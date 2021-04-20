@@ -10,7 +10,7 @@ using DarkNetwork.Connections.Events.Arguments;
 
 namespace DarkSecurityNetwork
 {
-    public class SecurityConnection<A> : ConnectionBase
+    public class SecurityConnection<A> : ClientBase
                                where A : ISecurityNetwork
     {
         public ushort ChannelID { set; get; }
@@ -51,7 +51,7 @@ namespace DarkSecurityNetwork
 
             while (true)
             {
-                if (this.IsRunning)
+                if (this.IsRunning())
                 {
                     this.SecurityNetwork.SendAsymmetricPublicKeyAndChannelInfoToClient(this.ChannelID, this.ClientID);
                     break;

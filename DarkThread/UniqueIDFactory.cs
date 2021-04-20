@@ -5,7 +5,7 @@ namespace DarkThreading
 {
     public class UniqueIDFactory
     {
-        private List<ulong> ListID = new List<ulong>();
+        private readonly List<ulong> ListID = new List<ulong>();
 
         private ulong LastID;
 

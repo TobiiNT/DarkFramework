@@ -4,27 +4,19 @@ namespace DarkNetwork.Structures
 {
     public class BufferPool
     {
-        private List<BufferPool> Pools { get; }
-
         private int BufferSize { get; }
-        private Queue<byte[]> FreeBuffers { get; }
         private int InitialCapacity { get; }
 
+        private Queue<byte[]> FreeBuffers { get; }
+        
         public BufferPool(int InitialCapacity, int BufferSize)
         {
-            this.Pools = new List<BufferPool>();
             this.InitialCapacity = InitialCapacity;
             this.BufferSize = BufferSize;
             this.FreeBuffers = new Queue<byte[]>(InitialCapacity);
             for (var i = 0; i < InitialCapacity; i++)
             {
                 this.FreeBuffers.Enqueue(new byte[BufferSize]);
-            }
-
-
-            lock (Pools)
-            {
-                Pools.Add(this);
             }
         }
 
@@ -40,14 +32,6 @@ namespace DarkNetwork.Structures
                     }
                 }
                 return this.FreeBuffers.Dequeue();
-            }
-        }
-
-        public void Free()
-        {
-            lock (Pools)
-            {
-                Pools.Remove(this);
             }
         }
 

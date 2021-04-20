@@ -124,7 +124,7 @@ namespace DarkNetwork.Structures
 
         public class Gram
         {
-            private static Stack<Gram> _pool = new Stack<Gram>();
+            private static readonly Stack<Gram> _pool = new Stack<Gram>();
 
             public static Gram Acquire()
             {

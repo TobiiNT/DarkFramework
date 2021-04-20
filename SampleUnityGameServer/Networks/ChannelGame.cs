@@ -94,7 +94,7 @@ namespace SampleUnityGameServer.Networks
             {
                 if (this.ClientConnections.TryGetValue(ClientID, out var Client))
                 {
-                    Logging.WriteLine($"Channel {Client.ChannelID}, Client {Client.ClientID} : Started to {Client.IPEndPoint}");
+                    Logging.WriteLine($"Channel {Client.ChannelID}, Client {Client.ClientID} : Started to {Client.GetIPEndpoint()}");
                 }
             }
         }
@@ -104,7 +104,7 @@ namespace SampleUnityGameServer.Networks
             {
                 if (this.ClientConnections.TryGetValue(ClientID, out var Client))
                 {
-                    Logging.WriteError($"Channel {Client.ChannelID}, Client {Client.ClientID} : Started to {Client.IPEndPoint}", Exception);
+                    Logging.WriteError($"Channel {Client.ChannelID}, Client {Client.ClientID} : Started to {Client.GetIPEndpoint()}", Exception);
                 }
             }
         }
@@ -114,7 +114,7 @@ namespace SampleUnityGameServer.Networks
             {
                 if (this.ClientConnections.TryGetValue(ClientID, out var Client))
                 {
-                    Logging.WriteLine($"Channel {Client.ChannelID}, Client {Client.ClientID} : Connected to {Client.IPEndPoint}");
+                    Logging.WriteLine($"Channel {Client.ChannelID}, Client {Client.ClientID} : Connected to {Client.GetIPEndpoint()}");
                 }
             }
         }
@@ -124,7 +124,7 @@ namespace SampleUnityGameServer.Networks
             {
                 if (this.ClientConnections.TryGetValue(ClientID, out var Client))
                 {
-                    Logging.WriteError($"Channel {Client.ChannelID}, Client {Client.ClientID} : Connected to {Client.IPEndPoint} exception", Exception);
+                    Logging.WriteError($"Channel {Client.ChannelID}, Client {Client.ClientID} : Connected to {Client.GetIPEndpoint()} exception", Exception);
 
 
                 }
@@ -136,7 +136,7 @@ namespace SampleUnityGameServer.Networks
             {
                 if (this.ClientConnections.TryGetValue(ClientID, out var Client))
                 {
-                    Logging.WriteLine($"Channel {Client.ChannelID}, Client {Client.ClientID} : Send to {Client.IPEndPoint} {DataSize} bytes");
+                    Logging.WriteLine($"Channel {Client.ChannelID}, Client {Client.ClientID} : Send to {Client.GetIPEndpoint()} {DataSize} bytes");
                 }
             }
         }
@@ -146,7 +146,7 @@ namespace SampleUnityGameServer.Networks
             {
                 if (this.ClientConnections.TryGetValue(ClientID, out var Client))
                 {
-                    Logging.WriteError($"Channel {Client.ChannelID}, Client {Client.ClientID} : Send to {Client.IPEndPoint} exception", Exception);
+                    Logging.WriteError($"Channel {Client.ChannelID}, Client {Client.ClientID} : Send to {Client.GetIPEndpoint()} exception", Exception);
                 }
             }
         }
@@ -156,7 +156,7 @@ namespace SampleUnityGameServer.Networks
             {
                 if (this.ClientConnections.TryGetValue(ClientID, out var Client))
                 {
-                    Logging.WriteLine($"Channel {Client.ChannelID}, Client {Client.ClientID} : Receive from {Client.IPEndPoint} {DataSize} bytes");
+                    Logging.WriteLine($"Channel {Client.ChannelID}, Client {Client.ClientID} : Receive from {Client.GetIPEndpoint()} {DataSize} bytes");
 
                     this.LogicGame.PacketHandler?.HandlePacket(ClientID, Data);
                 }
@@ -168,7 +168,7 @@ namespace SampleUnityGameServer.Networks
             {
                 if (this.ClientConnections.TryGetValue(ClientID, out var Client))
                 {
-                    Logging.WriteError($"Channel {Client.ChannelID}, Client {Client.ClientID} : Receive from {Client.IPEndPoint}", Exception);
+                    Logging.WriteError($"Channel {Client.ChannelID}, Client {Client.ClientID} : Receive from {Client.GetIPEndpoint()}", Exception);
                 }
             }
         }
