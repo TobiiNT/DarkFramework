@@ -26,6 +26,8 @@ namespace DarkSecurityNetwork
             this.EventSendException += this.EventConnectionSendException;
             this.EventReceiveSuccess += this.EventConnectionReceiveSuccess;
             this.EventReceiveException += this.EventConnectionReceiveException;
+            this.EventDisconnectSuccess += this.EventConnectionDisconnectSuccess;
+            this.EventDisconnectException += this.EventConnectionDisconnectException; 
             this.EventDisposeSuccess += this.EventConnectionDisposeSuccess;
             this.EventDisposeException += this.EventConnectionDisposeException;
 
@@ -175,7 +177,20 @@ namespace DarkSecurityNetwork
                 this.OnConnectionReceiveException(Args.Exception);
             }
         }
-
+        public void EventConnectionDisconnectSuccess(object Sender, EventArgs Arguments)
+        {
+            if (Arguments is DisconnectSuccessArgs Args)
+            {
+                this.OnConnectionDisconnectSuccess();
+            }
+        }
+        public void EventConnectionDisconnectException(object Sender, EventArgs Arguments)
+        {
+            if (Arguments is DisconnectExceptionArgs Args)
+            {
+                this.OnConnectionDisconnectException(Args.Exception);
+            }
+        }
         public void EventConnectionDisposeSuccess(object Sender, EventArgs Arguments)
         {
             if (Arguments is DisposeSuccessArgs Args)
@@ -208,6 +223,9 @@ namespace DarkSecurityNetwork
         public event ConnectionReceiveSuccess ConnectionReceiveSuccess;
         public event ConnectionReceiveException ConnectionReceiveException;
 
+        public event ConnectionDisconnectSuccess ConnectionDisconnectSuccess;
+        public event ConnectionDisconnectException ConnectionDisconnectException;
+
         public event ConnectionDisposeSuccess ConnectionDisposeSuccess;
         public event ConnectionDisposeException ConnectionDisposeException;
 
@@ -226,6 +244,9 @@ namespace DarkSecurityNetwork
 
         public void OnConnectionReceiveSuccess(int DataSize, byte[] Data) => ConnectionReceiveSuccess?.Invoke(ChannelID, ClientID, DataSize, Data);
         public void OnConnectionReceiveException(Exception Exception) => ConnectionReceiveException?.Invoke(ChannelID, ClientID, Exception);
+
+        public void OnConnectionDisconnectSuccess() => ConnectionDisconnectSuccess?.Invoke(ChannelID, ClientID);
+        public void OnConnectionDisconnectException(Exception Exception) => ConnectionDisconnectException?.Invoke(ChannelID, ClientID, Exception);
 
         public void OnConnectionDisposeSuccess(string Caller) => ConnectionDisposeSuccess?.Invoke(ChannelID, ClientID, Caller);
         public void OnConnectionDisposeException(string Caller, Exception Exception) => ConnectionDisposeException?.Invoke(ChannelID, ClientID, Caller, Exception);

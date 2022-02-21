@@ -25,6 +25,10 @@ namespace DarkNetwork.Connections.Events
 
         public event EventHandler EventStopException;
 
+        public event EventHandler EventDisconnectSuccess;
+                                          
+        public event EventHandler EventDisconnectException;
+
         public event EventHandler EventDisposeSuccess;
 
         public event EventHandler EventDisposeException;
@@ -39,6 +43,8 @@ namespace DarkNetwork.Connections.Events
         protected void OnReceiveException(object Sender, ReceiveExceptionArgs Event) => EventReceiveException?.Invoke(Sender, Event);
         protected void OnStopSuccess(object Sender, StopSuccessArgs Event) => EventStopSuccess?.Invoke(Sender, Event);
         protected void OnStopException(object Sender, StopExceptionArgs Event) => EventStopException?.Invoke(Sender, Event);
+        protected void OnDisconnectSuccess(object Sender, DisconnectSuccessArgs Event) => EventDisconnectSuccess?.Invoke(Sender, Event);
+        protected void OnDisconnectException(object Sender, DisconnectExceptionArgs Event) => EventDisconnectException?.Invoke(Sender, Event);
         protected void OnDisposeSuccess(object Sender, DisposeSuccessArgs Event) => EventDisposeSuccess?.Invoke(Sender, Event);
         protected void OnDisposeException(object Sender, DisposeExceptionArgs Event) => EventDisposeException?.Invoke(Sender, Event);
     }

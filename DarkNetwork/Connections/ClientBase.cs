@@ -22,6 +22,9 @@ namespace DarkNetwork.Connections
         private AsyncCallback OnSended { set; get; }
         private byte[] DataReceived { set; get; }
         private IPEndPoint IPEndPoint { set; get; }
+        private bool KeepAliveOn { set; get; }
+        private uint KeepAliveTime { set; get; }
+        private uint KeepAliveInterval { set; get; }
         private bool SocketIsRunning { set; get; }
         private bool IsDisposed { set; get; }
         public IPEndPoint GetIPEndpoint() => this.IPEndPoint;
@@ -40,11 +43,15 @@ namespace DarkNetwork.Connections
             this.ReceiveQueue = new ReceiveQueue();
             this.DataReceived = new byte[102400];
         }
-        protected void Start(string ServerIPAddress, int Port)
+        protected void Start(string ServerIPAddress, int Port, bool KeepAliveOn = true, uint KeepAliveTime = 20000, uint KeepAliveInterval = 20000)
         {
             try
             {
                 this.IPEndPoint = new IPEndPoint(IPAddress.Parse(ServerIPAddress), Port);
+
+                this.KeepAliveOn = KeepAliveOn;
+                this.KeepAliveTime = KeepAliveTime;
+                this.KeepAliveInterval = KeepAliveInterval;
 
                 this.Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
@@ -181,6 +188,11 @@ namespace DarkNetwork.Connections
                             this.Dispose();
                         }
                     }
+                    else
+                    {
+                        OnDisconnectSuccess(this, new DisconnectSuccessArgs());
+                        this.Dispose();
+                    }
                 }
                 catch (Exception Exception)
                 {
@@ -203,10 +215,12 @@ namespace DarkNetwork.Connections
         {
             try
             {
-                var InOptionValues = new byte[Marshal.SizeOf(0) * 3];
-                BitConverter.GetBytes((uint)1).CopyTo(InOptionValues, 0);
-                BitConverter.GetBytes((uint)20000).CopyTo(InOptionValues, Marshal.SizeOf(0));
-                BitConverter.GetBytes((uint)20000).CopyTo(InOptionValues, Marshal.SizeOf(0) * 2);
+                int size = Marshal.SizeOf(new uint());
+
+                var InOptionValues = new byte[size * 3];
+                BitConverter.GetBytes((uint)(this.KeepAliveOn ? 1 : 0)).CopyTo(InOptionValues, 0);
+                BitConverter.GetBytes(this.KeepAliveTime).CopyTo(InOptionValues, size);
+                BitConverter.GetBytes(this.KeepAliveInterval).CopyTo(InOptionValues, size * 2);
 
                 this.AsyncState |= AsyncStates.Pending;
                 this.Socket.IOControl(IOControlCode.KeepAliveValues, InOptionValues, null);
@@ -308,8 +322,6 @@ namespace DarkNetwork.Connections
                 OnReceiveException(this, new ReceiveExceptionArgs(Exception));
             }
         }
-
-      
 
         protected void StopConnection()
         {

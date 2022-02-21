@@ -23,6 +23,8 @@ namespace SampleUnityGameClient.Networks
             this.ConnectionSendException += this.OnConnectionSendException;
             this.ConnectionReceiveSuccess += this.OnConnectionReceiveSuccess;
             this.ConnectionReceiveException += this.OnConnectionReceiveException;
+            this.ConnectionDisconnectSuccess += this.OnConnectionDisconnectSuccess;
+            this.ConnectionDisconnectException += this.OnConnectionDisconnectException;
             this.ConnectionDisposeSuccess += this.OnConnectionDisposeSuccess;
             this.ConnectionDisposeException += this.OnConnectionDisposeException;
 
@@ -30,15 +32,15 @@ namespace SampleUnityGameClient.Networks
         }
         private void OnConnectionAuthenticationSuccess(ushort ChannelID, uint ClientID)
         {
-            Logging.WriteLine($"Channel {ChannelID}, Client {ClientID} : Setup secure connection success");
+            Logging.WriteLine($"Channel {ChannelID}, Client {ClientID} : Setup secured connection success");
         }
         private void OnConnectionAuthenticationFailed(ushort ChannelID, uint ClientID)
         {
-            Logging.WriteError($"Channel {ChannelID}, Client {ClientID} : Fail to setup secure connection");
+            Logging.WriteError($"Channel {ChannelID}, Client {ClientID} : Fail to setup secured connection");
         }
         private void OnConnectionAuthenticationException(ushort ChannelID, uint ClientID, Exception Exception)
         {
-            Logging.WriteError($"Channel {ChannelID}, Client {ClientID} : Setup secure connection exception", Exception);
+            Logging.WriteError($"Channel {ChannelID}, Client {ClientID} : Setup secured connection exception", Exception);
         }
         private void OnConnectionStartSuccess(ushort ChannelID, uint ClientID)
         {
@@ -59,20 +61,30 @@ namespace SampleUnityGameClient.Networks
         }
         private void OnConnectionSendSuccess(ushort ChannelID, uint ClientID, int DataSize)
         {
-            Logging.WriteLine($"Channel {ChannelID}, Client {ClientID} : Send to {this.GetIPEndpoint()} {DataSize} bytes");
+            Logging.WriteLine($"Channel {ChannelID}, Client {ClientID} : Sent to {this.GetIPEndpoint()} {DataSize} bytes");
         }
         private void OnConnectionSendException(ushort ChannelID, uint ClientID, Exception Exception)
         {
-            Logging.WriteError($"Channel {ChannelID}, Client {ClientID} : Send to {this.GetIPEndpoint()} exception", Exception);
+            Logging.WriteError($"Channel {ChannelID}, Client {ClientID} : Sent to {this.GetIPEndpoint()} exception", Exception);
         }
         private void OnConnectionReceiveSuccess(ushort ChannelID, uint ClientID, int DataSize, byte[] Data)
         {
-            Logging.WriteLine($"Channel {ChannelID}, Client {ClientID} : Receive from {this.GetIPEndpoint()} {DataSize} bytes");
+            Logging.WriteLine($"Channel {ChannelID}, Client {ClientID} : Received from {this.GetIPEndpoint()} {DataSize} bytes");
             this.LogicGame.PacketHandler?.HandlePacket(Data);
         }
         private void OnConnectionReceiveException(ushort ChannelID, uint ClientID, Exception Exception)
         {
-            Logging.WriteError($"Channel {ChannelID}, Client {ClientID} : Receive from {this.GetIPEndpoint()}", Exception);
+            Logging.WriteError($"Channel {ChannelID}, Client {ClientID} : Received from {this.GetIPEndpoint()}", Exception);
+        }
+        private void OnConnectionDisconnectSuccess(ushort ChannelID, uint ClientID)
+        {
+            Logging.WriteLine($"Channel {ChannelID}, Client {ClientID} : Disconnected from {this.GetIPEndpoint()}");
+            this.LogicGame.PacketHandler?.HandleDisconnect();
+        }
+        private void OnConnectionDisconnectException(ushort ChannelID, uint ClientID, Exception Exception)
+        {
+            Logging.WriteError($"Channel {ChannelID}, Client {ClientID} : Disconnected from {this.GetIPEndpoint()}", Exception);
+            this.LogicGame.PacketHandler?.HandleDisconnect();
         }
         private void OnConnectionDisposeSuccess(ushort ChannelID, uint ClientID, string Caller)
         {

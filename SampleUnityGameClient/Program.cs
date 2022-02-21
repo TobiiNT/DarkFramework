@@ -14,6 +14,7 @@ namespace SampleUnityGameClient
             var AllClients = new List<ClientGame>();
 
             var IPAddress = "127.0.0.1";
+            Console.Write("Write port: ");
             int Port = int.Parse(Console.ReadLine());
 
             var ClientGame = new ClientGame();
