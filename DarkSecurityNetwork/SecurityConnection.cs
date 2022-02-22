@@ -27,7 +27,7 @@ namespace DarkSecurityNetwork
             this.EventReceiveSuccess += this.EventConnectionReceiveSuccess;
             this.EventReceiveException += this.EventConnectionReceiveException;
             this.EventDisconnectSuccess += this.EventConnectionDisconnectSuccess;
-            this.EventDisconnectException += this.EventConnectionDisconnectException; 
+            this.EventDisconnectException += this.EventConnectionDisconnectException;
             this.EventDisposeSuccess += this.EventConnectionDisposeSuccess;
             this.EventDisposeException += this.EventConnectionDisposeException;
 

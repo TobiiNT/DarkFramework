@@ -19,15 +19,13 @@ namespace DarkSecurity.Services.RSA
 
             try
             {
-                using (var RSAprovider = new RSACryptoServiceProvider(KeySize))
-                {
-                    var PublicKeyRaw = RSAprovider.ToXmlString(false);
-                    var PrivateKeyRaw = RSAprovider.ToXmlString(true);
-                    var PublicKeyWithSize = IncludeKeyInEncryptionString(PublicKeyRaw, KeySize);
-                    var PrivateKeyWithSize = IncludeKeyInEncryptionString(PrivateKeyRaw, KeySize);
+                using var RSAprovider = new RSACryptoServiceProvider(KeySize);
+                var PublicKeyRaw = RSAprovider.ToXmlString(false);
+                var PrivateKeyRaw = RSAprovider.ToXmlString(true);
+                var PublicKeyWithSize = IncludeKeyInEncryptionString(PublicKeyRaw, KeySize);
+                var PrivateKeyWithSize = IncludeKeyInEncryptionString(PrivateKeyRaw, KeySize);
 
-                    return new RSAKey(PublicKeyWithSize, PrivateKeyWithSize);
-                }
+                return new RSAKey(PublicKeyWithSize, PrivateKeyWithSize);
             }
             catch (Exception Exception)
             {

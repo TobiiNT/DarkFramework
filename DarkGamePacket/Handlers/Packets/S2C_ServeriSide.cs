@@ -11,6 +11,6 @@ namespace DarkGamePacket.Servers.Packets
         [PacketType(PacketID.CHAT_MESSAGE)]
         public static byte[] ChatMessageResponse(ICoreResponse Response) => PacketSerializer.Serialize(Response as S2C_ChatMessage);
 
-        
+
     }
 }

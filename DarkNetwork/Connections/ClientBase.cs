@@ -22,9 +22,10 @@ namespace DarkNetwork.Connections
         private AsyncCallback OnSended { set; get; }
         private byte[] DataReceived { set; get; }
         private IPEndPoint IPEndPoint { set; get; }
-        private bool KeepAliveOn { set; get; }
-        private uint KeepAliveTime { set; get; }
-        private uint KeepAliveInterval { set; get; }
+        private bool KeepAliveOn { set; get; } = true;
+        private int KeepAliveTime { set; get; } = 20000;
+        private int KeepAliveInterval { set; get; } = 20000;
+        private int KeepAliveRetryCount { set; get; } = 10;
         private bool SocketIsRunning { set; get; }
         private bool IsDisposed { set; get; }
         public IPEndPoint GetIPEndpoint() => this.IPEndPoint;
@@ -43,7 +44,7 @@ namespace DarkNetwork.Connections
             this.ReceiveQueue = new ReceiveQueue();
             this.DataReceived = new byte[102400];
         }
-        protected void Start(string ServerIPAddress, int Port, bool KeepAliveOn = true, uint KeepAliveTime = 20000, uint KeepAliveInterval = 20000)
+        protected void Start(string ServerIPAddress, int Port, bool KeepAliveOn = true, int KeepAliveTime = 20000, int KeepAliveInterval = 20000)
         {
             try
             {
@@ -211,19 +212,17 @@ namespace DarkNetwork.Connections
                 this.InternalBeginReceive();
             }
         }
+
         private void InternalBeginReceive()
         {
             try
             {
-                int size = Marshal.SizeOf(new uint());
-
-                var InOptionValues = new byte[size * 3];
-                BitConverter.GetBytes((uint)(this.KeepAliveOn ? 1 : 0)).CopyTo(InOptionValues, 0);
-                BitConverter.GetBytes(this.KeepAliveTime).CopyTo(InOptionValues, size);
-                BitConverter.GetBytes(this.KeepAliveInterval).CopyTo(InOptionValues, size * 2);
-
                 this.AsyncState |= AsyncStates.Pending;
-                this.Socket.IOControl(IOControlCode.KeepAliveValues, InOptionValues, null);
+                this.Socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, this.KeepAliveOn);
+                this.Socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveTime, this.KeepAliveTime);
+                this.Socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveInterval, this.KeepAliveInterval);
+                this.Socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveRetryCount, this.KeepAliveRetryCount);
+
                 this.Socket.BeginReceive(this.DataReceived, 0, this.DataReceived.Length, SocketFlags.None, out var Result, this.OnReceived, this.Socket);
             }
             catch (Exception Exception)
@@ -297,11 +296,9 @@ namespace DarkNetwork.Connections
                                             CurrentPacketData[CurrentPacketLength - 1] == 170 &&
                                             CurrentPacketData[CurrentPacketLength - 2] == 85)
                                         {
-                                            using (var Packet = new NetworkPacketReader(CurrentPacketData))
-                                            {
-                                                var MainData = Packet.ReadBytes();
-                                                OnReceiveSuccess(this, new ReceiveSuccessArgs(CurrentPacketLength, MainData));
-                                            }
+                                            using var Packet = new NetworkPacketReader(CurrentPacketData);
+                                            var MainData = Packet.ReadBytes();
+                                            OnReceiveSuccess(this, new ReceiveSuccessArgs(CurrentPacketLength, MainData));
                                             continue;
                                         }
                                         this.ReceiveQueue.Clear();

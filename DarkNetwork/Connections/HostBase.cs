@@ -106,13 +106,11 @@ namespace DarkNetwork.Connections
 
         private void ResetSocket()
         {
-            using (var EventArgs = new SocketAsyncEventArgs())
-            {
-                EventArgs.UserToken = this;
-                EventArgs.Completed += new EventHandler<SocketAsyncEventArgs>(AcceptSocket);
+            using var EventArgs = new SocketAsyncEventArgs();
+            EventArgs.UserToken = this;
+            EventArgs.Completed += new EventHandler<SocketAsyncEventArgs>(AcceptSocket);
 
-                this.Socket.AcceptAsync(EventArgs);
-            }
+            this.Socket.AcceptAsync(EventArgs);
         }
     }
 }

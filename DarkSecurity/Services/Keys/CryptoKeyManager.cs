@@ -6,7 +6,7 @@ using System;
 
 namespace DarkSecurity.Services.Keys
 {
-    public class CryptoKeyManager<T> : ICryptoKeyManager where T : ICryptoKey 
+    public class CryptoKeyManager<T> : ICryptoKeyManager where T : ICryptoKey
     {
         public ICryptoKey CryptoKey { private set; get; }
 

@@ -11,22 +11,20 @@ namespace DarkSecurityNetwork.Networks.Packets
         public byte[] Data { get; }
         public PacketServerSendAsymmetricKey(ICryptoKey CryptoKey, ushort ChannelID, uint ClientID, CryptoKeySize SymmetricKeySize)
         {
-            using (var Packet = new PacketWriter())
+            using var Packet = new PacketWriter();
+            Packet.WriteShort((byte)ProtocolFunction.ServerSendAsymmetricKeyToClient);
+            Packet.WriteUShort(ChannelID);
+            Packet.WriteUInt(ClientID);
+
+            if (CryptoKey is RSAKey RSAKey)
             {
-                Packet.WriteShort((byte)ProtocolFunction.ServerSendAsymmetricKeyToClient);
-                Packet.WriteUShort(ChannelID);
-                Packet.WriteUInt(ClientID);
-
-                if (CryptoKey is RSAKey RSAKey)
-                {
-                    Packet.WriteString(RSAKey.PublicKeyRaw);
-                }
-                else return;
-
-                Packet.WriteUInt((ushort)SymmetricKeySize);
-
-                Data = Packet.GetPacketData();
+                Packet.WriteString(RSAKey.PublicKeyRaw);
             }
+            else return;
+
+            Packet.WriteUInt((ushort)SymmetricKeySize);
+
+            Data = Packet.GetPacketData();
         }
     }
 }

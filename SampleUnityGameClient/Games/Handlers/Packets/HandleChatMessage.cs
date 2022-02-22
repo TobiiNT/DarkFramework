@@ -14,7 +14,7 @@ namespace SampleUnityGameClient.Games.PacketDefinitions
 
         public override bool HandlePacket(S2C_ChatMessage Request)
         {
-            Logging.WriteLine($"Chat : {Request.Message}");
+            Logging.WriteLine($"Chat: [{Request.ClientID}]: {Request.Message}");
             return true;
         }
     }

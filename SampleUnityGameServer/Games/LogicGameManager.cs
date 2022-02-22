@@ -17,7 +17,6 @@ namespace SampleUnityGameServer.Games
             try
             {
                 var LogicGame = new LogicGame();
-                //LogicGame.Initialize();
 
                 ChannelGame.ImportGame(LogicGame);
 

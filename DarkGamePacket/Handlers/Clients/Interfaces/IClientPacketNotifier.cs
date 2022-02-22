@@ -2,6 +2,6 @@
 {
     public interface IClientPacketNotifier
     {
-        void NotifyChatMessage(byte MessageType, string Message);
+        void NotifyChatMessage(uint ClientID, byte MessageType, string Message);
     }
 }

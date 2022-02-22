@@ -2,8 +2,8 @@
 
 namespace DarkSecurityNetwork.Events.Arguments
 {
-    public class AuthSuccessArgs :EventArgs
+    public class AuthSuccessArgs : EventArgs
     {
-        
+
     }
 }

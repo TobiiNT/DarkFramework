@@ -10,6 +10,6 @@ namespace DarkGamePacket.Servers.Packets
         [PacketType(PacketID.CHAT_MESSAGE)]
         public static C2S_ChatMessage ChatMessageRequest(byte[] Data) => PacketDeserializer.Deserialize<C2S_ChatMessage>(Data);
 
-       
+
     }
 }

@@ -12,7 +12,7 @@ namespace DarkSecurityNetwork.Interfaces
         event EventHandler EventAuthFailed;
 
         void OnChannelData(object Sender, ChannelDataArgs Event);
-        void OnSendData(object Sender, SendDataArgs Event) ;
+        void OnSendData(object Sender, SendDataArgs Event);
         void OnAuthException(object Sender, AuthExceptionArgs Event);
         void OnAuthSuccess(object Sender, AuthSuccessArgs Event);
         void OnAuthFailed(object Sender, AuthFailedArgs Event);

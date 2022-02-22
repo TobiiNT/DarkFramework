@@ -52,12 +52,10 @@ namespace DarkSecurity.Services.RSA
                 throw new ArgumentException("Key is null or empty", "PublicKey");
             }
 
-            using (var RSAServiceProvider = new RSACryptoServiceProvider(CryptoKey.PublicKeySize))
-            {
-                RSAServiceProvider.FromXmlString(CryptoKey.PublicKeyXml);
+            using var RSAServiceProvider = new RSACryptoServiceProvider(CryptoKey.PublicKeySize);
+            RSAServiceProvider.FromXmlString(CryptoKey.PublicKeyXml);
 
-                return RSAServiceProvider.Encrypt(Data, false);
-            }
+            return RSAServiceProvider.Encrypt(Data, false);
         }
         private byte[] DecryptData(RSAKey CryptoKey, byte[] Data)
         {
@@ -70,18 +68,16 @@ namespace DarkSecurity.Services.RSA
             {
                 throw new ArgumentException("Key size is not valid", "KeySize");
             }
-            
+
             if (string.IsNullOrEmpty(CryptoKey.PrivateKeyXml))
             {
                 throw new ArgumentException("Key is null or empty", "PrivateKey");
             }
 
-            using (var RSAServiceProvider = new RSACryptoServiceProvider(CryptoKey.PrivateKeySize))
-            {
-                RSAServiceProvider.FromXmlString(CryptoKey.PrivateKeyXml);
+            using var RSAServiceProvider = new RSACryptoServiceProvider(CryptoKey.PrivateKeySize);
+            RSAServiceProvider.FromXmlString(CryptoKey.PrivateKeyXml);
 
-                return RSAServiceProvider.Decrypt(Data, false);
-            }
+            return RSAServiceProvider.Decrypt(Data, false);
         }
 
         private int GetMaxDataLength(int KeySize) => ((KeySize - 384) / 8) + 37;

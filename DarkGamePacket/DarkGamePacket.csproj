@@ -1,18 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="protobuf-net" Version="3.0.29" />
+    <PackageReference Include="protobuf-net" Version="3.0.101" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DarkNetwork\DarkNetwork.csproj" />
     <ProjectReference Include="..\DarkPacket\DarkPacket.csproj" />
     <ProjectReference Include="..\DarkSecurityNetwork\DarkSecurityNetwork.csproj" />
-    <ProjectReference Include="..\DarkThread\DarkThreading.csproj" />
+    <ProjectReference Include="..\DarkThreading\DarkThreading.csproj" />
   </ItemGroup>
 
 </Project>

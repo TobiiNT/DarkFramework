@@ -10,7 +10,7 @@ namespace SampleUnityGameClient.Networks
     {
         public LogicGame LogicGame { private set; get; }
         public IClientPacketHandler PacketHandlerManager { private set; get; }
-        public ClientGame() 
+        public ClientGame()
         {
             this.AuthenticationSuccess += this.OnConnectionAuthenticationSuccess;
             this.AuthenticationFailed += this.OnConnectionAuthenticationFailed;

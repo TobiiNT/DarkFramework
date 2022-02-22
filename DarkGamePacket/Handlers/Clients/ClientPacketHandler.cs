@@ -100,7 +100,7 @@ namespace DarkGamePacket.Handlers.Clients
             using var Reader = new NormalPacketReader(Data);
             var PacketID = (PacketID)Reader.ReadUShort();
             var PacketData = Reader.ReadBytes();
-       
+
             var ResponseHandle = GetResponseHandle(PacketID);
 
             if (ResponseHandle != null)

@@ -4,19 +4,20 @@ using DarkGamePacket.Servers.Interfaces;
 
 namespace DarkGamePacket.Servers
 {
-    public class ServerPacketNotifier : IServerPacketNotifier 
+    public class ServerPacketNotifier : IServerPacketNotifier
     {
         private readonly IServerPacketHandler PacketHandler;
 
         public ServerPacketNotifier(IServerPacketHandler PacketHandlerManager)
         {
-            this.PacketHandler = PacketHandlerManager;            
+            this.PacketHandler = PacketHandlerManager;
         }
 
         public void NotifyChatMessage(uint ClientID, byte MessageType, string Message)
         {
             var MessageData = new S2C_ChatMessage()
             {
+                ClientID = ClientID,
                 MessageType = MessageType,
                 Message = Message
             };

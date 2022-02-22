@@ -20,7 +20,7 @@ namespace DarkGamePacket.Servers
         private readonly ThreadSafeDictionary<uint, SecurityConnection<ServerSecurityNetwork>> ClientPlayers;
 
 
-        private readonly Dictionary<PacketID, RequestHandle> RequestTable;        
+        private readonly Dictionary<PacketID, RequestHandle> RequestTable;
         private delegate ICoreRequest RequestHandle(byte[] data);
 
         private readonly Dictionary<PacketID, ResponseHandle> ResponseTable;
@@ -92,7 +92,7 @@ namespace DarkGamePacket.Servers
                 if (this.ClientPlayers.TryGetValue(ClientID, out var Connection))
                 {
                     dynamic HandleResponse = ResponseHandle(Response);
-                    
+
                     using var Packet = new PacketWriter();
                     Packet.WriteUShort((ushort)PacketID);
                     Packet.WriteBytes(HandleResponse);

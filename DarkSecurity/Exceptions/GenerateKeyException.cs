@@ -7,7 +7,7 @@ namespace DarkSecurity.Exceptions
     [Serializable]
     public class GenerateKeyException : Exception
     {
-        public GenerateKeyException(ICryptoKeyGenerator CryptoKeyGenerator, ICryptoKey CryptoKey, CryptoKeySize CryptoKeySize, Exception Exception) : 
+        public GenerateKeyException(ICryptoKeyGenerator CryptoKeyGenerator, ICryptoKey CryptoKey, CryptoKeySize CryptoKeySize, Exception Exception) :
             base($"Exception while {CryptoKeyGenerator} generating {CryptoKey} with {CryptoKeySize}", Exception)
         {
             this.Data.Add("CryptoKeyGenerator", CryptoKeyGenerator);

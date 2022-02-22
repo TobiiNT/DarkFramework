@@ -18,44 +18,42 @@ namespace DarkSecurityNetwork.Networks
         {
             try
             {
-                using (var Packet = new NormalPacketReader(Data))
+                using var Packet = new NormalPacketReader(Data);
+                var Function = (ProtocolFunction)Packet.ReadShort();
+
+                switch (Function)
                 {
-                    var Function = (ProtocolFunction)Packet.ReadShort();
+                    case ProtocolFunction.ServerSendAsymmetricKeyToClient:
+                        {
+                            var ChannelID = Packet.ReadUShort();
+                            var ClientID = Packet.ReadUInt();
+                            var RawPublicKey = Packet.ReadString();
+                            var SymmetricKeySize = (CryptoKeySize)Packet.ReadUInt();
 
-                    switch (Function)
-                    {
-                        case ProtocolFunction.ServerSendAsymmetricKeyToClient:
-                            {
-                                var ChannelID = Packet.ReadUShort();
-                                var ClientID = Packet.ReadUInt();
-                                var RawPublicKey = Packet.ReadString();
-                                var SymmetricKeySize = (CryptoKeySize)Packet.ReadUInt();
+                            this.GenerateNewSymmetricKey(SymmetricKeySize);
+                            this.ImportChannelAndClientData(ChannelID, ClientID);
+                            this.ImportAsymmetricKeyFromServer(RawPublicKey);
+                            this.SendSymmetricKeyToServer();
+                        }
+                        break;
 
-                                this.GenerateNewSymmetricKey(SymmetricKeySize);
-                                this.ImportChannelAndClientData(ChannelID, ClientID);
-                                this.ImportAsymmetricKeyFromServer(RawPublicKey);
-                                this.SendSymmetricKeyToServer();
-                            }
-                            break;
+                    case ProtocolFunction.ServerSendMessageTest:
+                        {
+                            var Message = Packet.ReadBytes();
 
-                        case ProtocolFunction.ServerSendMessageTest:
-                            {
-                                var Message = Packet.ReadBytes();
+                            this.SendMessageTestVerifyToServer(Message);
+                        }
+                        break;
 
-                                this.SendMessageTestVerifyToServer(Message);
-                            }
-                            break;
+                    case ProtocolFunction.ServerSendAuthenticationComplete:
+                        {
+                            this.CompleteAuthentication();
+                        }
+                        break;
 
-                        case ProtocolFunction.ServerSendAuthenticationComplete:
-                            {
-                                this.CompleteAuthentication();
-                            }
-                            break;
-
-                        default:
-                            OnAuthFailed(this, new AuthFailedArgs("Manage packet", "Invalid packet"));
-                            break;
-                    }
+                    default:
+                        OnAuthFailed(this, new AuthFailedArgs("Manage packet", "Invalid packet"));
+                        break;
                 }
             }
             catch (Exception Exception)

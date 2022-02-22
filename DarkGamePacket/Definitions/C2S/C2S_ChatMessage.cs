@@ -7,8 +7,10 @@ namespace DarkGamePacket.Definitions.C2S
     public class C2S_ChatMessage : ICoreRequest
     {
         [ProtoMember(1)]
-        public byte MessageType;
+        public uint ClientID;
         [ProtoMember(2)]
+        public byte MessageType;
+        [ProtoMember(3)]
         public string Message;
     }
 }

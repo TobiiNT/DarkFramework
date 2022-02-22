@@ -8,12 +8,10 @@ namespace DarkSecurityNetwork.Networks.Packets
         public byte[] Data { get; }
         public PacketServerSendAuthenticationComplete()
         {
-            using (var Packet = new PacketWriter())
-            {
-                Packet.WriteShort((byte)ProtocolFunction.ServerSendAuthenticationComplete);
+            using var Packet = new PacketWriter();
+            Packet.WriteShort((byte)ProtocolFunction.ServerSendAuthenticationComplete);
 
-                Data = Packet.GetPacketData();
-            }
+            Data = Packet.GetPacketData();
         }
     }
 }

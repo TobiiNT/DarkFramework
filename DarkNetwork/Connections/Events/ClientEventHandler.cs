@@ -26,7 +26,7 @@ namespace DarkNetwork.Connections.Events
         public event EventHandler EventStopException;
 
         public event EventHandler EventDisconnectSuccess;
-                                          
+
         public event EventHandler EventDisconnectException;
 
         public event EventHandler EventDisposeSuccess;

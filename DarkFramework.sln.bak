@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DarkSecurity", "DarkSecurit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DarkSecurityNetwork", "DarkSecurityNetwork\DarkSecurityNetwork.csproj", "{FE27A2B9-79F3-4E12-95E5-A9C5F82A516A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DarkThreading", "DarkThreading\DarkThreading.csproj", "{38B07960-90BF-4DF3-853F-6CCFD29B29CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DarkThreading", "DarkThread\DarkThreading.csproj", "{38B07960-90BF-4DF3-853F-6CCFD29B29CC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DarkWorld", "DarkWorld", "{B2AE5F7C-5801-456A-BACF-74DC904A54F2}"
 EndProject

@@ -15,13 +15,9 @@ namespace DarkSecurity.Services.AES
             {
                 try
                 {
-                    using (var AES = this.CreateCryptoraphyService(Key))
-                    {
-                        using (var Encryptor = AES.CreateEncryptor(AES.Key, AES.IV))
-                        {
-                            Data = PerformCryptography(Data, Encryptor);
-                        }
-                    }
+                    using var AES = this.CreateCryptoraphyService(Key);
+                    using var Encryptor = AES.CreateEncryptor(AES.Key, AES.IV);
+                    Data = PerformCryptography(Data, Encryptor);
                 }
                 catch (Exception Exception)
                 {
@@ -38,13 +34,9 @@ namespace DarkSecurity.Services.AES
             {
                 try
                 {
-                    using (var AES = this.CreateCryptoraphyService(Key))
-                    {
-                        using (var Decryptor = AES.CreateDecryptor(AES.Key, AES.IV))
-                        {
-                            Data = PerformCryptography(Data, Decryptor);
-                        }
-                    }
+                    using var AES = this.CreateCryptoraphyService(Key);
+                    using var Decryptor = AES.CreateDecryptor(AES.Key, AES.IV);
+                    Data = PerformCryptography(Data, Decryptor);
                 }
                 catch (Exception Exception)
                 {
@@ -66,16 +58,12 @@ namespace DarkSecurity.Services.AES
         }
         private byte[] PerformCryptography(byte[] Data, ICryptoTransform CryptoTransform)
         {
-            using (var MemoryStream = new MemoryStream())
-            {
-                using (var CryptoStream = new CryptoStream(MemoryStream, CryptoTransform, CryptoStreamMode.Write))
-                {
-                    CryptoStream.Write(Data, 0, Data.Length);
-                    CryptoStream.FlushFinalBlock();
+            using var MemoryStream = new MemoryStream();
+            using var CryptoStream = new CryptoStream(MemoryStream, CryptoTransform, CryptoStreamMode.Write);
+            CryptoStream.Write(Data, 0, Data.Length);
+            CryptoStream.FlushFinalBlock();
 
-                    return MemoryStream.ToArray();
-                }
-            }
+            return MemoryStream.ToArray();
         }
     }
 }

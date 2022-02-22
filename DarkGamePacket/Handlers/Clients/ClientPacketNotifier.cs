@@ -13,10 +13,11 @@ namespace DarkGamePacket.Handlers.Clients
             this.PacketHandlerManager = PacketHandlerManager;
         }
 
-        public void NotifyChatMessage(byte MessageType, string Message)
+        public void NotifyChatMessage(uint ClientID, byte MessageType, string Message)
         {
             var MessageData = new C2S_ChatMessage()
             {
+                ClientID = ClientID,
                 MessageType = MessageType,
                 Message = Message
             };

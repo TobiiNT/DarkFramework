@@ -31,35 +31,33 @@ namespace DarkSecurityNetwork.Networks
             {
                 this.DecryptDataWithAsymmetricPrivateKey(ref Data);
 
-                using (var Packet = new NormalPacketReader(Data))
+                using var Packet = new NormalPacketReader(Data);
+                var Function = (ProtocolFunction)Packet.ReadShort();
+
+                switch (Function)
                 {
-                    var Function = (ProtocolFunction)Packet.ReadShort();
+                    case ProtocolFunction.ClientSendSymmetricKeyToServer:
+                        {
+                            var KeySize = Packet.ReadInt();
+                            var Key = Packet.ReadBytes();
+                            var IV = Packet.ReadBytes();
 
-                    switch (Function)
-                    {
-                        case ProtocolFunction.ClientSendSymmetricKeyToServer:
-                            {
-                                var KeySize = Packet.ReadInt();
-                                var Key = Packet.ReadBytes();
-                                var IV = Packet.ReadBytes();
+                            this.ImportSymmetricKeyFromClient(KeySize, Key, IV);
+                            this.SendRandomMessageTest();
+                        }
+                        break;
 
-                                this.ImportSymmetricKeyFromClient(KeySize, Key, IV);
-                                this.SendRandomMessageTest();
-                            }
-                            break;
+                    case ProtocolFunction.ClientSendMessageTestVerify:
+                        {
+                            var MessageVerify = Packet.ReadBytes();
 
-                        case ProtocolFunction.ClientSendMessageTestVerify:
-                            {
-                                var MessageVerify = Packet.ReadBytes();
+                            this.VerifyMessageTest(MessageVerify);
+                        }
+                        break;
 
-                                this.VerifyMessageTest(MessageVerify);
-                            }
-                            break;
-
-                        default:
-                            OnAuthFailed(this, new AuthFailedArgs("Manage packet", "Invalid packet"));
-                            break;
-                    }
+                    default:
+                        OnAuthFailed(this, new AuthFailedArgs("Manage packet", "Invalid packet"));
+                        break;
                 }
             }
             catch (Exception Exception)
@@ -112,8 +110,7 @@ namespace DarkSecurityNetwork.Networks
         {
             try
             {
-                var data = new byte[4];
-                new RNGCryptoServiceProvider().GetBytes(data);
+                var data = RandomNumberGenerator.GetBytes(4);
                 var Randomizer = new Random(BitConverter.ToInt32(data, 0));
 
                 this.MessageTest = new byte[MessageTestLength];

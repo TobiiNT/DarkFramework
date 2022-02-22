@@ -43,9 +43,9 @@ namespace DarkSecurity.Services.RSA
                         this.PrivateKeySize = int.Parse(KeyArrays[0]);
                         this.PrivateKeyXml = KeyArrays[1];
                     }
-                    catch (Exception Exception)
+                    catch
                     {
-                        throw Exception;
+                        throw;
                     }
                 }
             }
@@ -60,9 +60,9 @@ namespace DarkSecurity.Services.RSA
                         this.PublicKeySize = int.Parse(KeyArrays[0]);
                         this.PublicKeyXml = KeyArrays[1];
                     }
-                    catch (Exception Exception)
+                    catch
                     {
-                        throw Exception;
+                        throw;
                     }
                 }
             }

@@ -60,11 +60,9 @@ namespace DarkPacket.Writer
         }
         public virtual byte[] GetPacketData()
         {
-            using (var OutputStream = new MemoryStream())
-            {
-                OutputStream.Write(this.DataStream.ToArray(), 0, (int)this.DataStream.Length);
-                return OutputStream.ToArray();
-            }
+            using var OutputStream = new MemoryStream();
+            OutputStream.Write(this.DataStream.ToArray(), 0, (int)this.DataStream.Length);
+            return OutputStream.ToArray();
         }
         public void Dispose() => this.DataStream.Dispose();
     }

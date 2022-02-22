@@ -18,15 +18,13 @@ namespace DarkSecurity.Services.AES
 
             try
             {
-                using (var AES = new AesManaged())
-                {
-                    AES.KeySize = KeySize;
+                using var AES = Aes.Create();
+                AES.KeySize = KeySize;
 
-                    AES.GenerateKey();
-                    AES.GenerateIV();
+                AES.GenerateKey();
+                AES.GenerateIV();
 
-                    return new AESKey(AES.KeySize, AES.Key, AES.IV);
-                }
+                return new AESKey(AES.KeySize, AES.Key, AES.IV);
             }
             catch (Exception Exception)
             {

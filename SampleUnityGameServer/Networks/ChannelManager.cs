@@ -7,7 +7,7 @@ using DarkThreading;
 namespace SampleUnityGameServer.Networks
 {
     public class ChannelManager
-    { 
+    {
         private UniqueIDFactory ChannelUniqueIDFactory { get; }
         private UniqueIDFactory ClientUniqueIDFactory { get; }
         public ThreadSafeDictionary<ushort, ChannelGame> Channels { set; get; }
@@ -26,7 +26,6 @@ namespace SampleUnityGameServer.Networks
                 var Channel = CreateNewChannel(Capacity);
 
                 Channel.StartListening(Port, 10000);
-                //Channel.ImportGame(new Games.LogicGame());
 
                 if (!this.Channels.ContainsKey(Channel.ChannelID))
                 {
@@ -68,7 +67,7 @@ namespace SampleUnityGameServer.Networks
             return Channel;
         }
 
-        
+
 
         private void OnServerAcceptSuccess(ushort ChannelID, Socket Socket)
         {

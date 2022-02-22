@@ -50,9 +50,9 @@ namespace DarkSecurityNetwork.Protocols
                     this.SymmetricService.ImportKey(CryptoKey, true);
                 }
             }
-            catch (Exception Exception)
+            catch
             {
-                throw Exception;
+                throw;
             }
         }
 
@@ -69,14 +69,14 @@ namespace DarkSecurityNetwork.Protocols
                     this.AsymmetricService.GenerateKey(CryptoKeySize, true);
                 }
             }
-            catch (Exception Exception)
+            catch
             {
-                throw Exception;
+                throw;
             }
         }
 
         public void GenerateNewSymmetricKey(CryptoKeySize CryptoKeySize) => throw new ServiceNotSupportedException("GenerateSymmetricKey", this);
-        
+
 
         public void EncryptDataWithAsymmetricPublicKey(ref byte[] Data)
         {
@@ -91,9 +91,9 @@ namespace DarkSecurityNetwork.Protocols
                     this.AsymmetricService.Encrypt(ref Data);
                 }
             }
-            catch (Exception Exception)
+            catch
             {
-                throw Exception;
+                throw;
             }
         }
 
@@ -110,9 +110,9 @@ namespace DarkSecurityNetwork.Protocols
                     this.AsymmetricService.Decrypt(ref Data);
                 }
             }
-            catch (Exception Exception)
+            catch
             {
-                throw Exception;
+                throw;
             }
         }
 
@@ -129,9 +129,9 @@ namespace DarkSecurityNetwork.Protocols
                     this.SymmetricService.Encrypt(ref Data);
                 }
             }
-            catch (Exception Exception)
+            catch
             {
-                throw Exception;
+                throw;
             }
         }
 
@@ -148,9 +148,9 @@ namespace DarkSecurityNetwork.Protocols
                     this.SymmetricService.Decrypt(ref Data);
                 }
             }
-            catch (Exception Exception)
+            catch
             {
-                throw Exception;
+                throw;
             }
         }
     }

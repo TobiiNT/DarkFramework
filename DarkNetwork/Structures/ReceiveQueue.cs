@@ -110,7 +110,7 @@ namespace DarkNetwork.Structures
         public short GetCurrentPacketSize()
         {
             try
-            {                
+            {
                 return BitConverter.ToInt16(BufferData, this._Head + 2);
             }
             catch (Exception)
@@ -119,6 +119,6 @@ namespace DarkNetwork.Structures
             }
         }
 
-        
+
     }
 }

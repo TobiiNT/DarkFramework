@@ -13,20 +13,18 @@ namespace DarkSecurityNetwork.Networks.Packets
             if (CryptoKey == null)
                 return;
 
-            using (var Packet = new PacketWriter())
+            using var Packet = new PacketWriter();
+            Packet.WriteShort((byte)ProtocolFunction.ClientSendSymmetricKeyToServer);
+
+            if (CryptoKey is AESKey AESKey)
             {
-                Packet.WriteShort((byte)ProtocolFunction.ClientSendSymmetricKeyToServer);
-
-                if (CryptoKey is AESKey AESKey)
-                {
-                    Packet.WriteInt(AESKey.KeySize);
-                    Packet.WriteBytes(AESKey.Key);
-                    Packet.WriteBytes(AESKey.IV);
-                }
-                else return;
-
-                Data = Packet.GetPacketData();
+                Packet.WriteInt(AESKey.KeySize);
+                Packet.WriteBytes(AESKey.Key);
+                Packet.WriteBytes(AESKey.IV);
             }
+            else return;
+
+            Data = Packet.GetPacketData();
         }
     }
 }

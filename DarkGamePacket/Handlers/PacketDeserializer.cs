@@ -11,10 +11,8 @@ namespace DarkGamePacket.Handlers
 
             try
             {
-                using (var stream = new MemoryStream(data))
-                {
-                    return Serializer.Deserialize<T>(stream);
-                }
+                using var stream = new MemoryStream(data);
+                return Serializer.Deserialize<T>(stream);
             }
             catch { throw; }
         }

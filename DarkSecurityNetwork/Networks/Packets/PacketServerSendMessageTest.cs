@@ -8,13 +8,11 @@ namespace DarkSecurityNetwork.Networks.Packets
         public byte[] Data { get; }
         public PacketServerSendMessageTest(byte[] MessageData)
         {
-            using (var Packet = new PacketWriter())
-            {
-                Packet.WriteShort((byte)ProtocolFunction.ServerSendMessageTest);
-                Packet.WriteBytes(MessageData);
+            using var Packet = new PacketWriter();
+            Packet.WriteShort((byte)ProtocolFunction.ServerSendMessageTest);
+            Packet.WriteBytes(MessageData);
 
-                Data = Packet.GetPacketData();
-            }
+            Data = Packet.GetPacketData();
         }
     }
 }

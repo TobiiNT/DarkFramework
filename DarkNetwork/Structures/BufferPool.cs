@@ -8,7 +8,7 @@ namespace DarkNetwork.Structures
         private int InitialCapacity { get; }
 
         private Queue<byte[]> FreeBuffers { get; }
-        
+
         public BufferPool(int InitialCapacity, int BufferSize)
         {
             this.InitialCapacity = InitialCapacity;

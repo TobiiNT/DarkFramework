@@ -7,8 +7,10 @@ namespace DarkGamePacket.Definitions.S2C
     public class S2C_ChatMessage : ICoreResponse
     {
         [ProtoMember(1)]
-        public byte MessageType { get; set; }
+        public uint ClientID { get; set; }
         [ProtoMember(2)]
+        public byte MessageType { get; set; }
+        [ProtoMember(3)]
         public string Message { get; set; }
     }
 }
