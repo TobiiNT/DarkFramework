@@ -5,18 +5,24 @@ using System;
 using System.Net.Sockets;
 using DarkThreading;
 using SampleUnityGameServer.Configurations;
+using DarkMonitoring;
+using DarkMonitoring.Results;
 
 namespace SampleUnityGameServer.Networks
 {
     public class ChannelGame : SecurityServer
     {
-        public ThreadSafeDictionary<uint, SecurityConnection<ServerSecurityNetwork>> ClientConnections { set; get; }
+        public ThreadSafeDictionary<uint, SecurityConnection<ServerSecurityNetwork>> ClientConnections { set; get; }        
+        public ChannelMonitoring NetworkMonitoring { private set; get; }
         public LogicGame LogicGame { private set; get; }
         public ChannelGame(ushort ChannelID, uint Capacity)
         {
             this.ChannelID = ChannelID;
             this.Capacity = Capacity;
             this.ClientConnections = new ThreadSafeDictionary<uint, SecurityConnection<ServerSecurityNetwork>>();
+            this.NetworkMonitoring = new ChannelMonitoring($"Channel ID: {ChannelID}");
+            this.NetworkMonitoring.NetworkMonitoringCallback += NetworkMonitoringCallback;
+            this.NetworkMonitoring.StartMonitoring();
         }
 
         public void ImportGame(LogicGame Game)
@@ -54,6 +60,8 @@ namespace SampleUnityGameServer.Networks
             {
                 this.LogicGame.PacketHandler?.HandleHandshake(ClientID, NewConnection);
                 this.ClientConnections.Add(NewConnection.ClientID, NewConnection);
+
+                this.NetworkMonitoring.MornitorNewConnection();
 
                 return true;
             }
@@ -117,6 +125,8 @@ namespace SampleUnityGameServer.Networks
                 if (this.ClientConnections.TryGetValue(ClientID, out var Client))
                 {
                     Logging.WriteLine($"Channel {Client.ChannelID}, Client {Client.ClientID} : Connected to {Client.GetIPEndpoint()}");
+
+                    this.NetworkMonitoring?.MornitorNewConnection(ClientID);
                 }
             }
         }
@@ -139,6 +149,8 @@ namespace SampleUnityGameServer.Networks
                 if (this.ClientConnections.TryGetValue(ClientID, out var Client))
                 {
                     Logging.WriteLine($"Channel {Client.ChannelID}, Client {Client.ClientID} : Sent to {Client.GetIPEndpoint()} {DataSize} bytes");
+
+                    this.NetworkMonitoring?.MornitorSendData(DataSize);
                 }
             }
         }
@@ -161,6 +173,8 @@ namespace SampleUnityGameServer.Networks
                     Logging.WriteLine($"Channel {Client.ChannelID}, Client {Client.ClientID} : Received from {Client.GetIPEndpoint()} {DataSize} bytes");
 
                     this.LogicGame.PacketHandler?.HandlePacket(ClientID, Data);
+
+                    this.NetworkMonitoring?.MornitorReceiveData(DataSize);
                 }
             }
         }
@@ -185,6 +199,8 @@ namespace SampleUnityGameServer.Networks
                     this.ClientConnections.RemoveSafe(ClientID);
 
                     this.LogicGame.PacketHandler?.HandleDisconnect(ClientID);
+
+                    this.NetworkMonitoring?.MornitorDisconnectConnection();
                 }
             }
         }
@@ -199,6 +215,8 @@ namespace SampleUnityGameServer.Networks
                     this.ClientConnections.RemoveSafe(ClientID);
 
                     this.LogicGame.PacketHandler?.HandleDisconnect(ClientID);
+
+                    this.NetworkMonitoring?.MornitorDisconnectConnection();
                 }
             }
         }
@@ -213,6 +231,8 @@ namespace SampleUnityGameServer.Networks
                     this.ClientConnections.RemoveSafe(ClientID);
 
                     this.LogicGame.PacketHandler?.HandleDisconnect(ClientID);
+
+                    this.NetworkMonitoring?.MornitorInterruptConnection();
                 }
             }
         }
@@ -227,7 +247,17 @@ namespace SampleUnityGameServer.Networks
                     this.ClientConnections.RemoveSafe(ClientID);
 
                     this.LogicGame.PacketHandler?.HandleDisconnect(ClientID);
+
+                    this.NetworkMonitoring?.MornitorInterruptConnection();
                 }
+            }
+        }
+
+        private void NetworkMonitoringCallback(ChannelMonitoringResult Result)
+        {
+            if (Result.SendBytesPerSeconds > 0)
+            {
+                System.Diagnostics.Debug.WriteLine($"Channel {this.ChannelID} : {Result.SendPacketsPerSeconds} {Result.SendBytesPerSeconds}");
             }
         }
     }

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30413.136
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleUnityGameServer", "SampleUnityGameServer\SampleUnityGameServer.csproj", "{3FD6DC59-2F2E-48E9-A02B-300F96DE6AC6}"
 EndProject
@@ -22,6 +22,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DarkWorld", "DarkWorld", "{B2AE5F7C-5801-456A-BACF-74DC904A54F2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DarkGamePacket", "DarkGamePacket\DarkGamePacket.csproj", "{6ED29306-8101-4339-8B2E-BA740BF8CB9C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DarkMonitoring", "DarkMonitoring\DarkMonitoring.csproj", "{AEDCAEC9-1518-4FF4-98FE-C1D825ADD648}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,6 +63,10 @@ Global
 		{6ED29306-8101-4339-8B2E-BA740BF8CB9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6ED29306-8101-4339-8B2E-BA740BF8CB9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6ED29306-8101-4339-8B2E-BA740BF8CB9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEDCAEC9-1518-4FF4-98FE-C1D825ADD648}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEDCAEC9-1518-4FF4-98FE-C1D825ADD648}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEDCAEC9-1518-4FF4-98FE-C1D825ADD648}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEDCAEC9-1518-4FF4-98FE-C1D825ADD648}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -72,6 +78,7 @@ Global
 		{FE27A2B9-79F3-4E12-95E5-A9C5F82A516A} = {672B932E-B607-4A21-883D-74D398A8D622}
 		{38B07960-90BF-4DF3-853F-6CCFD29B29CC} = {672B932E-B607-4A21-883D-74D398A8D622}
 		{6ED29306-8101-4339-8B2E-BA740BF8CB9C} = {B2AE5F7C-5801-456A-BACF-74DC904A54F2}
+		{AEDCAEC9-1518-4FF4-98FE-C1D825ADD648} = {672B932E-B607-4A21-883D-74D398A8D622}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {16ABEA79-8F91-401F-A677-DBDDEA961332}

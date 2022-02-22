@@ -14,7 +14,7 @@ namespace SampleUnityGameClient
             var IPAddress = "127.0.0.1";
             Console.Write("Input server's port: ");
             int Port = int.Parse(Console.ReadLine());
-            TestWithMultipleClient(IPAddress, Port, 1000);
+            TestWithMultipleClient(IPAddress, Port, 10);
 
             Console.ReadKey();
         }

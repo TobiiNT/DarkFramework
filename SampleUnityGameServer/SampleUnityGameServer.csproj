@@ -11,10 +11,12 @@
 
   <ItemGroup>
     <PackageReference Include="protobuf-net" Version="3.0.101" />
+    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DarkGamePacket\DarkGamePacket.csproj" />
+    <ProjectReference Include="..\DarkMonitoring\DarkMonitoring.csproj" />
     <ProjectReference Include="..\DarkNetwork\DarkNetwork.csproj" />
     <ProjectReference Include="..\DarkPacket\DarkPacket.csproj" />
     <ProjectReference Include="..\DarkSecurityNetwork\DarkSecurityNetwork.csproj" />
