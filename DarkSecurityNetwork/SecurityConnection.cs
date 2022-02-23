@@ -97,7 +97,7 @@ namespace DarkSecurityNetwork
         {
             this.OnAuthenticationFailed();
 
-            this.Dispose();
+            this.Dispose(false);
         }
         public void EventAuthenticationException(object Sender, EventArgs Arguments)
         {
@@ -105,7 +105,7 @@ namespace DarkSecurityNetwork
             {
                 this.OnAuthenticationException(Args.Exception);
 
-                this.Dispose();
+                this.Dispose(false);
             }
         }
 

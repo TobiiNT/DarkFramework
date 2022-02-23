@@ -1,4 +1,4 @@
-﻿using DarkPacket.Writer;
+﻿using DarkPacket.Writers;
 using DarkSecurityNetwork.Enums;
 
 namespace DarkSecurityNetwork.Networks.Packets

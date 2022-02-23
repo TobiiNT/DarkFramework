@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Runtime.InteropServices;
 using DarkNetwork.Connections.Events;
 using DarkNetwork.Connections.Events.Arguments;
 using DarkNetwork.Enums;
 using DarkNetwork.Structures;
 using DarkPacket.Readers;
-using DarkPacket.Writer;
+using DarkPacket.Writers;
 
 namespace DarkNetwork.Connections
 {
@@ -99,7 +98,7 @@ namespace DarkNetwork.Connections
             catch (Exception Exception)
             {
                 OnConnectException(this, new ConnectExceptionArgs(Exception));
-                this.Dispose();
+                this.Dispose(false);
             }
         }
         private void OnSendData(IAsyncResult AsyncResult)
@@ -107,7 +106,7 @@ namespace DarkNetwork.Connections
             if (this.Socket == null)
             {
                 OnSendException(this, new SendExceptionArgs(new NullReferenceException("Socket is null")));
-                this.Dispose();
+                this.Dispose(false);
             }
             else
             {
@@ -134,14 +133,14 @@ namespace DarkNetwork.Connections
                         else
                         {
                             OnSendException(this, new SendExceptionArgs(new SocketException()));
-                            this.Dispose();
+                            this.Dispose(false);
                         }
                     }
                 }
                 catch (Exception Exception)
                 {
                     OnSendException(this, new SendExceptionArgs(Exception));
-                    this.Dispose();
+                    this.Dispose(false);
                 }
             }
         }
@@ -150,7 +149,7 @@ namespace DarkNetwork.Connections
             if (this.Socket == null)
             {
                 OnReceiveException(this, new ReceiveExceptionArgs(new NullReferenceException("Socket is null")));
-                this.Dispose();
+                this.Dispose(false);
             }
             else
             {
@@ -179,26 +178,26 @@ namespace DarkNetwork.Connections
                                 catch (Exception Exception)
                                 {
                                     OnReceiveException(this, new ReceiveExceptionArgs(Exception));
-                                    this.Dispose();
+                                    this.Dispose(false);
                                 }
                             }
                         }
                         else
                         {
                             OnReceiveException(this, new ReceiveExceptionArgs(new SocketException()));
-                            this.Dispose();
+                            this.Dispose(false);
                         }
                     }
                     else
                     {
                         OnDisconnectSuccess(this, new DisconnectSuccessArgs());
-                        this.Dispose();
+                        this.Dispose(true);
                     }
                 }
                 catch (Exception Exception)
                 {
                     OnReceiveException(this, new ReceiveExceptionArgs(Exception));
-                    this.Dispose();
+                    this.Dispose(false);
                 }
             }
         }
@@ -228,7 +227,7 @@ namespace DarkNetwork.Connections
             catch (Exception Exception)
             {
                 OnReceiveException(this, new ReceiveExceptionArgs(Exception));
-                this.Dispose();
+                this.Dispose(false);
             }
         }
         protected void Send(byte[] Data)
@@ -297,8 +296,7 @@ namespace DarkNetwork.Connections
                                             CurrentPacketData[CurrentPacketLength - 2] == 85)
                                         {
                                             using var Packet = new NetworkPacketReader(CurrentPacketData);
-                                            var MainData = Packet.ReadBytes();
-                                            OnReceiveSuccess(this, new ReceiveSuccessArgs(CurrentPacketLength, MainData));
+                                            OnReceiveSuccess(this, new ReceiveSuccessArgs(CurrentPacketLength, Packet.ReadBytes()));
                                             continue;
                                         }
                                         this.ReceiveQueue.Clear();
@@ -349,7 +347,7 @@ namespace DarkNetwork.Connections
             }
         }
 
-        public void Dispose()
+        public void Dispose(bool Disconnected)
         {
             if (!this.IsDisposed)
             {
@@ -385,7 +383,8 @@ namespace DarkNetwork.Connections
                     this.OnReceived = null;
                     this.OnSended = null;
 
-                    OnDisposeSuccess(this, new DisposeSuccessArgs(Caller));
+                    if (!Disconnected)
+                        OnDisposeSuccess(this, new DisposeSuccessArgs(Caller));
                 }
                 catch (Exception Exception)
                 {

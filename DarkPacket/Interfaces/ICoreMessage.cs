@@ -1,4 +1,4 @@
-﻿namespace DarkGamePacket.Interfaces
+﻿namespace DarkPacket.Interfaces
 {
     public interface ICoreMessage
     {

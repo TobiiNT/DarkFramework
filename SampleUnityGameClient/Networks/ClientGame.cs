@@ -1,5 +1,4 @@
 ﻿using System;
-using DarkGamePacket.Handlers.Clients.Interfaces;
 using DarkSecurityNetwork;
 using DarkSecurityNetwork.Networks;
 using SampleUnityGameClient.Games;
@@ -9,7 +8,6 @@ namespace SampleUnityGameClient.Networks
     public class ClientGame : SecurityConnection<ClientSecurityNetwork>
     {
         public LogicGame LogicGame { private set; get; }
-        public IClientPacketHandler PacketHandlerManager { private set; get; }
         public ClientGame()
         {
             this.AuthenticationSuccess += this.OnConnectionAuthenticationSuccess;
@@ -45,7 +43,7 @@ namespace SampleUnityGameClient.Networks
         private void OnConnectionStartSuccess(ushort ChannelID, uint ClientID)
         {
             Logging.WriteLine($"Channel {ChannelID}, Client {ClientID} : Started to {this.GetIPEndpoint()}");
-            this.LogicGame.PacketHandler?.HandleHandshake(this);
+                this.LogicGame.PacketHandler?.HandleHandshake(this);
         }
         private void OnConnectionStartException(ushort ChannelID, uint ClientID, Exception Exception)
         {
@@ -70,7 +68,7 @@ namespace SampleUnityGameClient.Networks
         private void OnConnectionReceiveSuccess(ushort ChannelID, uint ClientID, int DataSize, byte[] Data)
         {
             Logging.WriteLine($"Channel {ChannelID}, Client {ClientID} : Received from {this.GetIPEndpoint()} {DataSize} bytes");
-            this.LogicGame.PacketHandler?.HandlePacket(Data);
+            this.LogicGame.PacketHandler?.HandlePacket(ClientID, Data);
         }
         private void OnConnectionReceiveException(ushort ChannelID, uint ClientID, Exception Exception)
         {

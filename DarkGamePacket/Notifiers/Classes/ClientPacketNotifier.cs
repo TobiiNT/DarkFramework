@@ -1,8 +1,9 @@
 ﻿using DarkGamePacket.Definitions.C2S;
-using DarkGamePacket.Enums;
-using DarkGamePacket.Handlers.Clients.Interfaces;
+using DarkGamePacket.Handlers.Interfaces;
+using DarkGamePacket.Notifiers.Interfaces;
+using DarkGamePacket.Packets;
 
-namespace DarkGamePacket.Handlers.Clients
+namespace DarkGamePacket.Notifiers.Classes
 {
     public class ClientPacketNotifier : IClientPacketNotifier
     {
@@ -21,7 +22,7 @@ namespace DarkGamePacket.Handlers.Clients
                 MessageType = MessageType,
                 Message = Message
             };
-            this.PacketHandlerManager.SendPacket(PacketID.CHAT_MESSAGE, MessageData);
+            this.PacketHandlerManager.SendPacket(ListPacketID.CHAT_MESSAGE, MessageData);
         }
     }
 }

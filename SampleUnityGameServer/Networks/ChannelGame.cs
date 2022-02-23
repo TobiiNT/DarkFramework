@@ -59,9 +59,9 @@ namespace SampleUnityGameServer.Networks
             if (!this.ClientConnections.ContainsKey(NewConnection.ClientID))
             {
                 this.LogicGame.PacketHandler?.HandleHandshake(ClientID, NewConnection);
-                this.ClientConnections.Add(NewConnection.ClientID, NewConnection);
+                this.ClientConnections.Add(ClientID, NewConnection);
 
-                this.NetworkMonitoring.MornitorNewConnection();
+                this.NetworkMonitoring.MornitorNewConnection(ClientID);
 
                 return true;
             }
@@ -200,7 +200,7 @@ namespace SampleUnityGameServer.Networks
 
                     this.LogicGame.PacketHandler?.HandleDisconnect(ClientID);
 
-                    this.NetworkMonitoring?.MornitorDisconnectConnection();
+                    this.NetworkMonitoring?.MornitorDisconnectConnection(ClientID);
                 }
             }
         }
@@ -216,7 +216,7 @@ namespace SampleUnityGameServer.Networks
 
                     this.LogicGame.PacketHandler?.HandleDisconnect(ClientID);
 
-                    this.NetworkMonitoring?.MornitorDisconnectConnection();
+                    this.NetworkMonitoring?.MornitorDisconnectConnection(ClientID);
                 }
             }
         }
@@ -232,7 +232,7 @@ namespace SampleUnityGameServer.Networks
 
                     this.LogicGame.PacketHandler?.HandleDisconnect(ClientID);
 
-                    this.NetworkMonitoring?.MornitorInterruptConnection();
+                    this.NetworkMonitoring?.MornitorInterruptConnection(ClientID);
                 }
             }
         }
@@ -248,16 +248,16 @@ namespace SampleUnityGameServer.Networks
 
                     this.LogicGame.PacketHandler?.HandleDisconnect(ClientID);
 
-                    this.NetworkMonitoring?.MornitorInterruptConnection();
+                    this.NetworkMonitoring?.MornitorInterruptConnection(ClientID);
                 }
             }
         }
 
         private void NetworkMonitoringCallback(ChannelMonitoringResult Result)
         {
-            if (Result.SendBytesPerSeconds > 0)
+            if (Result.SendBytes > 0)
             {
-                System.Diagnostics.Debug.WriteLine($"Channel {this.ChannelID} : {Result.SendPacketsPerSeconds} {Result.SendBytesPerSeconds}");
+                System.Diagnostics.Debug.WriteLine($"Channel {this.ChannelID} : {Result.SendBytes} {Result.SendPackets}");
             }
         }
     }

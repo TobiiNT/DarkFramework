@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 using DarkPacket.Interfaces;
 
-namespace DarkPacket.Writer
+namespace DarkPacket.Writers
 {
     public class PacketWriter : IPacketWriter
     {

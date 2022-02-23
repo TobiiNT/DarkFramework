@@ -1,10 +1,10 @@
-using DarkGamePacket.Interfaces;
+using DarkPacket.Interfaces;
 using ProtoBuf;
 
 namespace DarkGamePacket.Definitions.S2C
 {
     [ProtoContract]
-    public class S2C_ChatMessage : ICoreResponse
+    public class S2C_ChatMessage : ICoreMessage
     {
         [ProtoMember(1)]
         public uint ClientID { get; set; }

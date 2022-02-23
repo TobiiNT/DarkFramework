@@ -1,4 +1,4 @@
-﻿using DarkGamePacket.Enums;
+﻿using DarkGamePacket.Packets;
 using System;
 
 namespace DarkGamePacket.Attributes
@@ -6,11 +6,19 @@ namespace DarkGamePacket.Attributes
     [AttributeUsage(AttributeTargets.Method)]
     public class PacketType : Attribute
     {
-        public PacketType(PacketID PacketID)
+        public PacketType(PacketDirection Direction, ListPacketID PacketID)
         {
+            this.Direction = Direction;
             this.PacketID = PacketID;
         }
 
-        public PacketID PacketID { get; }
+        public PacketDirection Direction { get; }
+        public ListPacketID PacketID { get; }
+    }
+
+    public enum PacketDirection
+    {
+        IN,
+        OUT
     }
 }

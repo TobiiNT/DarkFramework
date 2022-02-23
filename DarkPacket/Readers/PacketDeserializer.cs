@@ -1,7 +1,7 @@
 ﻿using ProtoBuf;
 using System.IO;
 
-namespace DarkGamePacket.Handlers
+namespace DarkPacket.Readers
 {
     public static class PacketDeserializer
     {

@@ -1,19 +1,22 @@
 ﻿using DarkGamePacket.Definitions.S2C;
-using DarkGamePacket.Handlers.Clients;
-using DarkGamePacket.Handlers.Clients.Interfaces;
-using DarkGamePacket.Interfaces;
+using DarkGamePacket.Handlers.Classes;
+using DarkGamePacket.Handlers.Interfaces;
+using DarkGamePacket.Notifiers.Classes;
+using DarkGamePacket.Notifiers.Interfaces;
+using DarkPacket.Handlers;
+using DarkPacket.Interfaces;
 using SampleUnityGameClient.Games.PacketDefinitions;
 
 namespace SampleUnityGameClient.Games
 {
     public class LogicGame
     {
-        public ClientNetworkHandler<ICoreResponse> FunctionHandler { get; }
+        public NetworkHandler<ICoreMessage> FunctionHandler { get; }
         public IClientPacketNotifier PacketNotifier { get; }
         public IClientPacketHandler PacketHandler { get; }
         public LogicGame()
         {
-            this.FunctionHandler = new ClientNetworkHandler<ICoreResponse>();
+            this.FunctionHandler = new NetworkHandler<ICoreMessage>();
             this.PacketHandler = new ClientPacketHandler(FunctionHandler);
             this.PacketNotifier = new ClientPacketNotifier(PacketHandler);
 

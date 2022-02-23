@@ -1,4 +1,4 @@
-﻿namespace DarkGamePacket.Servers.Interfaces
+﻿namespace DarkGamePacket.Notifiers.Interfaces
 {
     public interface IServerPacketNotifier
     {

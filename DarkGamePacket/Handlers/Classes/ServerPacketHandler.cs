@@ -1,45 +1,44 @@
 ﻿using DarkGamePacket.Attributes;
-using DarkGamePacket.Definitions;
-using DarkGamePacket.Enums;
-using DarkGamePacket.Interfaces;
-using DarkGamePacket.Servers.Interfaces;
 using DarkSecurityNetwork;
 using DarkSecurityNetwork.Networks;
 using System;
 using System.Collections.Generic;
-using DarkGamePacket.Servers.Packets;
 using DarkThreading;
 using DarkPacket.Readers;
-using DarkPacket.Writer;
+using DarkPacket.Writers;
 using System.Linq;
+using DarkPacket.Interfaces;
+using DarkPacket.Handlers;
+using DarkGamePacket.Handlers.Interfaces;
+using DarkGamePacket.Packets;
 
-namespace DarkGamePacket.Servers
+namespace DarkGamePacket.Handlers.Classes
 {
     public class ServerPacketHandler : IServerPacketHandler
     {
         private readonly ThreadSafeDictionary<uint, SecurityConnection<ServerSecurityNetwork>> ClientPlayers;
 
 
-        private readonly Dictionary<PacketID, RequestHandle> RequestTable;
-        private delegate ICoreRequest RequestHandle(byte[] data);
+        private readonly Dictionary<ListPacketID, RequestHandle> RequestTable;
+        private delegate ICoreMessage RequestHandle(byte[] data);
 
-        private readonly Dictionary<PacketID, ResponseHandle> ResponseTable;
-        private delegate byte[] ResponseHandle(ICoreResponse Response);
+        private readonly Dictionary<ListPacketID, ResponseHandle> ResponseTable;
+        private delegate byte[] ResponseHandle(ICoreMessage Response);
 
-        private readonly ServerNetworkHandler<ICoreRequest> NetworkRequest;
+        private readonly NetworkHandler<ICoreMessage> NetworkRequest;
 
-        public ServerPacketHandler(ServerNetworkHandler<ICoreRequest> NetworkRequest)
+        public ServerPacketHandler(NetworkHandler<ICoreMessage> NetworkRequest)
         {
             this.ClientPlayers = new ThreadSafeDictionary<uint, SecurityConnection<ServerSecurityNetwork>>();
             this.NetworkRequest = NetworkRequest;
-            this.RequestTable = new Dictionary<PacketID, RequestHandle>();
-            this.ResponseTable = new Dictionary<PacketID, ResponseHandle>();
+            this.RequestTable = new Dictionary<ListPacketID, RequestHandle>();
+            this.ResponseTable = new Dictionary<ListPacketID, ResponseHandle>();
             this.InitializeRequestHandlers();
             this.InitializeResponseHandlers();
         }
         private void InitializeRequestHandlers()
         {
-            foreach (var Method in typeof(C2S_ServerSide).GetMethods())
+            foreach (var Method in typeof(ListPacketClient).GetMethods())
             {
                 foreach (Attribute Attribute in Method.GetCustomAttributes(true))
                 {
@@ -54,7 +53,7 @@ namespace DarkGamePacket.Servers
         }
         private void InitializeResponseHandlers()
         {
-            foreach (var Method in typeof(S2C_ServeriSide).GetMethods())
+            foreach (var Method in typeof(ListPacketServer).GetMethods())
             {
                 foreach (Attribute Attribute in Method.GetCustomAttributes(true))
                 {
@@ -67,7 +66,7 @@ namespace DarkGamePacket.Servers
                 }
             }
         }
-        private RequestHandle GetRequestHandle(PacketID PacketID)
+        private RequestHandle GetRequestHandle(ListPacketID PacketID)
         {
             if (this.RequestTable.ContainsKey(PacketID))
             {
@@ -75,7 +74,7 @@ namespace DarkGamePacket.Servers
             }
             return null;
         }
-        private ResponseHandle GetResponseHandle(PacketID PacketID)
+        private ResponseHandle GetResponseHandle(ListPacketID PacketID)
         {
             if (this.ResponseTable.ContainsKey(PacketID))
             {
@@ -83,7 +82,8 @@ namespace DarkGamePacket.Servers
             }
             return null;
         }
-        public bool SendPacket(uint ClientID, PacketID PacketID, ICoreResponse Response)
+
+        public bool SendPacket(uint ClientID, ListPacketID PacketID, ICoreMessage Response)
         {
             var ResponseHandle = GetResponseHandle(PacketID);
 
@@ -102,7 +102,7 @@ namespace DarkGamePacket.Servers
             }
             return false;
         }
-        public bool SendPacketBroadcast(PacketID PacketID, ICoreResponse Response)
+        public bool SendPacketBroadcast(ListPacketID PacketID, ICoreMessage Response)
         {
             var ResponseHandle = GetResponseHandle(PacketID);
 
@@ -122,10 +122,11 @@ namespace DarkGamePacket.Servers
             }
             return false;
         }
+
         public bool HandlePacket(uint ClientID, byte[] Data)
         {
             using var Reader = new NormalPacketReader(Data);
-            var PacketID = (PacketID)Reader.ReadUShort();
+            var PacketID = (ListPacketID)Reader.ReadUShort();
             var PacketData = Reader.ReadBytes();
 
             var Request = GetRequestHandle(PacketID);
@@ -142,6 +143,7 @@ namespace DarkGamePacket.Servers
             }
             return false;
         }
+
         public bool HandleHandshake(uint ClientID, SecurityConnection<ServerSecurityNetwork> Connection)
         {
             if (!this.ClientPlayers.ContainsKey(ClientID))
@@ -151,6 +153,7 @@ namespace DarkGamePacket.Servers
             }
             return false;
         }
+
         public bool HandleDisconnect(uint ClientID)
         {
             if (this.ClientPlayers.ContainsKey(ClientID))

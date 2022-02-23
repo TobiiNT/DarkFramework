@@ -121,7 +121,7 @@ namespace SampleUnityGameServer.Networks
 
                 foreach (var Connection in Channel.ClientConnections.Values.ToList())
                 {
-                    Connection.Dispose();
+                    Connection.Dispose(false);
 
                     Channel.ClientConnections.RemoveSafe(Connection.ClientID);
                 }

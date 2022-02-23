@@ -1,10 +1,10 @@
-﻿using System;
+﻿using DarkPacket.Interfaces;
+using System;
 using System.Collections.Generic;
-using DarkGamePacket.Interfaces;
 
-namespace DarkGamePacket.Definitions
+namespace DarkPacket.Handlers
 {
-    public class ServerNetworkHandler<MessageType> where MessageType : ICoreMessage
+    public class NetworkHandler<MessageType> where MessageType : ICoreMessage
     {
         public delegate bool MessageHandler<T>(uint ClientID, T msg) where T : MessageType;
         private readonly Dictionary<Type, List<Delegate>> _handlers = new Dictionary<Type, List<Delegate>>();

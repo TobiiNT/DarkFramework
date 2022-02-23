@@ -1,6 +1,5 @@
 ﻿using DarkMonitoring.Delegates;
 using DarkMonitoring.Results;
-using System.Collections.Concurrent;
 
 namespace DarkMonitoring
 {
@@ -73,7 +72,7 @@ namespace DarkMonitoring
             Interlocked.Increment(ref this.TotalDisconnectConnections);
         }
 
-        public void MornitorInterruptConnection(int ClientID)
+        public void MornitorInterruptConnection(uint ClientID)
         {
             lock (LockObject)
             {

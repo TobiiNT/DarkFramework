@@ -1,8 +1,9 @@
 ﻿using DarkGamePacket.Definitions.S2C;
-using DarkGamePacket.Enums;
-using DarkGamePacket.Servers.Interfaces;
+using DarkGamePacket.Handlers.Interfaces;
+using DarkGamePacket.Notifiers.Interfaces;
+using DarkGamePacket.Packets;
 
-namespace DarkGamePacket.Servers
+namespace DarkGamePacket.Notifiers.Classes
 {
     public class ServerPacketNotifier : IServerPacketNotifier
     {
@@ -22,7 +23,7 @@ namespace DarkGamePacket.Servers
                 Message = Message
             };
             //this.PacketHandlerManager.SendPacket(ClientID, PacketID.CHAT_MESSAGE, MessageData);
-            this.PacketHandler.SendPacketBroadcast(PacketID.CHAT_MESSAGE, MessageData);
+            this.PacketHandler.SendPacketBroadcast(ListPacketID.CHAT_MESSAGE, MessageData);
         }
     }
 }
