@@ -67,8 +67,6 @@ namespace SampleUnityGameServer.Networks
             return Channel;
         }
 
-
-
         private void OnServerAcceptSuccess(ushort ChannelID, Socket Socket)
         {
             if (this.Channels.TryGetValue(ChannelID, out var Channel))

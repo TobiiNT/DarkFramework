@@ -5,9 +5,9 @@ namespace SampleUnityGameServer.Games.Handlers.Packets
 {
     public class HandleChatMessage : IPacketHandle<C2S_ChatMessage>
     {
-        private readonly LogicGame Game;
+        private readonly ServerLogic Game;
 
-        public HandleChatMessage(LogicGame Game)
+        public HandleChatMessage(ServerLogic Game)
         {
             this.Game = Game;
         }

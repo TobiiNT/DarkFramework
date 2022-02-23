@@ -4,19 +4,19 @@ using DarkThreading;
 
 namespace SampleUnityGameServer.Games
 {
-    public class LogicGameManager
+    public class ServẹrLogicGateway
     {
-        public ThreadSafeDictionary<ushort, LogicGame> Games { set; get; }
-        public LogicGameManager()
+        public ThreadSafeDictionary<ushort, ServerLogic> Games { set; get; }
+        public ServẹrLogicGateway()
         {
-            this.Games = new ThreadSafeDictionary<ushort, LogicGame>();
+            this.Games = new ThreadSafeDictionary<ushort, ServerLogic>();
         }
 
         public void StartGame(ChannelGame ChannelGame)
         {
             try
             {
-                var LogicGame = new LogicGame();
+                var LogicGame = new ServerLogic();
 
                 ChannelGame.ImportGame(LogicGame);
 

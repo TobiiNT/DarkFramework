@@ -14,7 +14,7 @@ namespace SampleUnityGameServer
             Console.OutputEncoding = Encoding.UTF8;
 
             var ChannelManager = new ChannelManager();
-            var LogicGameManager = new LogicGameManager();
+            var LogicGameManager = new ServẹrLogicGateway();
 
             foreach (var ChannelInfo in Configuration.Channels)
             {

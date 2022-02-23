@@ -5,9 +5,9 @@ namespace SampleUnityGameClient.Games.PacketDefinitions
 {
     public class HandleChatMessage : IPacketHandle<S2C_ChatMessage>
     {
-        private readonly LogicGame Game;
+        private readonly ClientLogic Game;
 
-        public HandleChatMessage(LogicGame Game)
+        public HandleChatMessage(ClientLogic Game)
         {
             this.Game = Game;
         }

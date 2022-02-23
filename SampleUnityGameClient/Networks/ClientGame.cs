@@ -7,7 +7,7 @@ namespace SampleUnityGameClient.Networks
 {
     public class ClientGame : SecurityConnection<ClientSecurityNetwork>
     {
-        public LogicGame LogicGame { private set; get; }
+        public ClientLogic LogicGame { private set; get; }
         public ClientGame()
         {
             this.AuthenticationSuccess += this.OnConnectionAuthenticationSuccess;
@@ -26,7 +26,7 @@ namespace SampleUnityGameClient.Networks
             this.ConnectionDisposeSuccess += this.OnConnectionDisposeSuccess;
             this.ConnectionDisposeException += this.OnConnectionDisposeException;
 
-            this.LogicGame = new LogicGame();
+            this.LogicGame = new ClientLogic();
         }
         private void OnConnectionAuthenticationSuccess(ushort ChannelID, uint ClientID)
         {

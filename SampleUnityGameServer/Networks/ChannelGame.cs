@@ -14,7 +14,7 @@ namespace SampleUnityGameServer.Networks
     {
         public ThreadSafeDictionary<uint, SecurityConnection<ServerSecurityNetwork>> ClientConnections { set; get; }        
         public ChannelMonitoring NetworkMonitoring { private set; get; }
-        public LogicGame LogicGame { private set; get; }
+        public ServerLogic LogicGame { private set; get; }
         public ChannelGame(ushort ChannelID, uint Capacity)
         {
             this.ChannelID = ChannelID;
@@ -25,7 +25,7 @@ namespace SampleUnityGameServer.Networks
             this.NetworkMonitoring.StartMonitoring();
         }
 
-        public void ImportGame(LogicGame Game)
+        public void ImportGame(ServerLogic Game)
         {
             this.LogicGame = Game;
         }
@@ -58,12 +58,21 @@ namespace SampleUnityGameServer.Networks
 
             if (!this.ClientConnections.ContainsKey(NewConnection.ClientID))
             {
-                this.LogicGame.PacketHandler?.HandleClientHandshake(ClientID, NewConnection);
-                this.ClientConnections.Add(ClientID, NewConnection);
+                if (this.ClientConnections.Count >= this.Capacity)
+                {
+                    NewConnection.Dispose(false);
 
-                this.NetworkMonitoring.MornitorNewConnection(ClientID);
+                    return false;
+                }
+                else
+                {
+                    this.LogicGame.PacketHandler?.HandleClientHandshake(ClientID, NewConnection);
+                    this.ClientConnections.Add(ClientID, NewConnection);
 
-                return true;
+                    this.NetworkMonitoring.MornitorNewConnection(ClientID);
+
+                    return true;
+                }
             }
             return false;
         }
