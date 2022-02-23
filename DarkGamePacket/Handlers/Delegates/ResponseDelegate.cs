@@ -2,5 +2,5 @@
 
 namespace DarkGamePacket.Handlers.Delegates
 {
-    public delegate byte[] ResponseHandle(ICoreMessage Response);
+    public delegate ICoreMessage ResponseHandle(byte[] Response);
 }

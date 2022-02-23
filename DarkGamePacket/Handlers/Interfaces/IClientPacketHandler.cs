@@ -8,9 +8,9 @@ namespace DarkGamePacket.Handlers.Interfaces
 {
     public interface IClientPacketHandler
     {        
-        bool HandleHandshake(SecurityConnection<ClientSecurityNetwork> Connection);
-        bool HandlePacket(uint ClientID, byte[] Data);
-        bool SendPacket(PacketID PacketID, ICoreMessage Request);
-        bool HandleDisconnect();
+        bool HandleServerHandshake(SecurityConnection<ClientSecurityNetwork> Connection);
+        bool HandleServerIncomingPacket(uint ClientID, byte[] Data);
+        bool SendPacketToServer(PacketID PacketID, ICoreMessage Request);
+        bool HandleServerDisconnect();
     }
 }

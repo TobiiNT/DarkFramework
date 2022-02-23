@@ -58,7 +58,7 @@ namespace SampleUnityGameServer.Networks
 
             if (!this.ClientConnections.ContainsKey(NewConnection.ClientID))
             {
-                this.LogicGame.PacketHandler?.HandleHandshake(ClientID, NewConnection);
+                this.LogicGame.PacketHandler?.HandleClientHandshake(ClientID, NewConnection);
                 this.ClientConnections.Add(ClientID, NewConnection);
 
                 this.NetworkMonitoring.MornitorNewConnection(ClientID);
@@ -172,7 +172,7 @@ namespace SampleUnityGameServer.Networks
                 {
                     Logging.WriteLine($"Channel {Client.ChannelID}, Client {Client.ClientID} : Received from {Client.GetIPEndpoint()} {DataSize} bytes");
 
-                    this.LogicGame.PacketHandler?.HandlePacket(ClientID, Data);
+                    this.LogicGame.PacketHandler?.HandleClientIncomingPacket(ClientID, Data);
 
                     this.NetworkMonitoring?.MornitorReceiveData(DataSize);
                 }
@@ -198,7 +198,7 @@ namespace SampleUnityGameServer.Networks
 
                     this.ClientConnections.RemoveSafe(ClientID);
 
-                    this.LogicGame.PacketHandler?.HandleDisconnect(ClientID);
+                    this.LogicGame.PacketHandler?.HandleClientDisconnect(ClientID);
 
                     this.NetworkMonitoring?.MornitorDisconnectConnection(ClientID);
                 }
@@ -214,7 +214,7 @@ namespace SampleUnityGameServer.Networks
 
                     this.ClientConnections.RemoveSafe(ClientID);
 
-                    this.LogicGame.PacketHandler?.HandleDisconnect(ClientID);
+                    this.LogicGame.PacketHandler?.HandleClientDisconnect(ClientID);
 
                     this.NetworkMonitoring?.MornitorDisconnectConnection(ClientID);
                 }
@@ -230,7 +230,7 @@ namespace SampleUnityGameServer.Networks
 
                     this.ClientConnections.RemoveSafe(ClientID);
 
-                    this.LogicGame.PacketHandler?.HandleDisconnect(ClientID);
+                    this.LogicGame.PacketHandler?.HandleClientDisconnect(ClientID);
 
                     this.NetworkMonitoring?.MornitorInterruptConnection(ClientID);
                 }
@@ -246,7 +246,7 @@ namespace SampleUnityGameServer.Networks
 
                     this.ClientConnections.RemoveSafe(ClientID);
 
-                    this.LogicGame.PacketHandler?.HandleDisconnect(ClientID);
+                    this.LogicGame.PacketHandler?.HandleClientDisconnect(ClientID);
 
                     this.NetworkMonitoring?.MornitorInterruptConnection(ClientID);
                 }

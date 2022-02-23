@@ -43,7 +43,7 @@ namespace SampleUnityGameClient.Networks
         private void OnConnectionStartSuccess(ushort ChannelID, uint ClientID)
         {
             Logging.WriteLine($"Channel {ChannelID}, Client {ClientID} : Started to {this.GetIPEndpoint()}");
-                this.LogicGame.PacketHandler?.HandleHandshake(this);
+                this.LogicGame.PacketHandler?.HandleServerHandshake(this);
         }
         private void OnConnectionStartException(ushort ChannelID, uint ClientID, Exception Exception)
         {
@@ -68,7 +68,7 @@ namespace SampleUnityGameClient.Networks
         private void OnConnectionReceiveSuccess(ushort ChannelID, uint ClientID, int DataSize, byte[] Data)
         {
             Logging.WriteLine($"Channel {ChannelID}, Client {ClientID} : Received from {this.GetIPEndpoint()} {DataSize} bytes");
-            this.LogicGame.PacketHandler?.HandlePacket(ClientID, Data);
+            this.LogicGame.PacketHandler?.HandleServerIncomingPacket(ClientID, Data);
         }
         private void OnConnectionReceiveException(ushort ChannelID, uint ClientID, Exception Exception)
         {
@@ -77,22 +77,22 @@ namespace SampleUnityGameClient.Networks
         private void OnConnectionDisconnectSuccess(ushort ChannelID, uint ClientID)
         {
             Logging.WriteLine($"Channel {ChannelID}, Client {ClientID} : Disconnected from {this.GetIPEndpoint()}");
-            this.LogicGame.PacketHandler?.HandleDisconnect();
+            this.LogicGame.PacketHandler?.HandleServerDisconnect();
         }
         private void OnConnectionDisconnectException(ushort ChannelID, uint ClientID, Exception Exception)
         {
             Logging.WriteError($"Channel {ChannelID}, Client {ClientID} : Disconnected from {this.GetIPEndpoint()}", Exception);
-            this.LogicGame.PacketHandler?.HandleDisconnect();
+            this.LogicGame.PacketHandler?.HandleServerDisconnect();
         }
         private void OnConnectionDisposeSuccess(ushort ChannelID, uint ClientID, string Caller)
         {
             Logging.WriteLine($"Channel {ChannelID}, Client {ClientID} : Disposed by {Caller}");
-            this.LogicGame.PacketHandler?.HandleDisconnect();
+            this.LogicGame.PacketHandler?.HandleServerDisconnect();
         }
         private void OnConnectionDisposeException(ushort ChannelID, uint ClientID, string Caller, Exception Exception)
         {
             Logging.WriteError($"Channel {ChannelID}, Client {ClientID} : Disposed by {Caller} exception", Exception);
-            this.LogicGame.PacketHandler?.HandleDisconnect();
+            this.LogicGame.PacketHandler?.HandleServerDisconnect();
         }
     }
 }

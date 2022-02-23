@@ -1,8 +1,5 @@
-﻿using DarkGamePacket.Attributes;
-using DarkSecurityNetwork;
+﻿using DarkSecurityNetwork;
 using DarkSecurityNetwork.Networks;
-using System;
-using System.Collections.Generic;
 using DarkThreading;
 using DarkPacket.Readers;
 using DarkPacket.Writers;
@@ -12,7 +9,6 @@ using DarkPacket.Handlers;
 using DarkGamePacket.Handlers.Interfaces;
 using DarkGamePacket.Packets;
 using DarkGamePacket.Definitions;
-using DarkGamePacket.Handlers.Delegates;
 
 namespace DarkGamePacket.Handlers.Classes
 {
@@ -25,59 +21,13 @@ namespace DarkGamePacket.Handlers.Classes
         {          
             this.UserClients = new ThreadSafeDictionary<uint, SecurityConnection<ServerSecurityNetwork>>();
             this.RouteHandler = new RouteHandler(NetworkHandler);
-            this.InitializeRequestHandlers();
-            this.InitializeResponseHandlers();
-        }
-        private void InitializeRequestHandlers()
-        {
-            foreach (var Method in typeof(ListPacketClient).GetMethods())
-            {
-                foreach (Attribute Attribute in Method.GetCustomAttributes(true))
-                {
-                    if (Attribute is PacketType Packet && Packet.Direction == PacketDirection.IN)
-                    {
-                        var DelegateMethod = (RequestHandle)Delegate.CreateDelegate(typeof(RequestHandle), Method);
-
-                        this.RequestTable.Add(Packet.PacketID, DelegateMethod);
-                    }
-                }
-            }
-        }
-        private void InitializeResponseHandlers()
-        {
-            foreach (var Method in typeof(ListPacketServer).GetMethods())
-            {
-                foreach (Attribute Attribute in Method.GetCustomAttributes(true))
-                {
-                    if (Attribute is PacketType Packet && Packet.Direction == PacketDirection.OUT)
-                    {
-                        var DelegateMethod = (ResponseHandle)Delegate.CreateDelegate(typeof(ResponseHandle), Method);
-
-                        this.ResponseTable.Add(Packet.PacketID, DelegateMethod);
-                    }
-                }
-            }
-        }
-        private RequestHandle GetRequestHandle(PacketID PacketID)
-        {
-            if (this.RequestTable.ContainsKey(PacketID))
-            {
-                return this.RequestTable[PacketID];
-            }
-            return null;
-        }
-        private ResponseHandle GetResponseHandle(PacketID PacketID)
-        {
-            if (this.ResponseTable.ContainsKey(PacketID))
-            {
-                return this.ResponseTable[PacketID];
-            }
-            return null;
+            this.RouteHandler.LoadResponseHandlers(typeof(ListPacketClient));
+            this.RouteHandler.LoadRequestHandlers(typeof(ListPacketServer));
         }
 
-        public bool SendPacket(uint ClientID, PacketID PacketID, ICoreMessage Response)
+        public bool SendPacketToClient(uint ClientID, PacketID PacketID, ICoreMessage Response)
         {
-            var ResponseHandle = GetResponseHandle(PacketID);
+            var ResponseHandle = this.RouteHandler.GetRequestHandle(PacketID);
 
             if (ResponseHandle != null)
             {
@@ -96,7 +46,7 @@ namespace DarkGamePacket.Handlers.Classes
         }
         public bool SendPacketBroadcast(PacketID PacketID, ICoreMessage Response)
         {
-            var ResponseHandle = GetResponseHandle(PacketID);
+            var ResponseHandle = this.RouteHandler.GetRequestHandle(PacketID);
 
             if (ResponseHandle != null)
             {
@@ -115,13 +65,13 @@ namespace DarkGamePacket.Handlers.Classes
             return false;
         }
 
-        public bool HandlePacket(uint ClientID, byte[] Data)
+        public bool HandleClientIncomingPacket(uint ClientID, byte[] Data)
         {
             using var Reader = new NormalPacketReader(Data);
             var PacketID = (PacketID)Reader.ReadUShort();
             var PacketData = Reader.ReadBytes();
 
-            var Request = GetRequestHandle(PacketID);
+            var Request = this.RouteHandler.GetResponseHandle(PacketID);
 
             if (Request != null)
             {
@@ -129,14 +79,14 @@ namespace DarkGamePacket.Handlers.Classes
                 {
                     dynamic HandleRequest = Request(PacketData);
 
-                    this.NetworkRequest.OnMessage(ClientID, HandleRequest);
+                    this.RouteHandler.NetworkHandle.OnMessage(ClientID, HandleRequest);
                     return true;
                 }
             }
             return false;
         }
 
-        public bool HandleHandshake(uint ClientID, SecurityConnection<ServerSecurityNetwork> Connection)
+        public bool HandleClientHandshake(uint ClientID, SecurityConnection<ServerSecurityNetwork> Connection)
         {
             if (!this.UserClients.ContainsKey(ClientID))
             {
@@ -146,7 +96,7 @@ namespace DarkGamePacket.Handlers.Classes
             return false;
         }
 
-        public bool HandleDisconnect(uint ClientID)
+        public bool HandleClientDisconnect(uint ClientID)
         {
             if (this.UserClients.ContainsKey(ClientID))
             {

@@ -23,7 +23,7 @@ namespace DarkGamePacket.Notifiers.Classes
                 MessageType = MessageType,
                 Message = Message
             };
-            this.PacketHandlerManager.SendPacket(PacketID.CHAT_MESSAGE, MessageData);
+            this.PacketHandlerManager.SendPacketToServer(PacketID.CHAT_MESSAGE, MessageData);
         }
     }
 }
