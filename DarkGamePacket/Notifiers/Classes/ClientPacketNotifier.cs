@@ -1,4 +1,5 @@
-﻿using DarkGamePacket.Definitions.C2S;
+﻿using DarkGamePacket.Definitions;
+using DarkGamePacket.Definitions.C2S;
 using DarkGamePacket.Handlers.Interfaces;
 using DarkGamePacket.Notifiers.Interfaces;
 using DarkGamePacket.Packets;
@@ -22,7 +23,7 @@ namespace DarkGamePacket.Notifiers.Classes
                 MessageType = MessageType,
                 Message = Message
             };
-            this.PacketHandlerManager.SendPacket(ListPacketID.CHAT_MESSAGE, MessageData);
+            this.PacketHandlerManager.SendPacket(PacketID.CHAT_MESSAGE, MessageData);
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using DarkGamePacket.Attributes;
+using DarkGamePacket.Definitions;
+using DarkGamePacket.Handlers.Delegates;
 using DarkGamePacket.Handlers.Interfaces;
 using DarkGamePacket.Packets;
 using DarkPacket.Handlers;
@@ -15,21 +17,11 @@ namespace DarkGamePacket.Handlers.Classes
     public class ClientPacketHandler : IClientPacketHandler
     {
         private SecurityConnection<ClientSecurityNetwork> UserClient;
-
-
-        private readonly Dictionary<ListPacketID, RequestHandle> RequestTable;
-        private delegate byte[] RequestHandle(ICoreMessage Response);
-
-        private readonly Dictionary<ListPacketID, ResponseHandle> ResponseTable;
-        private delegate ICoreMessage ResponseHandle(byte[] data);
-
-        private readonly NetworkHandler<ICoreMessage> NetworkResponse;
-
-        public ClientPacketHandler(NetworkHandler<ICoreMessage> NetworkResponse)
+        private RouteHandler RouteHandler;
+       
+        public ClientPacketHandler(NetworkHandler<ICoreMessage> NetworkHandler)
         {
-            this.NetworkResponse = NetworkResponse;
-            this.RequestTable = new Dictionary<ListPacketID, RequestHandle>();
-            this.ResponseTable = new Dictionary<ListPacketID, ResponseHandle>();
+            this.RouteHandler = new RouteHandler(NetworkHandler);
             this.InitializeResponseHandlers();
             this.InitializeRequestHandlers();
         }
@@ -39,7 +31,7 @@ namespace DarkGamePacket.Handlers.Classes
             {
                 foreach (Attribute Attribute in Method.GetCustomAttributes(true))
                 {
-                    if (Attribute is PacketType Packet)
+                    if (Attribute is PacketType Packet && Packet.Direction == PacketDirection.IN)
                     {
                         var DelegateMethod = (ResponseHandle)Delegate.CreateDelegate(typeof(ResponseHandle), Method);
 
@@ -54,7 +46,7 @@ namespace DarkGamePacket.Handlers.Classes
             {
                 foreach (Attribute Attribute in Method.GetCustomAttributes(true))
                 {
-                    if (Attribute is PacketType Packet)
+                    if (Attribute is PacketType Packet && Packet.Direction == PacketDirection.OUT)
                     {
                         var DelegateMethod = (RequestHandle)Delegate.CreateDelegate(typeof(RequestHandle), Method);
 
@@ -63,7 +55,7 @@ namespace DarkGamePacket.Handlers.Classes
                 }
             }
         }
-        private RequestHandle GetRequestHandle(ListPacketID PacketID)
+        private RequestHandle GetRequestHandle(PacketID PacketID)
         {
             if (this.RequestTable.ContainsKey(PacketID))
             {
@@ -71,7 +63,7 @@ namespace DarkGamePacket.Handlers.Classes
             }
             return null;
         }
-        private ResponseHandle GetResponseHandle(ListPacketID PacketID)
+        private ResponseHandle GetResponseHandle(PacketID PacketID)
         {
             if (this.ResponseTable.ContainsKey(PacketID))
             {
@@ -80,7 +72,7 @@ namespace DarkGamePacket.Handlers.Classes
             return null;
         }
 
-        public bool SendPacket(ListPacketID PacketID, ICoreMessage Request)
+        public bool SendPacket(PacketID PacketID, ICoreMessage Request)
         {
             var RequestHandle = GetRequestHandle(PacketID);
 
@@ -96,7 +88,7 @@ namespace DarkGamePacket.Handlers.Classes
             }
             return false;
         }
-        public bool SendPacket(uint ClientID, ListPacketID PacketID, ICoreMessage Request)
+        public bool SendPacket(uint ClientID, PacketID PacketID, ICoreMessage Request)
         {
             throw new NotImplementedException();
         }
@@ -104,7 +96,7 @@ namespace DarkGamePacket.Handlers.Classes
         public bool HandlePacket(uint ClientID, byte[] Data)
         {
             using var Reader = new NormalPacketReader(Data);
-            var PacketID = (ListPacketID)Reader.ReadUShort();
+            var PacketID = (PacketID)Reader.ReadUShort();
             var PacketData = Reader.ReadBytes();
 
             var ResponseHandle = GetResponseHandle(PacketID);

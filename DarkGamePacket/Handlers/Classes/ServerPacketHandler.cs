@@ -11,28 +11,20 @@ using DarkPacket.Interfaces;
 using DarkPacket.Handlers;
 using DarkGamePacket.Handlers.Interfaces;
 using DarkGamePacket.Packets;
+using DarkGamePacket.Definitions;
+using DarkGamePacket.Handlers.Delegates;
 
 namespace DarkGamePacket.Handlers.Classes
 {
     public class ServerPacketHandler : IServerPacketHandler
     {
-        private readonly ThreadSafeDictionary<uint, SecurityConnection<ServerSecurityNetwork>> ClientPlayers;
+        private readonly ThreadSafeDictionary<uint, SecurityConnection<ServerSecurityNetwork>> UserClients;
+        private RouteHandler RouteHandler;
 
-
-        private readonly Dictionary<ListPacketID, RequestHandle> RequestTable;
-        private delegate ICoreMessage RequestHandle(byte[] data);
-
-        private readonly Dictionary<ListPacketID, ResponseHandle> ResponseTable;
-        private delegate byte[] ResponseHandle(ICoreMessage Response);
-
-        private readonly NetworkHandler<ICoreMessage> NetworkRequest;
-
-        public ServerPacketHandler(NetworkHandler<ICoreMessage> NetworkRequest)
-        {
-            this.ClientPlayers = new ThreadSafeDictionary<uint, SecurityConnection<ServerSecurityNetwork>>();
-            this.NetworkRequest = NetworkRequest;
-            this.RequestTable = new Dictionary<ListPacketID, RequestHandle>();
-            this.ResponseTable = new Dictionary<ListPacketID, ResponseHandle>();
+        public ServerPacketHandler(NetworkHandler<ICoreMessage> NetworkHandler)
+        {          
+            this.UserClients = new ThreadSafeDictionary<uint, SecurityConnection<ServerSecurityNetwork>>();
+            this.RouteHandler = new RouteHandler(NetworkHandler);
             this.InitializeRequestHandlers();
             this.InitializeResponseHandlers();
         }
@@ -42,7 +34,7 @@ namespace DarkGamePacket.Handlers.Classes
             {
                 foreach (Attribute Attribute in Method.GetCustomAttributes(true))
                 {
-                    if (Attribute is PacketType Packet)
+                    if (Attribute is PacketType Packet && Packet.Direction == PacketDirection.IN)
                     {
                         var DelegateMethod = (RequestHandle)Delegate.CreateDelegate(typeof(RequestHandle), Method);
 
@@ -57,7 +49,7 @@ namespace DarkGamePacket.Handlers.Classes
             {
                 foreach (Attribute Attribute in Method.GetCustomAttributes(true))
                 {
-                    if (Attribute is PacketType Packet)
+                    if (Attribute is PacketType Packet && Packet.Direction == PacketDirection.OUT)
                     {
                         var DelegateMethod = (ResponseHandle)Delegate.CreateDelegate(typeof(ResponseHandle), Method);
 
@@ -66,7 +58,7 @@ namespace DarkGamePacket.Handlers.Classes
                 }
             }
         }
-        private RequestHandle GetRequestHandle(ListPacketID PacketID)
+        private RequestHandle GetRequestHandle(PacketID PacketID)
         {
             if (this.RequestTable.ContainsKey(PacketID))
             {
@@ -74,7 +66,7 @@ namespace DarkGamePacket.Handlers.Classes
             }
             return null;
         }
-        private ResponseHandle GetResponseHandle(ListPacketID PacketID)
+        private ResponseHandle GetResponseHandle(PacketID PacketID)
         {
             if (this.ResponseTable.ContainsKey(PacketID))
             {
@@ -83,13 +75,13 @@ namespace DarkGamePacket.Handlers.Classes
             return null;
         }
 
-        public bool SendPacket(uint ClientID, ListPacketID PacketID, ICoreMessage Response)
+        public bool SendPacket(uint ClientID, PacketID PacketID, ICoreMessage Response)
         {
             var ResponseHandle = GetResponseHandle(PacketID);
 
             if (ResponseHandle != null)
             {
-                if (this.ClientPlayers.TryGetValue(ClientID, out var Connection))
+                if (this.UserClients.TryGetValue(ClientID, out var Connection))
                 {
                     dynamic HandleResponse = ResponseHandle(Response);
 
@@ -102,7 +94,7 @@ namespace DarkGamePacket.Handlers.Classes
             }
             return false;
         }
-        public bool SendPacketBroadcast(ListPacketID PacketID, ICoreMessage Response)
+        public bool SendPacketBroadcast(PacketID PacketID, ICoreMessage Response)
         {
             var ResponseHandle = GetResponseHandle(PacketID);
 
@@ -114,7 +106,7 @@ namespace DarkGamePacket.Handlers.Classes
                 Packet.WriteUShort((ushort)PacketID);
                 Packet.WriteBytes(HandleResponse);
 
-                foreach (var Connection in this.ClientPlayers.Values.ToList())
+                foreach (var Connection in this.UserClients.Values.ToList())
                 {
                     Connection.SendDataWithEncryption(Packet.GetPacketData());
                 }
@@ -126,14 +118,14 @@ namespace DarkGamePacket.Handlers.Classes
         public bool HandlePacket(uint ClientID, byte[] Data)
         {
             using var Reader = new NormalPacketReader(Data);
-            var PacketID = (ListPacketID)Reader.ReadUShort();
+            var PacketID = (PacketID)Reader.ReadUShort();
             var PacketData = Reader.ReadBytes();
 
             var Request = GetRequestHandle(PacketID);
 
             if (Request != null)
             {
-                if (this.ClientPlayers.ContainsKey(ClientID))
+                if (this.UserClients.ContainsKey(ClientID))
                 {
                     dynamic HandleRequest = Request(PacketData);
 
@@ -146,9 +138,9 @@ namespace DarkGamePacket.Handlers.Classes
 
         public bool HandleHandshake(uint ClientID, SecurityConnection<ServerSecurityNetwork> Connection)
         {
-            if (!this.ClientPlayers.ContainsKey(ClientID))
+            if (!this.UserClients.ContainsKey(ClientID))
             {
-                this.ClientPlayers.Add(ClientID, Connection);
+                this.UserClients.Add(ClientID, Connection);
                 return true;
             }
             return false;
@@ -156,9 +148,9 @@ namespace DarkGamePacket.Handlers.Classes
 
         public bool HandleDisconnect(uint ClientID)
         {
-            if (this.ClientPlayers.ContainsKey(ClientID))
+            if (this.UserClients.ContainsKey(ClientID))
             {
-                this.ClientPlayers.RemoveSafe(ClientID);
+                this.UserClients.RemoveSafe(ClientID);
                 return true;
             }
             return false;

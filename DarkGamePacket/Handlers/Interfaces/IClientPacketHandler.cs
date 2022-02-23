@@ -1,4 +1,5 @@
-﻿using DarkGamePacket.Packets;
+﻿using DarkGamePacket.Definitions;
+using DarkGamePacket.Packets;
 using DarkPacket.Interfaces;
 using DarkSecurityNetwork;
 using DarkSecurityNetwork.Networks;
@@ -9,7 +10,7 @@ namespace DarkGamePacket.Handlers.Interfaces
     {        
         bool HandleHandshake(SecurityConnection<ClientSecurityNetwork> Connection);
         bool HandlePacket(uint ClientID, byte[] Data);
-        bool SendPacket(ListPacketID PacketID, ICoreMessage Request);
+        bool SendPacket(PacketID PacketID, ICoreMessage Request);
         bool HandleDisconnect();
     }
 }

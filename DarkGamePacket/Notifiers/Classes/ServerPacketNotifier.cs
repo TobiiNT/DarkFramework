@@ -1,4 +1,5 @@
-﻿using DarkGamePacket.Definitions.S2C;
+﻿using DarkGamePacket.Definitions;
+using DarkGamePacket.Definitions.S2C;
 using DarkGamePacket.Handlers.Interfaces;
 using DarkGamePacket.Notifiers.Interfaces;
 using DarkGamePacket.Packets;
@@ -23,7 +24,7 @@ namespace DarkGamePacket.Notifiers.Classes
                 Message = Message
             };
             //this.PacketHandlerManager.SendPacket(ClientID, PacketID.CHAT_MESSAGE, MessageData);
-            this.PacketHandler.SendPacketBroadcast(ListPacketID.CHAT_MESSAGE, MessageData);
+            this.PacketHandler.SendPacketBroadcast(PacketID.CHAT_MESSAGE, MessageData);
         }
     }
 }
