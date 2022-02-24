@@ -24,7 +24,7 @@ namespace SampleUnityGameServer.Games
                 {
                     this.Games.Add(ChannelGame.ChannelID, LogicGame);
 
-                    Logging.WriteLine($"Started game logic on channel {ChannelGame.ChannelID}");
+                    Logging.WriteLine(ChannelGame.ChannelID, $"Started game logic");
                 }
             }
             catch (Exception Exception)

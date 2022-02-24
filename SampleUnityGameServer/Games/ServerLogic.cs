@@ -9,12 +9,12 @@ using SampleUnityGameServer.Games.Handlers.Packets;
 
 namespace SampleUnityGameServer.Games
 {
-    public class LogicGame
+    public class ServerLogic
     {
         public NetworkHandler<ICoreMessage> FunctionHandler { get; }
         public IServerPacketNotifier PacketNotifier { get; }
         public IServerPacketHandler PacketHandler { get; }
-        public LogicGame()
+        public ServerLogic()
         {
             this.FunctionHandler = new NetworkHandler<ICoreMessage>();
             this.PacketHandler = new ServerPacketHandler(FunctionHandler);

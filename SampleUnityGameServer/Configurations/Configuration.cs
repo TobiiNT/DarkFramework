@@ -12,10 +12,8 @@ namespace SampleUnityGameServer.Configurations
 
         public static List<Tuple<int, uint>> Channels = new List<Tuple<int, uint>>
         {
-            new Tuple<int, uint>(3000, 200),
-            new Tuple<int, uint>(3001, 150),
-            new Tuple<int, uint>(3002, 1000),
-            new Tuple<int, uint>(3003, 50),
+            new Tuple<int, uint>(3000, 100),
+            new Tuple<int, uint>(3001, 100)
         };
     }
 }
