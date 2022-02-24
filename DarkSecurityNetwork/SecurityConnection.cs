@@ -62,6 +62,7 @@ namespace DarkSecurityNetwork
         }
 
         public void ConnectWithIP(string ServerIPAddress, int Port) => Start(ServerIPAddress, Port);
+        public void ConnectWithOptions(string ServerIPAddress, int Port, int ConnectTimeout) => Start(ServerIPAddress, Port, ConnectTimeout);
 
         public bool SendDataWithEncryption(byte[] Data)
         {

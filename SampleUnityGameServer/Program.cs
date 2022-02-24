@@ -27,6 +27,8 @@ namespace SampleUnityGameServer
 
             while (true)
             {
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write($"Write message: ");
                 var Content = Console.ReadLine();
                 if (Content == "exit")
                     break;

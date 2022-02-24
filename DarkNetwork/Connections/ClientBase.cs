@@ -43,7 +43,7 @@ namespace DarkNetwork.Connections
             this.ReceiveQueue = new ReceiveQueue();
             this.DataReceived = new byte[102400];
         }
-        protected void Start(string ServerIPAddress, int Port, bool KeepAliveOn = true, int KeepAliveTime = 20000, int KeepAliveInterval = 20000)
+        protected void Start(string ServerIPAddress, int Port, int Timeout = 5000, bool KeepAliveOn = true, int KeepAliveTime = 20000, int KeepAliveInterval = 20000)
         {
             try
             {
@@ -54,10 +54,21 @@ namespace DarkNetwork.Connections
                 this.KeepAliveInterval = KeepAliveInterval;
 
                 this.Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                this.Socket.NoDelay = true;
+                
+                IAsyncResult Result = this.Socket.BeginConnect(this.IPEndPoint, this.OnConnected, this.Socket);
 
-                this.Socket.BeginConnect(this.IPEndPoint, this.OnConnected, this.Socket);
+                bool isSuccess = Result.AsyncWaitHandle.WaitOne(Timeout, true);
 
-                OnStartSuccess(this, new StartSuccessArgs());
+                if (!this.Socket.Connected)
+                {
+                    this.Socket.Close();
+                    OnStartException(this, new StartExceptionArgs(new Exception("Connect timeout")));
+                }
+                else
+                {
+                    OnStartSuccess(this, new StartSuccessArgs());
+                }
             }
             catch (Exception Exception)
             {

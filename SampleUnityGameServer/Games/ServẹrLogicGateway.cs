@@ -29,7 +29,7 @@ namespace SampleUnityGameServer.Games
             }
             catch (Exception Exception)
             {
-                Logging.WriteError($"Failed to create game on channel {ChannelGame.ChannelID}", Exception);
+                Logging.WriteLine($"Failed to create game on channel {ChannelGame.ChannelID}", Exception);
             }
         }
     }

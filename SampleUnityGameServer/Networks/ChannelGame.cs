@@ -93,7 +93,7 @@ namespace SampleUnityGameServer.Networks
             {
                 if (this.ClientConnections.TryGetValue(ClientID, out var Client))
                 {
-                    Logging.WriteError(Client.ChannelID, Client.ClientID, "Failed to setup secure connection");
+                    Logging.WriteLine(Client.ChannelID, Client.ClientID, "Failed to setup secure connection");
                 }
             }
         }
@@ -103,7 +103,7 @@ namespace SampleUnityGameServer.Networks
             {
                 if (this.ClientConnections.TryGetValue(ClientID, out var Client))
                 {
-                    Logging.WriteError(Client.ChannelID, Client.ClientID, "Failed to setup secure connection", Exception);
+                    Logging.WriteLine(Client.ChannelID, Client.ClientID, "Failed to setup secure connection", Exception);
                 }
             }
         }
@@ -123,7 +123,7 @@ namespace SampleUnityGameServer.Networks
             {
                 if (this.ClientConnections.TryGetValue(ClientID, out var Client))
                 {
-                    Logging.WriteError(Client.ChannelID, Client.ClientID, $"Attempted to {Client.GetIPEndpoint()}", Exception);
+                    Logging.WriteLine(Client.ChannelID, Client.ClientID, $"Attempted to {Client.GetIPEndpoint()}", Exception);
                 }
             }
         }
@@ -145,7 +145,7 @@ namespace SampleUnityGameServer.Networks
             {
                 if (this.ClientConnections.TryGetValue(ClientID, out var Client))
                 {
-                    Logging.WriteError(Client.ChannelID, Client.ClientID, $"Connected to {Client.GetIPEndpoint()}", Exception);
+                    Logging.WriteLine(Client.ChannelID, Client.ClientID, $"Connected to {Client.GetIPEndpoint()}", Exception);
 
 
                 }
@@ -169,7 +169,7 @@ namespace SampleUnityGameServer.Networks
             {
                 if (this.ClientConnections.TryGetValue(ClientID, out var Client))
                 {
-                    Logging.WriteError(Client.ChannelID, Client.ClientID, $"Sent to {Client.GetIPEndpoint()}", Exception);
+                    Logging.WriteLine(Client.ChannelID, Client.ClientID, $"Sent to {Client.GetIPEndpoint()}", Exception);
                 }
             }
         }
@@ -193,7 +193,7 @@ namespace SampleUnityGameServer.Networks
             {
                 if (this.ClientConnections.TryGetValue(ClientID, out var Client))
                 {
-                    Logging.WriteError(Client.ChannelID, Client.ClientID, $"Received from {Client.GetIPEndpoint()}", Exception);
+                    Logging.WriteLine(Client.ChannelID, Client.ClientID, $"Received from {Client.GetIPEndpoint()}", Exception);
                 }
             }
         }
@@ -219,7 +219,7 @@ namespace SampleUnityGameServer.Networks
             {
                 if (this.ClientConnections.TryGetValue(ClientID, out var Client))
                 {
-                    Logging.WriteError(Client.ChannelID, Client.ClientID, $"Disconnected from {Client.GetIPEndpoint()}", Exception);
+                    Logging.WriteLine(Client.ChannelID, Client.ClientID, $"Disconnected from {Client.GetIPEndpoint()}", Exception);
 
                     this.ClientConnections.RemoveSafe(ClientID);
 
@@ -251,7 +251,7 @@ namespace SampleUnityGameServer.Networks
             {
                 if (this.ClientConnections.TryGetValue(ClientID, out var Client))
                 {
-                    Logging.WriteError(Client.ChannelID, Client.ClientID, $"Destroyed by {Caller}", Exception);
+                    Logging.WriteLine(Client.ChannelID, Client.ClientID, $"Destroyed by {Caller}", Exception);
 
                     this.ClientConnections.RemoveSafe(ClientID);
 

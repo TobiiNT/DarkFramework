@@ -4,51 +4,22 @@ namespace SampleUnityGameServer
 {
     public class Logging
     {
-        public static void WriteLine(string Message)
+        public static void WriteLine(string Message, Exception Exception = null)
         {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"[Server] {DateTime.Now} {Message}");
-        }
-        public static void WriteError(string Message, Exception Exception)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"[Server] {DateTime.Now} {Message} ({Exception.Message})");
+            Console.ForegroundColor = Exception != null ? ConsoleColor.Red : ConsoleColor.Cyan;
+            Console.WriteLine($"[{DateTime.Now}] [MAIN] {Message} {(Exception != null ? $"[{Exception.Message}]" : "")}");
         }
 
-        public static void WriteLine(int ChannelID, string Message)
+        public static void WriteLine(int ChannelID, string Message, Exception Exception = null)
         {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"[Channel {ChannelID}] [{DateTime.Now}] - {Message}");
+            Console.ForegroundColor = Exception != null ? ConsoleColor.Red : ConsoleColor.Cyan;
+            Console.WriteLine($"[{DateTime.Now}] [CHANNEL {ChannelID}] : {Message} {(Exception != null ? $"[{Exception.Message}]" : "")}");
         }
 
-        public static void WriteLine(int ChannelID, uint ClientID, string Message)
+        public static void WriteLine(int ChannelID, uint ClientID, string Message, Exception Exception = null)
         {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"[Channel {ChannelID}] [{DateTime.Now}] - [{ClientID}] {Message}");
-        }
-
-        public static void WriteError(int ChannelID, string Message)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"[Channel {ChannelID}] [{DateTime.Now}] - {Message}");
-        }
-
-        public static void WriteError(int ChannelID, string Message, Exception Exception)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"[Channel {ChannelID}] [{DateTime.Now}] - {Message} ({Exception.Message})");
-        }
-
-        public static void WriteError(int ChannelID, uint ClientID, string Message)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"[Channel {ChannelID}] [{DateTime.Now}] - [{ClientID}] {Message}");
-        }
-
-        public static void WriteError(int ChannelID, uint ClientID, string Message, Exception Exception)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"[Channel {ChannelID}] [{DateTime.Now}] - [{ClientID}] {Message} ({Exception.Message})"); 
+            Console.ForegroundColor = Exception != null ? ConsoleColor.Red : ConsoleColor.Cyan;
+            Console.WriteLine($"[{DateTime.Now}] [CHANNEL {ChannelID}] : [{ClientID}] {Message} {(Exception != null ? $"[{Exception.Message}]" : "")}"); 
         }
 
     }

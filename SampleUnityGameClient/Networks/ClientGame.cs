@@ -30,68 +30,68 @@ namespace SampleUnityGameClient.Networks
         }
         private void OnConnectionAuthenticationSuccess(ushort ChannelID, uint ClientID)
         {
-            Logging.WriteLine($"Channel {ChannelID}, Client {ClientID} : Setup secured connection success");
+            Logging.WriteLine(ChannelID, ClientID, $"Setup secured connection success");
         }
         private void OnConnectionAuthenticationFailed(ushort ChannelID, uint ClientID)
         {
-            Logging.WriteError($"Channel {ChannelID}, Client {ClientID} : Fail to setup secured connection");
+            Logging.WriteLine(ChannelID, ClientID, $"Fail to setup secured connection");
         }
         private void OnConnectionAuthenticationException(ushort ChannelID, uint ClientID, Exception Exception)
         {
-            Logging.WriteError($"Channel {ChannelID}, Client {ClientID} : Setup secured connection exception", Exception);
+            Logging.WriteLine(ChannelID, ClientID, $"Setup secured connection", Exception);
         }
         private void OnConnectionStartSuccess(ushort ChannelID, uint ClientID)
         {
-            Logging.WriteLine($"Channel {ChannelID}, Client {ClientID} : Started to {this.GetIPEndpoint()}");
-                this.LogicGame.PacketHandler?.HandleServerHandshake(this);
+            Logging.WriteLine(ChannelID, ClientID, $"Initialize connection to {this.GetIPEndpoint()}");
+            this.LogicGame.PacketHandler?.HandleServerHandshake(this);
         }
         private void OnConnectionStartException(ushort ChannelID, uint ClientID, Exception Exception)
         {
-            Logging.WriteError($"Channel {ChannelID}, Client {ClientID} : Started to {this.GetIPEndpoint()}", Exception);
+            Logging.WriteLine(ChannelID, ClientID, $"Initialize connection to {this.GetIPEndpoint()}", Exception);
         }
         private void OnConnectionConnectSuccess(ushort ChannelID, uint ClientID)
         {
-            Logging.WriteLine($"Channel {ChannelID}, Client {ClientID} : Connected to {this.GetIPEndpoint()}");
+            Logging.WriteLine(ChannelID, ClientID, $"Connected to {this.GetIPEndpoint()}");
         }
         private void OnConnectionConnectException(ushort ChannelID, uint ClientID, Exception Exception)
         {
-            Logging.WriteError($"Channel {ChannelID}, Client {ClientID} : Connected to {this.GetIPEndpoint()} exception", Exception);
+            Logging.WriteLine(ChannelID, ClientID, $"Connected to {this.GetIPEndpoint()}", Exception);
         }
         private void OnConnectionSendSuccess(ushort ChannelID, uint ClientID, int DataSize)
         {
-            Logging.WriteLine($"Channel {ChannelID}, Client {ClientID} : Sent to {this.GetIPEndpoint()} {DataSize} bytes");
+            Logging.WriteLine(ChannelID, ClientID, $"Sent to {this.GetIPEndpoint()} {DataSize} bytes");
         }
         private void OnConnectionSendException(ushort ChannelID, uint ClientID, Exception Exception)
         {
-            Logging.WriteError($"Channel {ChannelID}, Client {ClientID} : Sent to {this.GetIPEndpoint()} exception", Exception);
+            Logging.WriteLine(ChannelID, ClientID, $"Sent to {this.GetIPEndpoint()}", Exception);
         }
         private void OnConnectionReceiveSuccess(ushort ChannelID, uint ClientID, int DataSize, byte[] Data)
         {
-            Logging.WriteLine($"Channel {ChannelID}, Client {ClientID} : Received from {this.GetIPEndpoint()} {DataSize} bytes");
+            Logging.WriteLine(ChannelID, ClientID, $"Received from {this.GetIPEndpoint()} {DataSize} bytes");
             this.LogicGame.PacketHandler?.HandleServerIncomingPacket(ClientID, Data);
         }
         private void OnConnectionReceiveException(ushort ChannelID, uint ClientID, Exception Exception)
         {
-            Logging.WriteError($"Channel {ChannelID}, Client {ClientID} : Received from {this.GetIPEndpoint()}", Exception);
+            Logging.WriteLine(ChannelID, ClientID, $"Received from {this.GetIPEndpoint()}", Exception);
         }
         private void OnConnectionDisconnectSuccess(ushort ChannelID, uint ClientID)
         {
-            Logging.WriteLine($"Channel {ChannelID}, Client {ClientID} : Disconnected from {this.GetIPEndpoint()}");
+            Logging.WriteLine(ChannelID, ClientID, $"Disconnected from {this.GetIPEndpoint()}");
             this.LogicGame.PacketHandler?.HandleServerDisconnect();
         }
         private void OnConnectionDisconnectException(ushort ChannelID, uint ClientID, Exception Exception)
         {
-            Logging.WriteError($"Channel {ChannelID}, Client {ClientID} : Disconnected from {this.GetIPEndpoint()}", Exception);
+            Logging.WriteLine(ChannelID, ClientID, $"Disconnected from {this.GetIPEndpoint()}", Exception);
             this.LogicGame.PacketHandler?.HandleServerDisconnect();
         }
         private void OnConnectionDisposeSuccess(ushort ChannelID, uint ClientID, string Caller)
         {
-            Logging.WriteLine($"Channel {ChannelID}, Client {ClientID} : Disposed by {Caller}");
+            Logging.WriteLine(ChannelID, ClientID, $"Disposed by {Caller}");
             this.LogicGame.PacketHandler?.HandleServerDisconnect();
         }
         private void OnConnectionDisposeException(ushort ChannelID, uint ClientID, string Caller, Exception Exception)
         {
-            Logging.WriteError($"Channel {ChannelID}, Client {ClientID} : Disposed by {Caller} exception", Exception);
+            Logging.WriteLine(ChannelID, ClientID, $"Disposed by {Caller}", Exception);
             this.LogicGame.PacketHandler?.HandleServerDisconnect();
         }
     }
