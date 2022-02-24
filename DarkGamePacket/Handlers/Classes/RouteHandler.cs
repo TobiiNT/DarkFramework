@@ -10,10 +10,10 @@ namespace DarkGamePacket.Handlers.Classes
 {
     public class RouteHandler
     {
+        public readonly NetworkHandler<ICoreMessage> NetworkHandle;
         private readonly Dictionary<PacketID, RequestHandle> RequestTable;
         private readonly Dictionary<PacketID, ResponseHandle> ResponseTable;
-        public readonly NetworkHandler<ICoreMessage> NetworkHandle;
-
+        
         public RouteHandler(NetworkHandler<ICoreMessage> NetworkHandle)
         {
             this.NetworkHandle = NetworkHandle;
