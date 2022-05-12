@@ -40,7 +40,7 @@ namespace DarkNetwork.Connections
             this.IsDisposed = false;
 
             this.SendQueue = new SendQueue();
-            this.ReceiveQueue = new ReceiveQueue();
+            this.ReceiveQueue = new ReceiveQueue(2048);
             this.DataReceived = new byte[102400];
         }
         protected void Start(string ServerIPAddress, int Port, int Timeout = 5000, bool KeepAliveOn = true, int KeepAliveTime = 20000, int KeepAliveInterval = 20000)
@@ -312,7 +312,7 @@ namespace DarkNetwork.Connections
                                         }
                                         this.ReceiveQueue.Clear();
                                     }
-                                    else if (this.ReceiveQueue.BufferData[0] != 170 && this.ReceiveQueue.BufferData[1] != 85)
+                                    else if (this.ReceiveQueue.IsCompleteDataSequence())
                                     {
                                         this.ReceiveQueue.Clear();
                                     }
