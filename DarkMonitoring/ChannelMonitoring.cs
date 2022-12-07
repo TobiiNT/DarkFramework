@@ -57,11 +57,6 @@ namespace DarkMonitoring
             Interlocked.Increment(ref this.TotalNewConnections);
         }
 
-        public void MornitorConnectConnection()
-        {
-            Interlocked.Increment(ref this.TotalConnectConnections);
-        }
-
         public void MornitorDisconnectConnection(uint ClientID)
         {
             lock (LockObject)
